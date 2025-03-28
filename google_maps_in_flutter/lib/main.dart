@@ -32,7 +32,12 @@ class _BottomBarExampleState extends State<BottomBarExample> {
   int _currentIndex = 0; // Start with Home/maps
   String time = '';
   String partySize = '';
-  DateTime? selectedDate;
+  DateTime? dateSelected;
+
+  String temptime = '';
+  String temppartySize = '';
+  DateTime? tempdateSelected;
+
   final PageController _pageController = PageController(initialPage: 0);
   late GoogleMapController mapController;
 
@@ -79,12 +84,13 @@ class _BottomBarExampleState extends State<BottomBarExample> {
                   ),
                   monthYearTabBorderRadius: 15,
                   dayBoxBorderRadius: 10,
-                  headerText: "Select Your Preferred Date",
+                  headerText: "Select a Date",
                   fontFamilyName: "Roboto",
                   isGoogleFont: true,
                   dayBorderWidth: 0.5,
                   onDateSelect: (selectedDate) {
-                    print("Selected date: $selectedDate");
+                    dateSelected = selectedDate;
+                    tempdateSelected = selectedDate;
                   },
                 ),
                 const SizedBox(height: 10),
@@ -93,11 +99,11 @@ class _BottomBarExampleState extends State<BottomBarExample> {
                   decoration: const InputDecoration(
                     alignLabelWithHint: true,
                     hintText: 'Select Time',
-                    prefixIcon: Icon(Icons.phone_outlined),
+                    prefixIcon: Icon(Icons.schedule_outlined),
                   ),
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.phone,
-                  onChanged: (value) => time = value,
+                  onChanged: (value) => ((temptime = value), (time = value)),
                 ),
                 const SizedBox(height: 10),
 
@@ -110,28 +116,36 @@ class _BottomBarExampleState extends State<BottomBarExample> {
                   ),
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.number,
-                  onChanged: (value) => partySize = value,
+                  onChanged:
+                      (value) => ((temppartySize = value), (partySize = value)),
                 ),
               ],
             ),
             onConfirmBtnTap: () async {
-              if (time.isEmpty || partySize.isEmpty || selectedDate == null) {
+              if (temptime.isEmpty ||
+                  temppartySize.isEmpty ||
+                  tempdateSelected == null) {
                 await QuickAlert.show(
                   context: context,
                   type: QuickAlertType.error,
                   text: 'Please fill all fields.',
                 );
                 return;
+              } else {
+                Navigator.pop(context);
+                await Future.delayed(const Duration(milliseconds: 500));
+                await QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.success,
+                  text:
+                      "Booking saved!\nTime: $time\nParty Size: $partySize\nDate: ${dateSelected!.toLocal().toString().split(' ')[0]}",
+                );
+                temptime = '';
+                temppartySize = '';
+                tempdateSelected = null;
+                return;
               }
-
-              Navigator.pop(context);
-              await Future.delayed(const Duration(milliseconds: 500));
-              await QuickAlert.show(
-                context: context,
-                type: QuickAlertType.success,
-                text:
-                    "Booking saved!\nPhone: $time\nParty Size: $partySize\nDate: ${selectedDate!.toLocal().toString().split(' ')[0]}",
-              );
+              ;
             },
           );
         },
@@ -193,8 +207,8 @@ class _BottomBarExampleState extends State<BottomBarExample> {
 
           // this is where you would add the other pages for the bottom bar
           //right now it just makes the page say what you clicked on only the maps page works
-          const BookingPage(), // Index 1
-          const SearchPage(), // Index 2
+          const SearchPage(), // Index 1
+          const BookingPage(), // Index 2
           const ProfilePage(), // Index 3
         ],
       ),
