@@ -38,6 +38,12 @@ dependencies:
   floating_bottom_bar: ^0.0.3
   persistent_bottom_nav_bar_v2: ^5.3.1
   stylish_bottom_bar: ^1.1.1
+  quickalert: ^1.1.0
+  syncfusion_flutter_datepicker: ^29.1.33
+  shared_preferences: ^2.5.3
+  time_range: ^1.1.1
+  calendar_day_slot_navigator: ^0.0.1
+  
 
 dev_dependencies:
   flutter_test:
