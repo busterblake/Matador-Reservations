@@ -203,6 +203,46 @@ class _BottomBarExampleState extends State<BottomBarExample> {
           GoogleMap(
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(target: _center, zoom: 16.0),
+            markers: {
+              Marker(
+                markerId: const MarkerId('Matador 1'),
+                position: const LatLng(34.23796594969169, -118.53662856651358),
+                onTap: () {
+                  // custom pop up ontainer for the marker
+                  //should show the restraunt info with a button to make a reservation
+                  //temp will nbe the info popup
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.info,
+                    text: 'Temp info for Matador 1',
+                    confirmBtnText: "Book Now",
+                    onConfirmBtnTap: () {
+                      QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.success,
+                        text: 'Reservation made!',
+                      );
+                    },
+                  );
+                },
+              ),
+              Marker(
+                markerId: const MarkerId('Matador 2'),
+                position: const LatLng(34.23982826085725, -118.52539003612064),
+                infoWindow: const InfoWindow(
+                  title: 'Matador 2 info',
+                  snippet: 'This is a snippet',
+                ),
+              ),
+              Marker(
+                markerId: const MarkerId('Matador 3'),
+                position: const LatLng(34.24131729261727, -118.5296862650247),
+                infoWindow: const InfoWindow(
+                  title: 'Matador 3 info',
+                  snippet: 'This is a snippet',
+                ),
+              ),
+            },
           ),
 
           // this is where you would add the other pages for the bottom bar
