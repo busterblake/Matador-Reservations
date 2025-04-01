@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'profile_page.dart';
@@ -18,17 +20,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Matador Reservation App',
       debugShowCheckedModeBanner: false,
-      home: BottomBarExample(),
+      home: MatadorResApp(),
     );
   }
 }
 
-class BottomBarExample extends StatefulWidget {
+class MatadorResApp extends StatefulWidget {
   @override
-  _BottomBarExampleState createState() => _BottomBarExampleState();
+  _MatadorResApp createState() => _MatadorResApp();
 }
 
-class _BottomBarExampleState extends State<BottomBarExample> {
+class _MatadorResApp extends State<MatadorResApp> {
   int _currentIndex = 0; // Start with Home/maps
   String time = '';
   String partySize = '';
@@ -38,10 +40,76 @@ class _BottomBarExampleState extends State<BottomBarExample> {
   String temppartySize = '';
   DateTime? tempdateSelected;
 
+  final LatLng _center = const LatLng(34.240547308790596, -118.52942529186363);
+  Map<String, Marker> _markerMap = {};
+  Set<Marker> _markers = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMarkersFromJson();
+  }
+
+  Future<void> _loadMarkersFromJson() async {
+    final String data = await rootBundle.loadString('lib/Assets/markers.json');
+    final List<dynamic> jsonResult = json.decode(data);
+
+    Set<Marker> loadedMarkers =
+        jsonResult.map((markerData) {
+          return Marker(
+            markerId: MarkerId(markerData['id']),
+            position: LatLng(markerData['lat'], markerData['lng']),
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+              BitmapDescriptor.hueViolet,
+            ),
+            onTap: () {
+              //custom pop up the marker
+              //should show the restraunt info with a button to make a reservation
+              //temp will nbe the info popup
+              QuickAlert.show(
+                context: context,
+                type: QuickAlertType.info,
+                text: markerData['description'],
+                customAsset: markerData['image'],
+                onConfirmBtnTap: () {
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.success,
+                    text: 'Temp Screen',
+                  );
+                  disablemarker(markerData['id']);
+                  //this is where we will add logic to go to the restaraunt page
+                },
+              );
+            },
+          );
+        }).toSet();
+
+    setState(() {
+      _markers = loadedMarkers;
+    });
+  }
+
+  void disablemarker(String markerId) {
+    final updatedMarkers =
+        _markers.map((marker) {
+          if (marker.markerId.value == markerId) {
+            return marker.copyWith(
+              iconParam: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueRed,
+              ),
+            );
+          }
+          return marker;
+        }).toSet();
+
+    setState(() {
+      _markers = updatedMarkers;
+    });
+  }
+
   final PageController _pageController = PageController(initialPage: 0);
   late GoogleMapController mapController;
-
-  final LatLng _center = const LatLng(34.240547308790596, -118.52942529186363);
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -203,46 +271,7 @@ class _BottomBarExampleState extends State<BottomBarExample> {
           GoogleMap(
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(target: _center, zoom: 16.0),
-            markers: {
-              Marker(
-                markerId: const MarkerId('Matador 1'),
-                position: const LatLng(34.23796594969169, -118.53662856651358),
-                onTap: () {
-                  // custom pop up ontainer for the marker
-                  //should show the restraunt info with a button to make a reservation
-                  //temp will nbe the info popup
-                  QuickAlert.show(
-                    context: context,
-                    type: QuickAlertType.info,
-                    text: 'Temp info for Matador 1',
-                    confirmBtnText: "Book Now",
-                    onConfirmBtnTap: () {
-                      QuickAlert.show(
-                        context: context,
-                        type: QuickAlertType.success,
-                        text: 'Reservation made!',
-                      );
-                    },
-                  );
-                },
-              ),
-              Marker(
-                markerId: const MarkerId('Matador 2'),
-                position: const LatLng(34.23982826085725, -118.52539003612064),
-                infoWindow: const InfoWindow(
-                  title: 'Matador 2 info',
-                  snippet: 'This is a snippet',
-                ),
-              ),
-              Marker(
-                markerId: const MarkerId('Matador 3'),
-                position: const LatLng(34.24131729261727, -118.5296862650247),
-                infoWindow: const InfoWindow(
-                  title: 'Matador 3 info',
-                  snippet: 'This is a snippet',
-                ),
-              ),
-            },
+            markers: _markers,
           ),
 
           // this is where you would add the other pages for the bottom bar
