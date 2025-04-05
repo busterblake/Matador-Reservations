@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
@@ -15,6 +14,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MatadorResApp extends StatefulWidget {
+  const MatadorResApp({super.key});
   @override
   _MatadorResApp createState() => _MatadorResApp();
 }
@@ -41,7 +42,6 @@ class _MatadorResApp extends State<MatadorResApp> {
   DateTime? tempdateSelected;
 
   final LatLng _center = const LatLng(34.240547308790596, -118.52942529186363);
-  Map<String, Marker> _markerMap = {};
   Set<Marker> _markers = {};
 
   @override
@@ -53,7 +53,6 @@ class _MatadorResApp extends State<MatadorResApp> {
   Future<void> _loadMarkersFromJson() async {
     final String data = await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> jsonResult = json.decode(data);
-
     Set<Marker> loadedMarkers =
         jsonResult.map((markerData) {
           return Marker(
@@ -90,6 +89,7 @@ class _MatadorResApp extends State<MatadorResApp> {
     });
   }
 
+  //call this funtions to disable the marker if unavailable
   void disablemarker(String markerId) {
     final updatedMarkers =
         _markers.map((marker) {
@@ -213,7 +213,6 @@ class _MatadorResApp extends State<MatadorResApp> {
                 tempdateSelected = null;
                 return;
               }
-              ;
             },
           );
         },
@@ -269,9 +268,12 @@ class _MatadorResApp extends State<MatadorResApp> {
           //pages go in order 0-3 for the bottom bar
           //right now only the maps page works
           GoogleMap(
+            myLocationEnabled: true,
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(target: _center, zoom: 16.0),
             markers: _markers,
+            myLocationButtonEnabled: true,
+            //zoomControlsEnabled: true,
           ),
 
           // this is where you would add the other pages for the bottom bar
@@ -285,10 +287,10 @@ class _MatadorResApp extends State<MatadorResApp> {
   }
 }
 
-class saveReservationData {
+class SaveReservationData {
   //used to save data to user prefts
 }
 
-class loadReservationData {
+class LoadReservationData {
   //used to load data from user prefs
 }

@@ -43,6 +43,7 @@ dependencies:
   shared_preferences: ^2.5.3
   time_range: ^1.1.1
   calendar_day_slot_navigator: ^0.0.1
+  location: ^5.0.0
   
 
 dev_dependencies:
