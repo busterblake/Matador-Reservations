@@ -1,27 +1,86 @@
 [
-    {
-      "id": "matador1",
-      "title": "Matador 1",
-      "description": "Temp info for Matador 1",
-      "lat": 34.23796594969169,
-      "lng": -118.53662856651358,
-      "image": "lib/Assets/KC310124-27.jpg"
-    },
-    {
-      "id": "matador2",
-      "title": "Matador 2",
-      "description": "Temp info for Matador 2",
-      "lat": 34.23982826085725,
-      "lng": -118.52539003612064,
-      "image": "lib/Assets/KC310124-27.jpg"
-    },
-    {
-      "id": "matador3",
-      "title": "Matador 3",
-      "description": "Temp info for Matador 3",
-      "lat": 34.24131729261727,
-      "lng": -118.5296862650247,
-      "image": "lib/Assets/KC310124-27.jpg"
-    }
-  ]
-  
+  {
+    "id": "matador1",
+    "title": "Matador BBQ Pit",
+    "description": "This is a BBQ Restaurant",
+    "address": "18111 Nordhoff St, Northridge",
+    "rating": 5.0,
+    "reviews": 1243,
+    "genre": "Barbecue",
+    "price": "$$$",
+    "seating": "Indoor",
+    "lat": 34.23796594969169,
+    "lng": -118.53662856651358,
+    "image": "lib/Assets/BBQ.jpg"
+  },
+  {
+    "id": "matador2",
+    "title": "The 818 Eatery",
+    "description": "A small cafe/restaraunt",
+    "address": "18123 Nordhoff St, Northridge",
+    "rating": 4.5,
+    "reviews": 2,
+    "genre": "Cafe/Breakfast",
+    "price": "$$",
+    "seating": "Indoor/Outdoor",
+    "lat": 34.23982826085725,
+    "lng": -118.52539003612064,
+    "image": "lib/Assets/KC310124-27.jpg"
+  },
+  {
+    "id": "matador3",
+    "title": "Northridge Bites",
+    "description": "Cafe with a few food options",
+    "address": "18127 Zelzah Ave, Northridge",
+    "rating": 4.0,
+    "reviews": 498,
+    "genre": "Cafe",
+    "price": "$",
+    "seating": "Indoor/Outdoor",
+    "lat": 34.24131729261727,
+    "lng": -118.5296862650247,
+    "image": "lib/Assets/Bites.jpg"
+  },
+  {
+    "id": "matador4",
+    "title": "Freddy Fazbear's Pizza",
+    "description": "Har har har har har har har har",
+    "address": "18000 Nordhoff St, Northridge",
+    "rating": 1.0,
+    "reviews": 5213,
+    "genre": "Pizzeria",
+    "price": "$",
+    "seating": "Indoor",
+    "lat": 34.2381180947572,
+    "lng": -118.53078391029187,
+    "image": "lib/Assets/Pizza.jpg"
+  },
+  {
+    "id": "matador5",
+    "title": "Beast Burger",
+    "description": "This is a ghost kitchen",
+    "address": "18103 Nordhoff St, Northridge",
+    "rating": 0.5,
+    "reviews": 15,
+    "genre": "Hamburger",
+    "price": "$$$",
+    "seating": "None",
+    "lat": 34.243181956884065,
+    "lng": -118.52853961742417,
+    "image": "lib/Assets/burger1.jpg"
+  },
+  {
+    "id": "matador6",
+    "title": "Burger",
+    "description": "Burga.",
+    "address": "ur mom's house",
+    "rating": 5.0,
+    "reviews": 498000,
+    "genre": "Burger",
+    "price": "$$",
+    "seating": "Indoor (at your mom's house)",
+    "lat": 34.235851007002424,
+    "lng": -118.52350977257075,
+    "image": "lib/Assets/burger2.jpg"
+  }
+]
