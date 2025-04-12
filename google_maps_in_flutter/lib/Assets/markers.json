@@ -2,7 +2,7 @@
     {
       "id": "matador1",
       "title": "Matador 1",
-      "description": "Temp info for Matador 1",
+      "description": "Quick info for Matador 1",
       "lat": 34.23796594969169,
       "lng": -118.53662856651358,
       "image": "lib/Assets/KC310124-27.jpg"
@@ -10,7 +10,7 @@
     {
       "id": "matador2",
       "title": "Matador 2",
-      "description": "Temp info for Matador 2",
+      "description": "Quick info for Matador 2",
       "lat": 34.23982826085725,
       "lng": -118.52539003612064,
       "image": "lib/Assets/KC310124-27.jpg"
@@ -18,7 +18,7 @@
     {
       "id": "matador3",
       "title": "Matador 3",
-      "description": "Temp info for Matador 3",
+      "description": "Quick info for Matador 3",
       "lat": 34.24131729261727,
       "lng": -118.5296862650247,
       "image": "lib/Assets/KC310124-27.jpg"

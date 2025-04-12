@@ -76,16 +76,20 @@ class _MatadorResApp extends State<MatadorResApp> {
               QuickAlert.show(
                 context: context,
                 type: QuickAlertType.info,
+                title: markerData['title'],
                 text: markerData['description'],
                 customAsset: markerData['image'],
                 onConfirmBtnTap: () {
+                  //temp will take you to restraunt page later
                   QuickAlert.show(
                     context: context,
                     type: QuickAlertType.success,
-                    text: 'Temp Screen',
+                    text: 'Temp Screen this should be the restraunt page later',
                   );
                   disablemarker(markerData['id']);
                   //this is where we will add logic to go to the restaraunt page
+                  //TODO: add logic to go to the restaraunt page
+                  //Navigator.push(context, MaterialPageRoute(builder: (context) => RestaurantPage()));
                 },
               );
             },
