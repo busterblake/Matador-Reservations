@@ -71,6 +71,7 @@ flutter:
     - lib/Assets/Pizza.jpg
     - lib/Assets/burger1.jpg
     - lib/Assets/burger2.jpg
+    - lib/Assets/giordanachos.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

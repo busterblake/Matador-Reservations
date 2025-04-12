@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_rating/flutter_rating.dart';
+import 'menu_page.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -141,7 +142,12 @@ class RestaurantCards extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 // Handle button press
-                print('Booked for ${restaurant['title']}');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MenuPage(restaurant: restaurant),
+                  ),
+                );                  
               },
               
               style: ButtonStyle(
