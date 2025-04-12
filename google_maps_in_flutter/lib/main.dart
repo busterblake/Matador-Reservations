@@ -8,8 +8,13 @@ import 'booking_page.dart';
 import 'search_page.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'custom_time_picker.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
 }
 
@@ -27,19 +32,22 @@ class MyApp extends StatelessWidget {
 
 class MatadorResApp extends StatefulWidget {
   const MatadorResApp({super.key});
+
   @override
   _MatadorResApp createState() => _MatadorResApp();
 }
 
 class _MatadorResApp extends State<MatadorResApp> {
   int _currentIndex = 0; // Start with Home/maps
-  String time = '';
+  TimeOfDay? time;
   String partySize = '';
   DateTime? dateSelected;
 
-  String temptime = '';
+  TimeOfDay? temptime;
   String temppartySize = '';
   DateTime? tempdateSelected;
+
+  TimeOfDay? selectedTime;
 
   final LatLng _center = const LatLng(34.240547308790596, -118.52942529186363);
   Set<Marker> _markers = {};
@@ -161,19 +169,33 @@ class _MatadorResApp extends State<MatadorResApp> {
                     tempdateSelected = selectedDate;
                   },
                 ),
-                const SizedBox(height: 10),
-                // time Feild
-                TextFormField(
-                  decoration: const InputDecoration(
-                    alignLabelWithHint: true,
-                    hintText: 'Select Time',
-                    prefixIcon: Icon(Icons.schedule_outlined),
-                  ),
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.phone,
-                  onChanged: (value) => ((temptime = value), (time = value)),
+                const SizedBox(height: 30),
+
+                CustomTimePicker(
+                  selectedTime: selectedTime,
+                  onTimeSelected: (thistime) {
+                    setState(() {
+                      selectedTime = thistime;
+                      temptime = selectedTime;
+                      time = thistime;
+                    });
+                    //Navigator.pop(context);
+                  },
                 ),
-                const SizedBox(height: 10),
+
+                // time Feild
+                // TextFormField(
+                //   decoration: const InputDecoration(
+                //     alignLabelWithHint: true,
+                //     hintText: 'Select Time',
+                //     prefixIcon: Icon(Icons.schedule_outlined),
+                //   ),
+                //   textInputAction: TextInputAction.next,
+                //   keyboardType: TextInputType.phone,
+                //   onChanged: (value) => ((temptime = value), (time = value)),
+                // ),
+                const SizedBox(height: 30),
+                // // Time Picker
 
                 // Party Size Input
                 TextFormField(
@@ -190,7 +212,7 @@ class _MatadorResApp extends State<MatadorResApp> {
               ],
             ),
             onConfirmBtnTap: () async {
-              if (temptime.isEmpty ||
+              if (temptime == null ||
                   temppartySize.isEmpty ||
                   tempdateSelected == null) {
                 await QuickAlert.show(
@@ -206,9 +228,9 @@ class _MatadorResApp extends State<MatadorResApp> {
                   context: context,
                   type: QuickAlertType.success,
                   text:
-                      "Booking saved!\nTime: $time\nParty Size: $partySize\nDate: ${dateSelected!.toLocal().toString().split(' ')[0]}",
+                      "Booking saved!\nTime: ${time?.format(context)}\nParty Size: $partySize\nDate: ${dateSelected!.toLocal().toString().split(' ')[0]}",
                 );
-                temptime = '';
+                temptime = null;
                 temppartySize = '';
                 tempdateSelected = null;
                 return;

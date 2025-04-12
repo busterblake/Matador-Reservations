@@ -44,6 +44,7 @@ dependencies:
   time_range: ^1.1.1
   calendar_day_slot_navigator: ^0.0.1
   location: ^5.0.0
+  firebase_core: ^3.13.0
   
 
 dev_dependencies:
