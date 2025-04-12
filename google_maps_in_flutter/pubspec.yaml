@@ -45,6 +45,7 @@ dependencies:
   calendar_day_slot_navigator: ^0.0.1
   location: ^5.0.0
   firebase_core: ^3.13.0
+  flutter_rating: ^2.0.2
   
 
 dev_dependencies:
@@ -66,6 +67,12 @@ flutter:
   assets:
     - lib/Assets/markers.json
     - lib/Assets/KC310124-27.jpg
+    - lib/Assets/BBQ.jpg
+    - lib/Assets/Bites.jpg
+    - lib/Assets/Pizza.jpg
+    - lib/Assets/burger1.jpg
+    - lib/Assets/burger2.jpg
+    - lib/Assets/giordanachos.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
