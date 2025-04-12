@@ -8,14 +8,18 @@ import 'booking_page.dart';
 import 'search_page.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'custom_time_picker.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -35,16 +39,17 @@ class MatadorResApp extends StatefulWidget {
 
 class _MatadorResApp extends State<MatadorResApp> {
   int _currentIndex = 0; // Start with Home/maps
-  String time = '';
+  TimeOfDay? time;
   String partySize = '';
   DateTime? dateSelected;
 
-  String temptime = '';
+  TimeOfDay? temptime;
   String temppartySize = '';
   DateTime? tempdateSelected;
 
+  TimeOfDay? selectedTime;
+
   final LatLng _center = const LatLng(34.240547308790596, -118.52942529186363);
-  final Map<String, Marker> _markerMap = {};
   Set<Marker> _markers = {};
 
   @override
@@ -56,7 +61,6 @@ class _MatadorResApp extends State<MatadorResApp> {
   Future<void> _loadMarkersFromJson() async {
     final String data = await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> jsonResult = json.decode(data);
-
     Set<Marker> loadedMarkers =
         jsonResult.map((markerData) {
           return Marker(
@@ -93,6 +97,7 @@ class _MatadorResApp extends State<MatadorResApp> {
     });
   }
 
+  //call this funtions to disable the marker if unavailable
   void disablemarker(String markerId) {
     final updatedMarkers =
         _markers.map((marker) {
@@ -164,19 +169,33 @@ class _MatadorResApp extends State<MatadorResApp> {
                     tempdateSelected = selectedDate;
                   },
                 ),
-                const SizedBox(height: 10),
-                // time Feild
-                TextFormField(
-                  decoration: const InputDecoration(
-                    alignLabelWithHint: true,
-                    hintText: 'Select Time',
-                    prefixIcon: Icon(Icons.schedule_outlined),
-                  ),
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.phone,
-                  onChanged: (value) => ((temptime = value), (time = value)),
+                const SizedBox(height: 30),
+
+                CustomTimePicker(
+                  selectedTime: selectedTime,
+                  onTimeSelected: (thistime) {
+                    setState(() {
+                      selectedTime = thistime;
+                      temptime = selectedTime;
+                      time = thistime;
+                    });
+                    //Navigator.pop(context);
+                  },
                 ),
-                const SizedBox(height: 10),
+
+                // time Feild
+                // TextFormField(
+                //   decoration: const InputDecoration(
+                //     alignLabelWithHint: true,
+                //     hintText: 'Select Time',
+                //     prefixIcon: Icon(Icons.schedule_outlined),
+                //   ),
+                //   textInputAction: TextInputAction.next,
+                //   keyboardType: TextInputType.phone,
+                //   onChanged: (value) => ((temptime = value), (time = value)),
+                // ),
+                const SizedBox(height: 30),
+                // // Time Picker
 
                 // Party Size Input
                 TextFormField(
@@ -193,7 +212,7 @@ class _MatadorResApp extends State<MatadorResApp> {
               ],
             ),
             onConfirmBtnTap: () async {
-              if (temptime.isEmpty ||
+              if (temptime == null ||
                   temppartySize.isEmpty ||
                   tempdateSelected == null) {
                 await QuickAlert.show(
@@ -209,9 +228,9 @@ class _MatadorResApp extends State<MatadorResApp> {
                   context: context,
                   type: QuickAlertType.success,
                   text:
-                      "Booking saved!\nTime: $time\nParty Size: $partySize\nDate: ${dateSelected!.toLocal().toString().split(' ')[0]}",
+                      "Booking saved!\nTime: ${time?.format(context)}\nParty Size: $partySize\nDate: ${dateSelected!.toLocal().toString().split(' ')[0]}",
                 );
-                temptime = '';
+                temptime = null;
                 temppartySize = '';
                 tempdateSelected = null;
                 return;
@@ -271,11 +290,12 @@ class _MatadorResApp extends State<MatadorResApp> {
           //pages go in order 0-3 for the bottom bar
           //right now only the maps page works
           GoogleMap(
+            myLocationEnabled: true,
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(target: _center, zoom: 16.0),
             markers: _markers,
-            myLocationEnabled: false,
-            zoomControlsEnabled: false,
+            myLocationButtonEnabled: true,
+            //zoomControlsEnabled: true,
           ),
 
           // this is where you would add the other pages for the bottom bar
@@ -289,10 +309,10 @@ class _MatadorResApp extends State<MatadorResApp> {
   }
 }
 
-class saveReservationData {
+class SaveReservationData {
   //used to save data to user prefts
 }
 
-class loadReservationData {
+class LoadReservationData {
   //used to load data from user prefs
 }
