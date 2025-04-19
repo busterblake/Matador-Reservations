@@ -322,7 +322,6 @@ class _MatadorResApp extends State<MatadorResApp> {
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(target: _center, zoom: 16.0),
             markers: _markers,
-            myLocationButtonEnabled: true,
             //zoomControlsEnabled: true,
             myLocationButtonEnabled: false 
           ),
