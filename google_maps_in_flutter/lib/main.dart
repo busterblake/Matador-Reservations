@@ -11,7 +11,7 @@ import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
 //needed for firebase and login
 import 'package:firebase_core/firebase_core.dart';
 
-Future<void> main() async{
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
@@ -301,4 +301,3 @@ class saveReservationData {
 class loadReservationData {
   //used to load data from user prefs
 }
-
