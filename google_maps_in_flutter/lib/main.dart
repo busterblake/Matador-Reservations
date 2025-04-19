@@ -120,6 +120,33 @@ class _MatadorResApp extends State<MatadorResApp> {
     });
   }
 
+  //call this function to enable the marker if available
+  void enablemarker(String markerId) {
+    final updatedMarkers =
+        _markers.map((marker) {
+          if (marker.markerId.value == markerId) {
+            return marker.copyWith(
+              iconParam: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueViolet,
+              ),
+            );
+          }
+          return marker;
+        }).toSet();
+
+    setState(() {
+      _markers = updatedMarkers;
+    });
+  }
+
+  void checkmarkers() {
+    // check firebase for reservations
+    // if there is a reservation, disable the marker
+    // if they is no reservation, enable the marker
+    // disablemarker(_markers.first.markerId.value);
+    // enablemarker(_markers.first.markerId.value);
+  }
+
   final PageController _pageController = PageController(initialPage: 0);
   late GoogleMapController mapController;
 
@@ -214,6 +241,7 @@ class _MatadorResApp extends State<MatadorResApp> {
                 );
                 return;
               } else {
+                checkmarkers();
                 Navigator.pop(context);
                 await Future.delayed(const Duration(milliseconds: 500));
                 await QuickAlert.show(
