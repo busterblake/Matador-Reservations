@@ -68,6 +68,7 @@ class _MatadorResApp extends State<MatadorResApp> {
   Future<void> _loadMarkersFromJson() async {
     final String data = await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> jsonResult = json.decode(data);
+  
     Set<Marker> loadedMarkers =
         jsonResult.map((markerData) {
           return Marker(
@@ -162,12 +163,14 @@ class _MatadorResApp extends State<MatadorResApp> {
     _pageController.dispose();
     super.dispose();
   }
+
   Future<void>
   saveReservationToFile(saveReservationData) async {
      // try{
        // final directory = await
       //}
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -208,6 +211,7 @@ class _MatadorResApp extends State<MatadorResApp> {
                     tempdateSelected = selectedDate;
                   },
                 ),
+
                 const SizedBox(height: 30),
                 // Time Picker
                 CustomTimePicker(
