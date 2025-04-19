@@ -3,6 +3,11 @@
         android:label="google_maps_in_flutter"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD3zQ_5WEp2BgGgnuczyxhk1uhObcW59tg"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -19,6 +24,7 @@
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
+              android:value = "AIzaSyD3zQ_5WEp2BgGgnuczyxhk1uhObcW59tg"
               />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

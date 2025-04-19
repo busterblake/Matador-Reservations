@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_rating/flutter_rating.dart';
+import 'menu_page.dart';
+
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -11,6 +13,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+
   final TextEditingController _searchController = TextEditingController();
 
   List<Map<String, dynamic>> _restaurants = [];
@@ -22,31 +25,25 @@ class _SearchPageState extends State<SearchPage> {
     _loadRestaurants();
     _searchController.addListener(() {
       setState(() {
-        _filteredRestaurants =
-            _restaurants
-                .where(
-                  (restaurant) =>
-                      restaurant['title'] != null &&
-                      restaurant['title'].toLowerCase().contains(
-                        _searchController.text.toLowerCase(),
-                      ),
-                )
-                .toList();
+
+        _filteredRestaurants = _restaurants
+          .where((restaurant) => restaurant['title'] != null && restaurant['title']
+          .toLowerCase()
+          .contains(_searchController.text.toLowerCase()))
+          .toList();
       });
     });
   }
 
   Future<void> _loadRestaurants() async {
-    final String data = await rootBundle.loadString(
-      '/Users/blakemosley/Documents/GitHub/Matador-Reservations/google_maps_in_flutter/lib/Assets/markers.json',
-    );
+
+    final String data = await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> jsonResult = json.decode(data);
     setState(() {
-      _restaurants =
-          jsonResult
-              .cast<Map<String, dynamic>>()
-              .where((restaurant) => restaurant['title'] != null)
-              .toList();
+      _restaurants = jsonResult
+          .cast<Map<String, dynamic>>()
+          .where((restaurant) => restaurant['title'] != null)
+          .toList();
       _filteredRestaurants = _restaurants;
     });
   }
@@ -59,28 +56,35 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          SearchBar(searchController: _searchController),
 
-          Expanded(
-            child: ListView.builder(
-              itemCount: _filteredRestaurants.length,
-              itemBuilder: (context, index) {
-                final restaurant = _filteredRestaurants[index];
-                return RestaurantCards(restaurant: restaurant);
-              },
-            ),
-          ),
-        ],
-      ),
+    return Scaffold(
+      body:
+        Column(
+          children: [
+            SearchBar(searchController: _searchController),
+
+            Expanded(
+              child: ListView.builder(
+                itemCount: _filteredRestaurants.length,
+                itemBuilder: (context, index) {
+                  final restaurant = _filteredRestaurants[index];
+                  return RestaurantCards(restaurant: restaurant);
+                },
+              ),
+            )
+          ],
+        ),
+
     );
   }
 }
 
 class RestaurantCards extends StatelessWidget {
-  const RestaurantCards({super.key, required this.restaurant});
+
+  const RestaurantCards({
+    super.key,
+    required this.restaurant,
+  });
 
   final Map<String, dynamic> restaurant;
 
@@ -93,10 +97,9 @@ class RestaurantCards extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
-            title: Text(
-              '${restaurant['title']}',
-              style: const TextStyle(fontSize: 18.0),
-            ),
+
+            title: Text('${restaurant['title']}', style: const TextStyle(fontSize: 18.0)),
+
             subtitle: Row(
               children: [
                 Column(
@@ -137,58 +140,64 @@ class RestaurantCards extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
+                )
               ],
-            ),
+            )
+
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 3.0),
             child: ElevatedButton(
               onPressed: () {
                 // Handle button press
-                print('Booked for ${restaurant['title']}');
-              },
 
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MenuPage(restaurant: restaurant),
+                  ),
+                );                  
+              },
+              
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
                 foregroundColor: WidgetStateProperty.all<Color>(Colors.pink),
-                minimumSize: WidgetStateProperty.all<Size>(
-                  const Size(double.infinity, 45.0),
-                ),
+                minimumSize: WidgetStateProperty.all<Size>(const Size(double.infinity, 45.0)),
                 shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    side: const BorderSide(
-                      color: Color.fromARGB(255, 200, 200, 200),
-                      width: 1.5,
-                    ),
+                    side: const BorderSide(color: Color.fromARGB(255, 200, 200, 200), width: 1.5),
+
                   ),
                 ),
               ),
               child: const Text('Book Now', style: TextStyle(fontSize: 16.0)),
             ),
-          ),
+
+          )
         ],
-      ),
+      )
+
     );
   }
 }
 
 class SearchBar extends StatelessWidget {
-  const SearchBar({super.key, required TextEditingController searchController})
-    : _searchController = searchController;
+
+  const SearchBar({
+    super.key,
+    required TextEditingController searchController,
+  }) : _searchController = searchController;
+
 
   final TextEditingController _searchController;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        top: 30.0,
-        left: 8.0,
-        right: 8.0,
-        bottom: 0,
-      ),
+
+      padding: const EdgeInsets.only(top: 30.0, left: 8.0, right: 8.0, bottom: 0),
+
       child: TextField(
         controller: _searchController,
         decoration: InputDecoration(
@@ -197,12 +206,14 @@ class SearchBar extends StatelessWidget {
             icon: Icon(Icons.clear),
             onPressed: () => _searchController.clear(),
           ),
-
+ 
           prefixIcon: Icon(Icons.search),
-
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
-        ),
-      ),
+        
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          )
+        )
+      )
     );
   }
 }

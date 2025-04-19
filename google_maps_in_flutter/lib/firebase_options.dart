@@ -47,30 +47,30 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCPLY_nMp9Sbpv9gUlx9k5GB5NWpIP1dUY',
-    appId: '1:197262601504:web:8a409f9b23bc7ce28abb45',
-    messagingSenderId: '197262601504',
-    projectId: 'restaurant-85689',
-    authDomain: 'restaurant-85689.firebaseapp.com',
-    storageBucket: 'restaurant-85689.firebasestorage.app',
-    measurementId: 'G-J4KV38QH2X',
+    apiKey: 'AIzaSyDWlBe-8scWm4Zb6W1nmNtH3QZSt3LMrT0',
+    appId: '1:848467584016:web:b0909e0eda21e6911ad695',
+    messagingSenderId: '848467584016',
+    projectId: 'restaurant-project-237e9',
+    authDomain: 'restaurant-project-237e9.firebaseapp.com',
+    storageBucket: 'restaurant-project-237e9.firebasestorage.app',
+    measurementId: 'G-PPN6K3RV79',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBrCN1uJcvNFFKLc02PhMcDlVltig9rnKg',
-    appId: '1:197262601504:android:f1afa0086b97de828abb45',
-    messagingSenderId: '197262601504',
-    projectId: 'restaurant-85689',
-    storageBucket: 'restaurant-85689.firebasestorage.app',
+    apiKey: 'AIzaSyBkZ1r1ne_7-Wr9Grx-UB_6lJDIGE6Cz-s',
+    appId: '1:848467584016:android:d3bd5f553074e42a1ad695',
+    messagingSenderId: '848467584016',
+    projectId: 'restaurant-project-237e9',
+    storageBucket: 'restaurant-project-237e9.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCdHwzkVM7KfnvcPFA07FlhKVLfyAV4mwQ',
-    appId: '1:197262601504:ios:228d7659241c05088abb45',
-    messagingSenderId: '197262601504',
-    projectId: 'restaurant-85689',
-    storageBucket: 'restaurant-85689.firebasestorage.app',
+    apiKey: 'AIzaSyCNXB9CzS3WWlhCJ9VFLoFxqiSYpkXdEkA',
+    appId: '1:848467584016:ios:d118c18a0fdcf8cb1ad695',
+    messagingSenderId: '848467584016',
+    projectId: 'restaurant-project-237e9',
+    storageBucket: 'restaurant-project-237e9.firebasestorage.app',
+    iosClientId: '848467584016-iloln4s9oqurqa4vi1bvi446ddgjj3b0.apps.googleusercontent.com',
     iosBundleId: 'com.example.googleMapsInFlutter',
   );
-
 }

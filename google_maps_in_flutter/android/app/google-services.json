@@ -1,26 +1,85 @@
 {
   "project_info": {
-    "project_number": "197262601504",
-    "project_id": "restaurant-85689",
-    "storage_bucket": "restaurant-85689.firebasestorage.app"
+    "project_number": "848467584016",
+    "project_id": "restaurant-project-237e9",
+    "storage_bucket": "restaurant-project-237e9.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:197262601504:android:f1afa0086b97de828abb45",
+        "mobilesdk_app_id": "1:848467584016:android:d3bd5f553074e42a1ad695",
         "android_client_info": {
           "package_name": "com.example.google_maps_in_flutter"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "848467584016-k13ca3nmo0drpr620o319o6tl46qvug1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyBrCN1uJcvNFFKLc02PhMcDlVltig9rnKg"
+          "current_key": "AIzaSyBkZ1r1ne_7-Wr9Grx-UB_6lJDIGE6Cz-s"
+        },
+        {
+          "current_key": "AIzaSyD9lODPuH-ELJzGhPKNqM2pL6LHkd61lVs"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "848467584016-k13ca3nmo0drpr620o319o6tl46qvug1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "848467584016-om2ji27pqvjr8l8ekjm9rs7sl2oiatll.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.matadorReservations"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:848467584016:android:f6583b2f3bd6f5111ad695",
+        "android_client_info": {
+          "package_name": "com.example.matador_reservations"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "848467584016-k13ca3nmo0drpr620o319o6tl46qvug1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkZ1r1ne_7-Wr9Grx-UB_6lJDIGE6Cz-s"
+        },
+        {
+          "current_key": "AIzaSyD9lODPuH-ELJzGhPKNqM2pL6LHkd61lVs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "848467584016-k13ca3nmo0drpr620o319o6tl46qvug1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "848467584016-om2ji27pqvjr8l8ekjm9rs7sl2oiatll.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.matadorReservations"
+              }
+            }
+          ]
         }
       }
     }

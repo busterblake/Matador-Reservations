@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  path_provider: ^2.1.1
   flutter:
     sdk: flutter
 
@@ -48,6 +49,7 @@ dependencies:
   flutter_rating: ^2.0.2
   firebase_auth: ^5.5.2
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -65,15 +67,15 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-      - lib/Assets/markers.json
-      - lib/Assets/KC310124-27.jpg
-      - lib/Assets/BBQ.jpg
-      - lib/Assets/Bites.jpg
-      - lib/Assets/Pizza.jpg
-      - lib/Assets/burger1.jpg
-      - lib/Assets/burger2.jpg
-      - lib/Assets/giordanachos.png
-      
+    - lib/Assets/markers.json
+    - lib/Assets/KC310124-27.jpg
+    - lib/Assets/BBQ.jpg
+    - lib/Assets/Bites.jpg
+    - lib/Assets/Pizza.jpg
+    - lib/Assets/burger1.jpg
+    - lib/Assets/burger2.jpg
+    - lib/Assets/giordanachos.png
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

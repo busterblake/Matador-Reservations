@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'profile_page_loggedin.dart';
 
+
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
@@ -130,4 +131,3 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
-}
