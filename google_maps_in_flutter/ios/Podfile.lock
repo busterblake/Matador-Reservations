@@ -75,7 +75,7 @@ SPEC CHECKSUMS:
   FirebaseCoreInternal: ef4505d2afb1d0ebbc33162cb3795382904b5679
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   Google-Maps-iOS-Utils: 0a484b05ed21d88c9f9ebbacb007956edd508a96
-  google_maps_flutter_ios: e31555a04d1986ab130f2b9f24b6cdc861acc6d3
+  google_maps_flutter_ios: 0291eb2aa252298a769b04d075e4a9d747ff7264
   GoogleMaps: 0608099d4870cac8754bdba9b6953db543432438
   GoogleUtilities: 26a3abef001b6533cf678d3eb38fd3f614b7872d
   location: d5cf8598915965547c3f36761ae9cc4f4e87d22e

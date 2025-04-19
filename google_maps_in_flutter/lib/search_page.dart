@@ -4,6 +4,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_rating/flutter_rating.dart';
 import 'menu_page.dart';
 
+
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 
@@ -50,7 +51,6 @@ class _SearchPageState extends State<SearchPage> {
     _searchController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
 

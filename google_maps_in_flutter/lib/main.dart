@@ -13,6 +13,7 @@ import 'firebase_options.dart';
 import 'custom_time_picker.dart';
 import 'menu_page.dart';
 
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -21,6 +22,7 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -51,6 +53,7 @@ class _MatadorResApp extends State<MatadorResApp> {
   TimeOfDay? selectedTime;
 
   final LatLng _center = const LatLng(34.240547308790596, -118.52942529186363);
+  final Map<String, Marker> _markerMap = {};
   Set<Marker> _markers = {};
 
   List<Map<String, dynamic>> _restaurants = [];
@@ -159,7 +162,12 @@ class _MatadorResApp extends State<MatadorResApp> {
     _pageController.dispose();
     super.dispose();
   }
-
+  Future<void>
+  saveReservationToFile(saveReservationData) async {
+     // try{
+       // final directory = await
+      //}
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -302,7 +310,7 @@ class _MatadorResApp extends State<MatadorResApp> {
           });
           _pageController.jumpToPage(index);
         },
-      ),
+      ), 
       body: PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
@@ -316,6 +324,7 @@ class _MatadorResApp extends State<MatadorResApp> {
             markers: _markers,
             myLocationButtonEnabled: true,
             //zoomControlsEnabled: true,
+            myLocationButtonEnabled: false 
           ),
 
           // this is where you would add the other pages for the bottom bar
