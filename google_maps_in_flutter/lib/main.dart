@@ -10,11 +10,14 @@ import 'search_page.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
 
+
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -26,6 +29,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MatadorResApp extends StatefulWidget {
+  const MatadorResApp({super.key});
+
   @override
   _MatadorResApp createState() => _MatadorResApp();
 }
@@ -41,7 +46,7 @@ class _MatadorResApp extends State<MatadorResApp> {
   DateTime? tempdateSelected;
 
   final LatLng _center = const LatLng(34.240547308790596, -118.52942529186363);
-  Map<String, Marker> _markerMap = {};
+  final Map<String, Marker> _markerMap = {};
   Set<Marker> _markers = {};
 
   @override
@@ -120,7 +125,12 @@ class _MatadorResApp extends State<MatadorResApp> {
     _pageController.dispose();
     super.dispose();
   }
-
+  Future<void>
+  saveReservationToFile(saveReservationData) async {
+     // try{
+       // final directory = await
+      //}
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -213,7 +223,6 @@ class _MatadorResApp extends State<MatadorResApp> {
                 tempdateSelected = null;
                 return;
               }
-              ;
             },
           );
         },
@@ -261,7 +270,7 @@ class _MatadorResApp extends State<MatadorResApp> {
           });
           _pageController.jumpToPage(index);
         },
-      ),
+      ), 
       body: PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
@@ -272,6 +281,7 @@ class _MatadorResApp extends State<MatadorResApp> {
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(target: _center, zoom: 16.0),
             markers: _markers,
+            myLocationButtonEnabled: false 
           ),
 
           // this is where you would add the other pages for the bottom bar
