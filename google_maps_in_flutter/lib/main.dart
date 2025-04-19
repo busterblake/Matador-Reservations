@@ -6,11 +6,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'profile_page.dart';
 import 'booking_page.dart';
 import 'search_page.dart';
-import 'package:quickalert/quickalert.dart';
+import 'package:quickalert/quickalert.dart'; // import for QuickAlerts
 import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'custom_time_picker.dart';
+import 'menu_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +53,9 @@ class _MatadorResApp extends State<MatadorResApp> {
   final LatLng _center = const LatLng(34.240547308790596, -118.52942529186363);
   Set<Marker> _markers = {};
 
+  List<Map<String, dynamic>> _restaurants = [];
+  List<Map<String, dynamic>> _filteredRestaurants = [];
+
   @override
   void initState() {
     super.initState();
@@ -70,26 +74,22 @@ class _MatadorResApp extends State<MatadorResApp> {
               BitmapDescriptor.hueViolet,
             ),
             onTap: () {
-              //custom pop up the marker
-              //should show the restraunt info with a button to make a reservation
-              //temp will nbe the info popup
               QuickAlert.show(
                 context: context,
                 type: QuickAlertType.info,
                 title: markerData['title'],
                 text: markerData['description'],
                 customAsset: markerData['image'],
+                confirmBtnText: "View Menu",
+                confirmBtnColor: Colors.pink,
                 onConfirmBtnTap: () {
-                  //temp will take you to restraunt page later
-                  QuickAlert.show(
-                    context: context,
-                    type: QuickAlertType.success,
-                    text: 'Temp Screen this should be the restraunt page later',
+                  //navigate to the menu page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MenuPage(restaurant: markerData),
+                    ),
                   );
-                  disablemarker(markerData['id']);
-                  //this is where we will add logic to go to the restaraunt page
-                  //TODO: add logic to go to the restaraunt page
-                  //Navigator.push(context, MaterialPageRoute(builder: (context) => RestaurantPage()));
                 },
               );
             },
@@ -174,7 +174,7 @@ class _MatadorResApp extends State<MatadorResApp> {
                   },
                 ),
                 const SizedBox(height: 30),
-
+                // Time Picker
                 CustomTimePicker(
                   selectedTime: selectedTime,
                   onTimeSelected: (thistime) {
@@ -187,19 +187,7 @@ class _MatadorResApp extends State<MatadorResApp> {
                   },
                 ),
 
-                // time Feild
-                // TextFormField(
-                //   decoration: const InputDecoration(
-                //     alignLabelWithHint: true,
-                //     hintText: 'Select Time',
-                //     prefixIcon: Icon(Icons.schedule_outlined),
-                //   ),
-                //   textInputAction: TextInputAction.next,
-                //   keyboardType: TextInputType.phone,
-                //   onChanged: (value) => ((temptime = value), (time = value)),
-                // ),
                 const SizedBox(height: 30),
-                // // Time Picker
 
                 // Party Size Input
                 TextFormField(

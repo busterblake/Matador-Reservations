@@ -33,7 +33,10 @@ class MenuPage extends StatelessWidget {
                 children: [
                   Text(
                     restaurant['title'],
-                    style: const TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 32.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Row(
                     children: [
@@ -43,8 +46,10 @@ class MenuPage extends StatelessWidget {
                         size: 25.0,
                       ),
                       SizedBox(width: 8.0),
-                      Text('${restaurant['reviews']} reviews',
-                          style: const TextStyle(fontSize: 16.0)),
+                      Text(
+                        '${restaurant['reviews']} reviews',
+                        style: const TextStyle(fontSize: 16.0),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 4.0),
@@ -73,45 +78,30 @@ class MenuPage extends StatelessWidget {
                     style: const TextStyle(fontSize: 24.0),
                   ),
                   const SizedBox(height: 8.0),
-                  Text('Menu',
-                      style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Menu',
+                    style: const TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   Divider(
                     color: Colors.grey[500],
                     thickness: 1.0,
                     height: 10.0,
                   ),
                   const SizedBox(height: 8.0),
+                  Text("Test"),
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: restaurant['menu'].length,
                     itemBuilder: (context, index) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                restaurant['menu'][index]['name'],
-                                style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                              ),
-                              const Spacer(),
-                              Text(
-                                '\$${restaurant['menu'][index]['price']}',
-                                style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            restaurant['menu'][index]['description'],
-                            style: const TextStyle(fontSize: 16.0),
-                          ),
-                          Divider(
-                            color: Colors.grey[500],
-                            thickness: 1.0,
-                            height: 12.0,
-                          ),
-                        ],
+                      final menuItem = restaurant['menu'][index];
+                      return ListTile(
+                        title: Text(menuItem['name']),
+                        subtitle: Text(menuItem['description']),
+                        trailing: Text('\$${menuItem['price']}'),
                       );
                     },
                   ),
