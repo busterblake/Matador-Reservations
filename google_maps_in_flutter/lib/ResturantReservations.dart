@@ -4,6 +4,9 @@ import 'dart:ui';
 import 'dart:convert';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 import 'ReservationData.dart';
+import 'addReservation.dart';
+import 'search_page.dart';
+import 'profile_page.dart';
 
 class Resturantreservations extends StatefulWidget {
 
@@ -16,14 +19,20 @@ class Resturantreservations extends StatefulWidget {
 }
 
 class ResturantReservationState extends State<Resturantreservations>{
-   
+   int myIndex = 0;
    List<Reservation> data =List.from(reservations);
+   final PageController _pageController = PageController(initialPage: 0);
+
+   @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
    @override
    Widget build(BuildContext context) {
     return Scaffold(
       
-      body: 
-      Center(child: tableUI(),),
+      
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: StylishBottomBar(
@@ -62,13 +71,25 @@ class ResturantReservationState extends State<Resturantreservations>{
             unSelectedColor: Colors.grey,
           ),
         ],
-       /* onTap: (index) {
+        onTap: (index) {
           setState(() {
-            _currentIndex = index;
+            myIndex = index;
           });
           _pageController.jumpToPage(index);
-        },*/
+        },
       ), 
+      body: PageView(
+        controller: _pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        children: [
+          
+        Center(child: tableUI(),),
+        
+          const SearchPage(), // Index 1
+          const Addreservation(), // Index 2
+          const ProfilePage(), // Index 3
+        ],
+      ),
 
     );
   }
