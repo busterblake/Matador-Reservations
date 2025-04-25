@@ -3,6 +3,7 @@
     "id": "matador1",
     "title": "Matador BBQ Pit",
     "description": "This is a BBQ Restaurant",
+    "summary": "A Down-to-Earth BBQ Joint serving up classic BBQ meals in a casual setting.",
     "address": "18111 Nordhoff St, Northridge",
     "rating": 5.0,
     "reviews": 1243,
@@ -11,12 +12,63 @@
     "seating": "Indoor",
     "lat": 34.23796594969169,
     "lng": -118.53662856651358,
-    "image": "lib/Assets/BBQ.jpg"
+    "image": "lib/Assets/BBQ.jpg",
+    "layout": [
+      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
+      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
+      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
+      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
+    ],
+    "menu": [
+      {
+        "name": "BBQ Chicken",
+        "price": 12.99,
+        "description": "Grilled chicken with BBQ sauce."
+      },
+      {
+        "name": "Pulled Pork Sandwich",
+        "price": 10.99,
+        "description": "Slow-cooked pulled pork on a bun."
+      },
+      {
+        "name": "Ribs",
+        "price": 15.99,
+        "description": "Tender ribs with house-made BBQ sauce."
+      },
+      {
+        "name": "Brisket Platter",
+        "price": 18.99,
+        "description": "Smoked brisket served with sides."
+      },
+      {
+        "name": "Cornbread",
+        "price": 3.99,
+        "description": "Sweet cornbread served with butter."
+      },
+      {
+        "name": "Coleslaw",
+        "price": 2.99,
+        "description": "Creamy coleslaw with shredded cabbage and carrots."
+      },
+      {
+        "name": "BBQ Beans",
+        "price": 3.99,
+        "description": "Baked beans with BBQ sauce."
+      },
+      {
+        "name": "Mac and Cheese",
+        "price": 4.99,
+        "description": "Creamy macaroni and cheese."
+      }
+    ]
   },
   {
     "id": "matador2",
     "title": "The 818 Eatery",
     "description": "A small cafe/restaraunt",
+    "summary": "A cozy cafe with a few food options and a great place to relax.",
     "address": "18123 Nordhoff St, Northridge",
     "rating": 4.5,
     "reviews": 2,
@@ -25,12 +77,60 @@
     "seating": "Indoor/Outdoor",
     "lat": 34.23982826085725,
     "lng": -118.52539003612064,
-    "image": "lib/Assets/KC310124-27.jpg"
+    "image": "lib/Assets/KC310124-27.jpg",
+    "layout": [
+      { "id": "table1", "x": 50, "y": 50, "width": 50, "height": 50, "available": true },
+      { "id": "table2", "x": 150, "y": 50, "width": 50, "height": 50, "available": false },
+      { "id": "table3", "x": 100, "y": 150, "width": 50, "height": 50, "available": true }
+    ],
+    "menu": [
+      {
+        "name": "Breakfast Burrito",
+        "price": 8.99,
+        "description": "Eggs, cheese, and salsa in a tortilla."
+      },
+      {
+        "name": "Avocado Toast",
+        "price": 7.99,
+        "description": "Smashed avocado on toasted bread."
+      },
+      {
+        "name": "Iced Coffee",
+        "price": 3.99,
+        "description": "Chilled coffee with milk and sugar."
+      },
+      {
+        "name": "Fruit Salad",
+        "price": 5.99,
+        "description": "Fresh seasonal fruit salad."
+      },
+      {
+        "name": "Caesar Salad",
+        "price": 6.99,
+        "description": "Romaine lettuce, croutons, and Caesar dressing."
+      },
+      {
+        "name": "Pancakes",
+        "price": 6.99,
+        "description": "Fluffy pancakes served with syrup."
+      },
+      {
+        "name": "French Toast",
+        "price": 7.99,
+        "description": "Thick slices of bread dipped in egg and grilled."
+      },
+      {
+        "name": "Omelette",
+        "price": 9.99,
+        "description": "Egg omelette with cheese and veggies."
+      }
+    ]
   },
   {
     "id": "matador3",
     "title": "Northridge Bites",
     "description": "Cafe with a few food options",
+    "summary": "A small cafe with a few food options and a great place to relax.",
     "address": "18127 Zelzah Ave, Northridge",
     "rating": 4.0,
     "reviews": 498,
@@ -39,12 +139,60 @@
     "seating": "Indoor/Outdoor",
     "lat": 34.24131729261727,
     "lng": -118.5296862650247,
-    "image": "lib/Assets/Bites.jpg"
+    "image": "lib/Assets/Bites.jpg",
+    "layout": [
+      { "id": "table1", "x": 50, "y": 50, "width": 50, "height": 50, "available": true },
+      { "id": "table2", "x": 150, "y": 50, "width": 50, "height": 50, "available": false },
+      { "id": "table3", "x": 100, "y": 150, "width": 50, "height": 50, "available": true }
+    ],
+    "menu": [
+      {
+        "name": "Veggie Wrap",
+        "price": 6.99,
+        "description": "Fresh veggies wrapped in a tortilla."
+      },
+      {
+        "name": "Fruit Smoothie",
+        "price": 4.99,
+        "description": "Blended fruit smoothie with yogurt."
+      },
+      {
+        "name": "Chili Cheese Fries",
+        "price": 5.99,
+        "description": "Fries topped with chili and cheese."
+      },
+      {
+        "name": "Breakfast Sandwich",
+        "price": 7.99,
+        "description": "Egg, cheese, and bacon on a bagel."
+      },
+      {
+        "name": "Iced Latte",
+        "price": 4.49,
+        "description": "Chilled espresso with milk and ice."
+      },
+      {
+        "name": "Bagel with Cream Cheese",
+        "price": 2.99,
+        "description": "Toasted bagel with cream cheese."
+      },
+      {
+        "name": "Croissant",
+        "price": 3.49,
+        "description": "Flaky croissant pastry."
+      },
+      {
+        "name": "Muffin",
+        "price": 2.49,
+        "description": "Freshly baked muffin."
+      }
+    ]
   },
   {
     "id": "matador4",
     "title": "Freddy Fazbear's Pizza",
     "description": "Har har har har har har har har",
+    "summary": "A family-friendly pizzeria with animatronic mascots, arcade games, and a fun atmosphere!",
     "address": "18000 Nordhoff St, Northridge",
     "rating": 1.0,
     "reviews": 5213,
@@ -53,26 +201,184 @@
     "seating": "Indoor",
     "lat": 34.2381180947572,
     "lng": -118.53078391029187,
-    "image": "lib/Assets/Pizza.jpg"
+    "image": "lib/Assets/Pizza.jpg",
+    "layout": [
+      { "id": "table1", "x": 50, "y": 50, "width": 50, "height": 50, "available": true },
+      { "id": "table2", "x": 150, "y": 50, "width": 50, "height": 50, "available": false },
+      { "id": "table3", "x": 100, "y": 150, "width": 50, "height": 50, "available": true }
+    ],
+    "menu": [
+      {
+        "name": "Cheese Pizza",
+        "price": 9.99,
+        "description": "Classic cheese pizza with marinara sauce."
+      },
+      {
+        "name": "Pepperoni Pizza",
+        "price": 10.99,
+        "description": "Pepperoni pizza with mozzarella cheese."
+      },
+      {
+        "name": "Veggie Pizza",
+        "price": 11.99,
+        "description": "Pizza topped with fresh vegetables."
+      },
+      {
+        "name": "Garlic Knots",
+        "price": 5.99,
+        "description": "Garlic knots served with marinara sauce."
+      },
+      {
+        "name": "Caesar Salad",
+        "price": 6.99,
+        "description": "Romaine lettuce, croutons, and Caesar dressing."
+      },
+      {
+        "name": "Buffalo Wings",
+        "price": 8.99,
+        "description": "Spicy buffalo wings served with ranch dressing."
+      },
+      {
+        "name": "Desert Pizza",
+        "price": 12.99,
+        "description": "Pizza topped with chocolate and marshmallows."
+      },
+      {
+        "name": "Soda",
+        "price": 1.99,
+        "description": "Soft drink of your choice."
+      }
+    ]
   },
   {
     "id": "matador5",
     "title": "Beast Burger",
     "description": "This is a ghost kitchen",
+    "summary": "A ghost kitchen serving up burgers and fries, available for delivery only.",
     "address": "18103 Nordhoff St, Northridge",
     "rating": 0.5,
     "reviews": 15,
     "genre": "Hamburger",
     "price": "$$$",
-    "seating": "None",
+    "seating": "No Seating",
     "lat": 34.243181956884065,
     "lng": -118.52853961742417,
-    "image": "lib/Assets/burger1.jpg"
+    "image": "lib/Assets/burger1.jpg",
+    "layout": [
+      { "id": "table1", "x": 50, "y": 50, "width": 50, "height": 50, "available": true },
+      { "id": "table2", "x": 150, "y": 50, "width": 50, "height": 50, "available": false },
+      { "id": "table3", "x": 100, "y": 150, "width": 50, "height": 50, "available": true }
+    ],
+    "menu": [
+      {
+        "name": "Classic Burger",
+        "price": 8.99,
+        "description": "Juicy beef patty with lettuce and tomato."
+      },
+      {
+        "name": "Cheeseburger",
+        "price": 9.99,
+        "description": "Beef patty with cheese, lettuce, and tomato."
+      },
+      {
+        "name": "Fries",
+        "price": 3.99,
+        "description": "Crispy fries served with ketchup."
+      },
+      {
+        "name": "Onion Rings",
+        "price": 4.99,
+        "description": "Crispy onion rings served with ranch."
+      },
+      {
+        "name": "Milkshake",
+        "price": 5.99,
+        "description": "Thick milkshake in various flavors."
+      },
+      {
+        "name": "Chicken Sandwich",
+        "price": 10.99,
+        "description": "Crispy chicken sandwich with lettuce and mayo."
+      },
+      {
+        "name": "Veggie Burger",
+        "price": 8.99,
+        "description": "Vegetarian burger with lettuce and tomato."
+      },
+      {
+        "name": "Salad",
+        "price": 6.99,
+        "description": "Fresh salad with mixed greens and dressing."
+      }
+    ]
   },
   {
     "id": "matador6",
+    "title": "Giordanacho's",
+    "description": "Italian nacho fusion, they just throw spaghetti on top of nachos",
+    "summary": "Classic Italian Kitchen serving up Italian Mexican dishes. The head chef does NOT know how to cook.",
+    "address": "18401 Nordhoff St, Northridge",
+    "rating": 2.5,
+    "reviews": 15,
+    "genre": "Italian Mexican",
+    "price": "$$",
+    "seating": "Indoor (Food Court)",
+    "lat": 34.2357274106314,
+    "lng": -118.53403046268451,
+    "image": "lib/Assets/giordanachos.png",
+    "layout": [
+      { "id": "table1", "x": 50, "y": 50, "width": 50, "height": 50, "available": true },
+      { "id": "table2", "x": 150, "y": 50, "width": 50, "height": 50, "available": false },
+      { "id": "table3", "x": 100, "y": 150, "width": 50, "height": 50, "available": true }
+    ],
+    "menu": [
+      {
+        "name": "Nacho Mama's Spaghetti",
+        "price": 13.99,
+        "description": "Spaghetti topped with nacho cheese and jalapenos."
+      },
+      {
+        "name": "Classic Spaghachos",
+        "price": 15.99,
+        "description": "Nachos topped with spaghetti, marinara sauce, and mozzarella cheese."
+      },
+      {
+        "name": "Alfre-Don Julio Crunchip XXL",
+        "price": 49.99,
+        "description": "An oversized plate of nachos topped with Alfredo sauce, ground beef, and jalapenos."
+      },
+      {
+        "name": "Torta-llini",
+        "price": 5.99,
+        "description": "Nachos topped with tortellini and marinara sauce."
+      },
+      {
+        "name": "Pastaquitos",
+        "price": 7.99,
+        "description": "Nachos topped with pasta and cheese."
+      },
+      {
+        "name": "Spaghetti Fries",
+        "price": 4.99,
+        "description": "Fries topped with spaghetti and marinara sauce."
+      },
+      {
+        "name": "Nacho Pizza",
+        "price": 12.99,
+        "description": "Pizza topped with nachos and cheese."
+      },
+      {
+        "name": "Spaghetti Salad",
+        "price": 6.99,
+        "description": "Salad topped with spaghetti and dressing."
+      }
+    ]
+  },
+  {
+    "id": "matador7",
     "title": "Burger",
     "description": "Burga.",
+    "summary": "Burger",
     "address": "ur mom's house",
     "rating": 5.0,
     "reviews": 498000,
@@ -81,6 +387,53 @@
     "seating": "Indoor (at your mom's house)",
     "lat": 34.235851007002424,
     "lng": -118.52350977257075,
-    "image": "lib/Assets/burger2.jpg"
+    "image": "lib/Assets/burger2.jpg",
+    "layout": [
+      { "id": "table1", "x": 50, "y": 50, "width": 50, "height": 50, "available": true },
+      { "id": "table2", "x": 150, "y": 50, "width": 50, "height": 50, "available": false },
+      { "id": "table3", "x": 100, "y": 150, "width": 50, "height": 50, "available": true }
+    ],
+    "menu": [
+      {
+        "name": "Cheeseburger",
+        "price": 8.99,
+        "description": "Burger with cheese"
+      },
+      {
+        "name": "Double Cheeseburger",
+        "price": 10.99,
+        "description": "Like cheeseburger but double"
+      },
+      {
+        "name": "Veggie Burger",
+        "price": 9.99,
+        "description": "Like burger but veggie"
+      },
+      {
+        "name": "Fried Burger",
+        "price": 3.99,
+        "description": "Like burger but fried"
+      },
+      {
+        "name": "Onion Ring Burger",
+        "price": 4.99,
+        "description": "Like burger but with onion rings"
+      },
+      {
+        "name": "Bacon Burger",
+        "price": 5.99,
+        "description": "Like burger but with bacon"
+      },
+      {
+        "name": "Chicken Burger",
+        "price": 6.99,
+        "description": "Like burger but chicken"
+      },
+      {
+        "name": "Fish Burger",
+        "price": 7.99,
+        "description": "Like burger but fish"
+      }
+    ]
   }
 ]
