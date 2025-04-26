@@ -79,9 +79,12 @@
     "lng": -118.52539003612064,
     "image": "lib/Assets/KC310124-27.jpg",
     "layout": [
-      { "id": "table1", "x": 50, "y": 50, "width": 50, "height": 50, "available": true },
-      { "id": "table2", "x": 150, "y": 50, "width": 50, "height": 50, "available": false },
-      { "id": "table3", "x": 100, "y": 150, "width": 50, "height": 50, "available": true }
+      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
+      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
+      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
+      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
     ],
     "menu": [
       {
@@ -141,9 +144,12 @@
     "lng": -118.5296862650247,
     "image": "lib/Assets/Bites.jpg",
     "layout": [
-      { "id": "table1", "x": 50, "y": 50, "width": 50, "height": 50, "available": true },
-      { "id": "table2", "x": 150, "y": 50, "width": 50, "height": 50, "available": false },
-      { "id": "table3", "x": 100, "y": 150, "width": 50, "height": 50, "available": true }
+      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
+      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
+      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
+      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
     ],
     "menu": [
       {
@@ -203,9 +209,12 @@
     "lng": -118.53078391029187,
     "image": "lib/Assets/Pizza.jpg",
     "layout": [
-      { "id": "table1", "x": 50, "y": 50, "width": 50, "height": 50, "available": true },
-      { "id": "table2", "x": 150, "y": 50, "width": 50, "height": 50, "available": false },
-      { "id": "table3", "x": 100, "y": 150, "width": 50, "height": 50, "available": true }
+      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
+      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
+      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
+      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
     ],
     "menu": [
       {
@@ -265,9 +274,12 @@
     "lng": -118.52853961742417,
     "image": "lib/Assets/burger1.jpg",
     "layout": [
-      { "id": "table1", "x": 50, "y": 50, "width": 50, "height": 50, "available": true },
-      { "id": "table2", "x": 150, "y": 50, "width": 50, "height": 50, "available": false },
-      { "id": "table3", "x": 100, "y": 150, "width": 50, "height": 50, "available": true }
+      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
+      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
+      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
+      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
     ],
     "menu": [
       {
@@ -327,9 +339,12 @@
     "lng": -118.53403046268451,
     "image": "lib/Assets/giordanachos.png",
     "layout": [
-      { "id": "table1", "x": 50, "y": 50, "width": 50, "height": 50, "available": true },
-      { "id": "table2", "x": 150, "y": 50, "width": 50, "height": 50, "available": false },
-      { "id": "table3", "x": 100, "y": 150, "width": 50, "height": 50, "available": true }
+      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
+      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
+      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
+      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
     ],
     "menu": [
       {
@@ -389,9 +404,12 @@
     "lng": -118.52350977257075,
     "image": "lib/Assets/burger2.jpg",
     "layout": [
-      { "id": "table1", "x": 50, "y": 50, "width": 50, "height": 50, "available": true },
-      { "id": "table2", "x": 150, "y": 50, "width": 50, "height": 50, "available": false },
-      { "id": "table3", "x": 100, "y": 150, "width": 50, "height": 50, "available": true }
+      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
+      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
+      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
+      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
     ],
     "menu": [
       {

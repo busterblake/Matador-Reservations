@@ -299,7 +299,7 @@ class _MatadorResApp extends State<MatadorResApp> {
             initialCameraPosition: CameraPosition(target: _center, zoom: 16.0),
             markers: _markers,
             myLocationButtonEnabled: true,
-            //zoomControlsEnabled: true,
+            zoomControlsEnabled: false,
           ),
 
           // this is where you would add the other pages for the bottom bar
