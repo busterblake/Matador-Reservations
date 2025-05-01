@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'booking_page.dart';
+import 'main.dart';
 
 class ReservePage extends StatefulWidget {
   const ReservePage({super.key, required this.restaurant});
@@ -43,34 +45,85 @@ class _ReservePageState extends State<ReservePage> {
           ..._buildTables(widget.restaurant['layout']),
         ],
       ),
-      bottomNavigationBar: SafeArea(
-      child: Container(
-        color: Colors.transparent,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              // TODO: If reservation is made, navigate to the booking page.
-            },
-            style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all<Color>(Colors.pink),
-              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
-              minimumSize: WidgetStateProperty.all<Size>(const Size(double.infinity, 50.0)),
-              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  side: const BorderSide(color: Colors.pink, width: 2.0),
+        bottomNavigationBar: SafeArea(
+        child: tableSelectionState.containsValue(true) ? Container(
+          color: Colors.transparent,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: ElevatedButton(
+              onPressed: () async {
+                // Show a loading dialog
+                showDialog(
+                  context: context,
+                  barrierDismissible: false, // Prevent dismissing the dialog by tapping outside
+                  builder: (BuildContext context) {
+                    return const Center(
+                      child: CircularProgressIndicator(), // Loading animation
+                    );
+                  },
+                );
+
+                // Fake loading hehe
+                await Future.delayed(const Duration(seconds: 1));
+                Navigator.pop(context);
+
+                // Show the confirmation dialog
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Reservation Confirmed!"),
+                      content: const Text("Time: 6:00 PM\nDate: May 3, 2025\nParty Size: 5\nTable: 3"),
+                      actions: [
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context); // Close the dialog
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MatadorResApp(),
+                                ),
+                              );
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStateProperty.all<Color>(Colors.pink),
+                              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                              minimumSize: WidgetStateProperty.all<Size>(const Size(100.0, 50.0)),
+                              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  side: const BorderSide(color: Colors.pink, width: 2.0),
+                                ),
+                              ),
+                            ),
+                            child: const Text("Ok", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all<Color>(Colors.pink),
+                foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                minimumSize: WidgetStateProperty.all<Size>(const Size(double.infinity, 50.0)),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    side: const BorderSide(color: Colors.pink, width: 2.0),
+                  ),
                 ),
               ),
+              child: const Text(
+                'Book Now',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
             ),
-            child: const Text(
-              'Book Now',
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-            ),
-          )
-        ),
-      ),
-    ),
+          ),
+        ): const SizedBox.shrink(),
+      )
     );
   }
 

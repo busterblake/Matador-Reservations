@@ -39,7 +39,7 @@ class MatadorResApp extends StatefulWidget {
 }
 
 class _MatadorResApp extends State<MatadorResApp> {
-  int _currentIndex = 0; // Start with Home/maps
+  int currentIndex = 0; // Start with Home/maps
   TimeOfDay? time;
   String partySize = '';
   DateTime? dateSelected;
@@ -237,7 +237,7 @@ class _MatadorResApp extends State<MatadorResApp> {
         hasNotch: true,
         fabLocation: StylishBarFabLocation.center,
         notchStyle: NotchStyle.circle,
-        currentIndex: _currentIndex,
+        currentIndex: currentIndex,
         items: [
           BottomBarItem(
             icon: const Icon(Icons.map_outlined),
@@ -270,7 +270,7 @@ class _MatadorResApp extends State<MatadorResApp> {
         ],
         onTap: (index) {
           setState(() {
-            _currentIndex = index;
+            currentIndex = index;
           });
           _pageController.jumpToPage(index);
         },
