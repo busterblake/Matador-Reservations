@@ -337,7 +337,7 @@
     "seating": "Indoor (Food Court)",
     "lat": 34.2357274106314,
     "lng": -118.53403046268451,
-    "image": "lib/Assets/giordanachos.png",
+    "image": "lib/Assets/giordanachos.jpg",
     "layout": [
       { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
       { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },

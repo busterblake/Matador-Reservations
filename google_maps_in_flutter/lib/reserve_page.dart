@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'booking_page.dart';
 import 'main.dart';
+import 'booking_page.dart';
 
 class ReservePage extends StatefulWidget {
   const ReservePage({super.key, required this.restaurant});
@@ -36,12 +36,10 @@ class _ReservePageState extends State<ReservePage> {
       ),
       body: Stack(
         children: [
-          // CustomPaint is used to draw the restaurant layout background
           CustomPaint(
             size: Size(double.infinity, 800),
             painter: RestaurantLayoutPainter(),
           ),
-          // Dynamically build table widgets based on the restaurant layout
           ..._buildTables(widget.restaurant['layout']),
         ],
       ),
@@ -55,10 +53,12 @@ class _ReservePageState extends State<ReservePage> {
                 // Show a loading dialog
                 showDialog(
                   context: context,
-                  barrierDismissible: false, // Prevent dismissing the dialog by tapping outside
+                  barrierDismissible: false, 
                   builder: (BuildContext context) {
                     return const Center(
-                      child: CircularProgressIndicator(), // Loading animation
+                      child: CircularProgressIndicator(
+                        color: Colors.pink,
+                      ), 
                     );
                   },
                 );
@@ -73,18 +73,18 @@ class _ReservePageState extends State<ReservePage> {
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: const Text("Reservation Confirmed!"),
-                      content: const Text("Time: 6:00 PM\nDate: May 3, 2025\nParty Size: 5\nTable: 3"),
+                      content: Column(
+                        children: [
+                          
+                        ],
+                      ),
+                      backgroundColor: Colors.white,
                       actions: [
                         Center(
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.pop(context); // Close the dialog
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MatadorResApp(),
-                                ),
-                              );
+                              
                             },
                             style: ButtonStyle(
                               backgroundColor: WidgetStateProperty.all<Color>(Colors.pink),
@@ -127,19 +127,17 @@ class _ReservePageState extends State<ReservePage> {
     );
   }
 
-  // This function generates a list of Positioned widgets for each table in the layout
+
   List<Widget> _buildTables(List<dynamic> layout) {
     return layout.map((table) {
       return Positioned(
-        left: table['x'].toDouble(), // Position the table horizontally
-        top: table['y'].toDouble(), // Position the table vertically
+        left: table['x'].toDouble(),
+        top: table['y'].toDouble(),
         child: GestureDetector(
           onTap: () {
             if (table['available']) {
               setState(() {
-                // Deselect all tables
                 tableSelectionState.updateAll((key, value) => false);
-                // Select the tapped table
                 tableSelectionState[table['id']] = true;
               });
               print('Table ${table['id']} selected');
@@ -148,21 +146,20 @@ class _ReservePageState extends State<ReservePage> {
             }
           },
           child: Container(
-            width: table['width'].toDouble(), // Set table width
-            height: table['height'].toDouble(), // Set table height
+            width: table['width'].toDouble(),
+            height: table['height'].toDouble(),
             decoration: BoxDecoration(
-              // Change color based on selection and availability
               color: tableSelectionState[table['id']] == true
                   ? Colors.pink
                   : (table['available'] ? Colors.white : Colors.grey[400]),
               border: table['available']
                   ? Border.all(color: Colors.pink, width: 1.5)
                   : null,
-              borderRadius: BorderRadius.circular(8.0), // Rounded corners
+              borderRadius: BorderRadius.circular(8.0),
             ),
             child: Center(
               child: Text(
-                table['id'], // Display the table ID
+                table['id'],
                 style: const TextStyle(color: Colors.black, fontSize: 12.0),
               ),
             ),

@@ -12,6 +12,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'custom_time_picker.dart';
 import 'menu_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -214,6 +215,15 @@ class _MatadorResApp extends State<MatadorResApp> {
                 );
                 return;
               } else {
+                final saveReservationData = SaveReservationData();
+                await saveReservationData.saveData(
+                  time!.format(context), // Format the time as a string
+                  dateSelected!.toLocal().toString().split(
+                    ' ',
+                  )[0], // Format the date
+                  partySize, // Party size
+                );
+                await saveReservationData.printData();
                 Navigator.pop(context);
                 await Future.delayed(const Duration(milliseconds: 500));
                 await QuickAlert.show(
@@ -302,9 +312,26 @@ class _MatadorResApp extends State<MatadorResApp> {
 }
 
 class SaveReservationData {
-  //used to save data to user prefts
+  // Save reservation data to user preferences
+  Future<void> saveData(String time, String date, String partySize) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('time', time);
+    prefs.setString('date', date);
+    prefs.setString('partysize', partySize);
+  }
+
+  // Print data for debugging
+  Future<void> printData() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? time = prefs.getString('time');
+    String? date = prefs.getString('date');
+    String? partySize = prefs.getString('partysize');
+    print('Time: $time');
+    print('Date: $date');
+    print('Party Size: $partySize');
+  }
 }
 
-class LoadReservationData {
-  //used to load data from user prefs
-}
+
+
+
