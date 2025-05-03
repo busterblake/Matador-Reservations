@@ -1,3 +1,4 @@
+/// Page That controls the Reservations for the Resturant
 import 'package:flutter/material.dart';
 import 'package:google_maps_in_flutter/ReservationData.dart';
 import 'dart:ui';
@@ -7,7 +8,7 @@ import 'ReservationData.dart';
 import 'addReservation.dart';
 import 'search_page.dart';
 import 'profile_page.dart';
-
+/// controls the state of the page
 class Resturantreservations extends StatefulWidget {
 
   
@@ -17,9 +18,10 @@ class Resturantreservations extends StatefulWidget {
   State<Resturantreservations> createState() => ResturantReservationState();
   
 }
-
+/// shows the currents reservations in [reservations]
 class ResturantReservationState extends State<Resturantreservations>{
    int myIndex = 0;
+   ///Adds the resurants list of [reservations]
    List<Reservation> data =List.from(reservations);
    final PageController _pageController = PageController(initialPage: 0);
 
@@ -32,7 +34,7 @@ class ResturantReservationState extends State<Resturantreservations>{
    Widget build(BuildContext context) {
     return Scaffold(
       
-      
+      /// Controls the Bar at the botom of the page 
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: StylishBottomBar(
@@ -71,12 +73,29 @@ class ResturantReservationState extends State<Resturantreservations>{
             unSelectedColor: Colors.grey,
           ),
         ],
-        onTap: (index) {
-          setState(() {
+        onTap: (index) async {
+          if (index == 2) {
+            final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Addreservation()),
+            );
+
+              if (result == true) {
+                setState(() {
+                  data = List.from(reservations);
+                  myIndex = 0;
+                  _pageController.jumpToPage(0);
+           });}
+          } else {
+               setState(() {
             myIndex = index;
-          });
-          _pageController.jumpToPage(index);
-        },
+            if (index == 0) {
+            data = List.from(reservations);
+           }
+           });
+           _pageController.jumpToPage(index);
+  }
+},
       ), 
       body: PageView(
         controller: _pageController,
@@ -86,14 +105,14 @@ class ResturantReservationState extends State<Resturantreservations>{
         Center(child: tableUI(),),
         
           const SearchPage(), // Index 1
-          const Addreservation(), // Index 2
+          Container(), // Index 2
           const ProfilePage(), // Index 3
         ],
       ),
 
     );
   }
-  
+  /// Creates the table for the [reservations] list
   Widget tableUI(){
     return SafeArea(
       child: SizedBox.expand(
@@ -113,7 +132,7 @@ class ResturantReservationState extends State<Resturantreservations>{
       )
     );
   }
-
+/// cretes the Columns for the table of [reservations]
   List<DataColumn> createColumns() {
     return[
       DataColumn(label: Text("Date", textAlign: TextAlign.center,)),
@@ -122,9 +141,10 @@ class ResturantReservationState extends State<Resturantreservations>{
       DataColumn(label: Text("Table", textAlign: TextAlign.center,)),
       DataColumn(label: Text("Name", textAlign: TextAlign.center,)),
       DataColumn(label: Text("Phone #", textAlign: TextAlign.center,)),
+      DataColumn(label: Text("Delete", textAlign: TextAlign.center,)),
     ];
   }
-
+/// fills the rows for each reservation in [reservations]
   List<DataRow> createRows(){
     return data.map((e){
       return DataRow(cells: [
@@ -134,6 +154,14 @@ class ResturantReservationState extends State<Resturantreservations>{
         DataCell(SizedBox(width: 10, child: FittedBox( fit: BoxFit.scaleDown,child:Text(e.table.toString(), textAlign: TextAlign.center,),),),),
         DataCell(SizedBox(width: 60, child: FittedBox( fit: BoxFit.scaleDown,child:Text(e.name),),),),
         DataCell(SizedBox(width: 70, child: FittedBox( fit: BoxFit.scaleDown,child:Text(e.number.toString(), textAlign: TextAlign.center,),),),),
+        DataCell(IconButton(icon: Icon(Icons.delete, color: Colors.red),
+                onPressed: (){
+                  setState(() {
+                    reservations.remove(e);
+                    data = List.from(reservations);
+                  });
+                  
+                },),),
         ],
       );
     }).toList();

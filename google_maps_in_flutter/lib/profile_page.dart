@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'profile_page_loggedin.dart';
+import 'ResturantReservations.dart';
 
 
 class ProfilePage extends StatelessWidget {
@@ -16,10 +17,10 @@ class ProfilePage extends StatelessWidget {
   Future<void> handleLogin(String email, String password, BuildContext context) async {
     try {
       await initializeFirebaseIfNeeded();
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      /*await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email.trim(),
         password: password,
-      );
+      );*/
 
       Navigator.pushReplacement(
         context,
@@ -42,14 +43,14 @@ class ProfilePage extends StatelessWidget {
   Future<void> handleSignUp(String email, String password, BuildContext context) async {
     try {
       await initializeFirebaseIfNeeded();
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      /*await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email.trim(),
         password: password,
-      );
+      );*/
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const ProfilePageLoggedIn()),
+        MaterialPageRoute(builder: (context) => const Resturantreservations()), // Ricardo changed this for his development change this if needed. 
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -131,3 +132,4 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
+}

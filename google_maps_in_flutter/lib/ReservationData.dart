@@ -1,9 +1,16 @@
+/// defines the data that will be in the [reservations] list. 
 class Reservation{
+  /// stores the date for the reservation
   final int date;
+  /// stores the time for the reservation
   final int time;
+  /// stores the party size for the reservation
   final int size;
+  /// stores the table number for the reservation
   final int table;
+  /// stores the name for the reservation
   final String name;
+  /// stores the phone number for the reservation
   final int number;
 
   Reservation({
@@ -14,6 +21,17 @@ class Reservation{
     required this.name,
     required this.number,
   });
+   /// @nodoc
+  @override
+  dynamic noSuchMethod(Invocation invocation) =>
+      super.noSuchMethod(invocation);
+  /// @nodoc
+  @override
+  int get hashCode => super.hashCode;
+
+  /// @nodoc
+  @override
+  bool operator ==(Object other) => identical(this, other);
 }
 
 List<Reservation> reservations = [

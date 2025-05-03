@@ -1,0 +1,6 @@
+dartdoc:
+  
+  nodoc:
+  - "lib/firebase_options.dart"
+
+  
