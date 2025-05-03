@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
-import 'booking_page.dart';
+import 'package:google_maps_in_flutter/main.dart';
 
 class ReservePage extends StatefulWidget {
   const ReservePage({super.key, required this.restaurant});
@@ -73,18 +72,19 @@ class _ReservePageState extends State<ReservePage> {
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: const Text("Reservation Confirmed!"),
-                      content: Column(
-                        children: [
-                          
-                        ],
-                      ),
+                      content: const Text("Your table has been reserved."),
                       backgroundColor: Colors.white,
                       actions: [
                         Center(
                           child: ElevatedButton(
                             onPressed: () {
-                              Navigator.pop(context); // Close the dialog
-                              
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MatadorResApp(),
+                                )
+                              );
                             },
                             style: ButtonStyle(
                               backgroundColor: WidgetStateProperty.all<Color>(Colors.pink),

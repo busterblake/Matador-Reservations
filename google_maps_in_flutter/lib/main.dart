@@ -205,9 +205,7 @@ class _MatadorResApp extends State<MatadorResApp> {
               ],
             ),
             onConfirmBtnTap: () async {
-              if (temptime == null ||
-                  temppartySize.isEmpty ||
-                  tempdateSelected == null) {
+              if (temptime == null || temppartySize.isEmpty || tempdateSelected == null) {
                 await QuickAlert.show(
                   context: context,
                   type: QuickAlertType.error,
@@ -218,24 +216,16 @@ class _MatadorResApp extends State<MatadorResApp> {
                 final saveReservationData = SaveReservationData();
                 await saveReservationData.saveData(
                   time!.format(context), // Format the time as a string
-                  dateSelected!.toLocal().toString().split(
-                    ' ',
-                  )[0], // Format the date
+                  dateSelected!.toLocal().toString().split(' ')[0], // Format the date
                   partySize, // Party size
                 );
-                await saveReservationData.printData();
                 Navigator.pop(context);
-                await Future.delayed(const Duration(milliseconds: 500));
                 await QuickAlert.show(
                   context: context,
                   type: QuickAlertType.success,
                   text:
                       "Booking saved!\nTime: ${time?.format(context)}\nParty Size: $partySize\nDate: ${dateSelected!.toLocal().toString().split(' ')[0]}",
                 );
-                temptime = null;
-                temppartySize = '';
-                tempdateSelected = null;
-                return;
               }
             },
           );
@@ -312,15 +302,18 @@ class _MatadorResApp extends State<MatadorResApp> {
 }
 
 class SaveReservationData {
-  // Save reservation data to user preferences
+  static final ValueNotifier<bool> reservationChanged = ValueNotifier(false);
+
   Future<void> saveData(String time, String date, String partySize) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('time', time);
     prefs.setString('date', date);
     prefs.setString('partysize', partySize);
+
+    // Notify listeners that the reservation data has changed
+    reservationChanged.value = !reservationChanged.value;
   }
 
-  // Print data for debugging
   Future<void> printData() async {
     final prefs = await SharedPreferences.getInstance();
     String? time = prefs.getString('time');
@@ -330,8 +323,16 @@ class SaveReservationData {
     print('Date: $date');
     print('Party Size: $partySize');
   }
-}
 
+  Future<Map<String, String>> loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    return {
+      'time': prefs.getString('time') ?? '',
+      'date': prefs.getString('date') ?? '',
+      'partySize': prefs.getString('partysize') ?? '',
+    };
+  }
+}
 
 
 

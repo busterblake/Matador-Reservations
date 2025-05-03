@@ -124,7 +124,7 @@ Widget build(BuildContext context) {
               ),
             ),
             child: const Text(
-              'Book Now',
+              'Book Table',
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
           )

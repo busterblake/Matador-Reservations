@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_rating/flutter_rating.dart';
+import 'package:google_maps_in_flutter/main.dart';
 import 'menu_page.dart';
 
 class SearchPage extends StatefulWidget {
@@ -31,9 +32,14 @@ class _SearchPageState extends State<SearchPage> {
                   .contains(_searchController.text.toLowerCase());
           return {
             ...restaurant,
-            'isVisible': isVisible, // Add visibility property
+            'isVisible': isVisible,
           };
         }).toList();
+
+        _filteredRestaurants.sort((a, b) {
+          if (a['isVisible'] == b['isVisible']) return 0;
+          return a['isVisible'] ? -1 : 1;
+        });
       });
     });
   }
@@ -62,14 +68,12 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body:
-        Column(
-          children: [
-            SearchBar(searchController: _searchController),
-
-            Expanded(
+        Stack(
+          children: [ 
+            Padding(
+              padding: const EdgeInsets.only(top: 80.0),
               child: ListView.builder(
                 itemCount: _filteredRestaurants.length,
                 itemBuilder: (context, index) {
@@ -77,9 +81,96 @@ class _SearchPageState extends State<SearchPage> {
                   return RestaurantCards(restaurant: restaurant);
                 },
               ),
-            )
+            ),
+            
+
+            Positioned(
+              top: 90.0,
+              left: 100.0,
+              right: 100.0,
+              child: ShowReserveData(),
+            ),
+            
+            Column(
+              children: [
+                SearchBar(searchController: _searchController),
+              ],
+            ),
           ],
         ),
+    );
+  }
+}
+
+class ShowReserveData extends StatefulWidget {
+  const ShowReserveData({super.key});
+
+  @override
+  State<ShowReserveData> createState() => _ShowReserveDataState();
+}
+
+class _ShowReserveDataState extends State<ShowReserveData> {
+  late Future<Map<String, String>> _reservationData;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadReservationData();
+
+    // Listen to changes in the reservation data
+    SaveReservationData.reservationChanged.addListener(() {
+      _loadReservationData();
+    });
+  }
+
+  @override
+  void dispose() {
+    // Remove the listener when the widget is disposed
+    SaveReservationData.reservationChanged.removeListener(() {
+      _loadReservationData();
+    });
+    super.dispose();
+  }
+
+  void _loadReservationData() {
+    setState(() {
+      _reservationData = SaveReservationData().loadData();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 25.0,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.0),
+        border: Border.all(color: Colors.grey[600]!, width: 1.5),
+      ),
+      child: Center(
+        child: FutureBuilder<Map<String, String>>(
+          future: _reservationData,
+          builder: (context, snapshot) {
+
+            final data = snapshot.data!;
+            final time = data['time'] ?? '12:00 PM';
+            final date = data['date'] ?? '2025-5-10';
+            final partySize = data['partySize'] ?? '2';
+
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.person_outline_rounded, size: 18.0),
+                const SizedBox(width: 3.0),
+                Text(
+                  '$partySize • $time • $date',
+                  style: const TextStyle(fontSize: 14.0),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 }
@@ -175,7 +266,7 @@ class RestaurantCards extends StatelessWidget {
                       ),
                     ),
                   ),
-                  child: const Text('Book Now', style: TextStyle(fontSize: 16.0)),
+                  child: const Text('Book Table', style: TextStyle(fontSize: 16.0)),
                 ),
               )
             ],
@@ -208,7 +299,8 @@ class SearchBar extends StatelessWidget {
           ),
           
           prefixIcon: Icon(Icons.search),
-        
+          filled: true,
+          fillColor: Colors.white,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.0),
           )
