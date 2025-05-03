@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_in_flutter/main.dart';
+import 'main.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ReservePage extends StatefulWidget {
   const ReservePage({super.key, required this.restaurant});
