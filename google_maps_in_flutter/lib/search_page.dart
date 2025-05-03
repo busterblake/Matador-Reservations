@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_rating/flutter_rating.dart';
+import 'menu_page.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -11,9 +12,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-
   final TextEditingController _searchController = TextEditingController();
-
   List<Map<String, dynamic>> _restaurants = [];
   List<Map<String, dynamic>> _filteredRestaurants = [];
 
@@ -24,10 +23,12 @@ class _SearchPageState extends State<SearchPage> {
     _searchController.addListener(() {
       setState(() {
         _filteredRestaurants = _restaurants
-          .where((restaurant) => restaurant['title'] != null && restaurant['title']
-          .toLowerCase()
-          .contains(_searchController.text.toLowerCase()))
-          .toList();
+            .where((restaurant) =>
+                restaurant['title'] != null &&
+                restaurant['title']
+                    .toLowerCase()
+                    .contains(_searchController.text.toLowerCase()))
+            .toList();
       });
     });
   }
@@ -52,24 +53,21 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      body:
-        Column(
-          children: [
-            SearchBar(searchController: _searchController),
-
-            Expanded(
-              child: ListView.builder(
-                itemCount: _filteredRestaurants.length,
-                itemBuilder: (context, index) {
-                  final restaurant = _filteredRestaurants[index];
-                  return RestaurantCards(restaurant: restaurant);
-                },
-              ),
-            )
-          ],
-        ),
+      body: Column(
+        children: [
+          SearchBar(searchController: _searchController),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _filteredRestaurants.length,
+              itemBuilder: (context, index) {
+                final restaurant = _filteredRestaurants[index];
+                return RestaurantCards(restaurant: restaurant);
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -91,7 +89,10 @@ class RestaurantCards extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
-            title: Text('${restaurant['title']}', style: const TextStyle(fontSize: 18.0)),
+            title: Text(
+              '${restaurant['title']}',
+              style: const TextStyle(fontSize: 18.0),
+            ),
             subtitle: Row(
               children: [
                 Column(
@@ -116,12 +117,9 @@ class RestaurantCards extends StatelessWidget {
                     Text(restaurant['seating']),
                   ],
                 ),
-          
-                // Restaurant image
                 Expanded(
                   child: Align(
                     alignment: Alignment.centerRight,
-                    // rounded corners
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
                       child: Image.asset(
@@ -134,24 +132,29 @@ class RestaurantCards extends StatelessWidget {
                   ),
                 )
               ],
-            )
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 3.0),
             child: ElevatedButton(
               onPressed: () {
-                // Handle button press
-                print('Booked for ${restaurant['title']}');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MenuPage(restaurant: restaurant),
+                  ),
+                );
               },
-              
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
                 foregroundColor: WidgetStateProperty.all<Color>(Colors.pink),
-                minimumSize: WidgetStateProperty.all<Size>(const Size(double.infinity, 45.0)),
+                minimumSize:
+                    WidgetStateProperty.all<Size>(const Size(double.infinity, 45.0)),
                 shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    side: const BorderSide(color: Color.fromARGB(255, 200, 200, 200), width: 1.5),
+                    side: const BorderSide(
+                        color: Color.fromARGB(255, 200, 200, 200), width: 1.5),
                   ),
                 ),
               ),
@@ -159,7 +162,7 @@ class RestaurantCards extends StatelessWidget {
             ),
           )
         ],
-      )
+      ),
     );
   }
 }
@@ -175,23 +178,22 @@ class SearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 30.0, left: 8.0, right: 8.0, bottom: 0),
+      padding:
+          const EdgeInsets.only(top: 30.0, left: 8.0, right: 8.0, bottom: 0),
       child: TextField(
         controller: _searchController,
         decoration: InputDecoration(
           hintText: 'Find Restaurants',
           suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
             onPressed: () => _searchController.clear(),
           ),
-          
-          prefixIcon: Icon(Icons.search),
-        
+          prefixIcon: const Icon(Icons.search),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.0),
-          )
-        )
-      )
+          ),
+        ),
+      ),
     );
   }
 }

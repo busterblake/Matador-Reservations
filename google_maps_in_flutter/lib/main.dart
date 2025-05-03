@@ -6,21 +6,27 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'profile_page.dart';
 import 'booking_page.dart';
 import 'search_page.dart';
-import 'package:quickalert/quickalert.dart';
+import 'package:quickalert/quickalert.dart'; // import for QuickAlerts
 import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
-//needed for firebase and login
+
+
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'custom_time_picker.dart';
+import 'menu_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-Future<void> main() async{
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
 }
 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,6 +37,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 class MatadorResApp extends StatefulWidget {
   const MatadorResApp({super.key});
 
@@ -38,19 +45,30 @@ class MatadorResApp extends StatefulWidget {
   _MatadorResApp createState() => _MatadorResApp();
 }
 
+
 class _MatadorResApp extends State<MatadorResApp> {
   int _currentIndex = 0; // Start with Home/maps
-  String time = '';
+  TimeOfDay? time;
   String partySize = '';
   DateTime? dateSelected;
 
-  String temptime = '';
+
+  TimeOfDay? temptime;
   String temppartySize = '';
   DateTime? tempdateSelected;
+
+
+  TimeOfDay? selectedTime;
+
 
   final LatLng _center = const LatLng(34.240547308790596, -118.52942529186363);
   final Map<String, Marker> _markerMap = {};
   Set<Marker> _markers = {};
+
+
+  final List<Map<String, dynamic>> _restaurants = [];
+  final List<Map<String, dynamic>> _filteredRestaurants = [];
+
 
   @override
   void initState() {
@@ -58,46 +76,54 @@ class _MatadorResApp extends State<MatadorResApp> {
     _loadMarkersFromJson();
   }
 
+
   Future<void> _loadMarkersFromJson() async {
     final String data = await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> jsonResult = json.decode(data);
 
-    Set<Marker> loadedMarkers =
-        jsonResult.map((markerData) {
-          return Marker(
-            markerId: MarkerId(markerData['id']),
-            position: LatLng(markerData['lat'], markerData['lng']),
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-              BitmapDescriptor.hueViolet,
-            ),
-            onTap: () {
-              //custom pop up the marker
-              //should show the restraunt info with a button to make a reservation
-              //temp will nbe the info popup
-              QuickAlert.show(
-                context: context,
-                type: QuickAlertType.info,
-                text: markerData['description'],
-                customAsset: markerData['image'],
-                onConfirmBtnTap: () {
-                  QuickAlert.show(
-                    context: context,
-                    type: QuickAlertType.success,
-                    text: 'Temp Screen',
-                  );
-                  disablemarker(markerData['id']);
-                  //this is where we will add logic to go to the restaraunt page
-                },
+Set<Marker> loadedMarkers =
+    jsonResult.map((markerData) {
+      final restaurantId = markerData['restaurantId'];
+      final markerId = markerData['id'];
+
+      return Marker(
+        markerId: MarkerId(markerId),
+        position: LatLng(markerData['lat'], markerData['lng']),
+        icon: BitmapDescriptor.defaultMarkerWithHue(
+          BitmapDescriptor.hueViolet,
+        ),
+        onTap: () {
+          // This is optional but can be used to pass restaurantId to reservation form
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.info,
+            title: markerData['title'],
+            text: markerData['description'],
+            customAsset: markerData['image'],
+            confirmBtnText: "View Menu",
+            confirmBtnColor: Colors.pink,
+            onConfirmBtnTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MenuPage(restaurant: markerData),
+                ),
               );
             },
           );
-        }).toSet();
+        },
+      );
+    }).toSet();
+
+
 
     setState(() {
       _markers = loadedMarkers;
     });
   }
 
+
+  //call this funtions to disable the marker if unavailable
   void disablemarker(String markerId) {
     final updatedMarkers =
         _markers.map((marker) {
@@ -111,23 +137,61 @@ class _MatadorResApp extends State<MatadorResApp> {
           return marker;
         }).toSet();
 
+
     setState(() {
       _markers = updatedMarkers;
     });
   }
 
+ void checkmarkers() async {
+  if (temptime == null || tempdateSelected == null) return;
+
+  final DateTime selectedDateTime = DateTime(
+    tempdateSelected!.year,
+    tempdateSelected!.month,
+    tempdateSelected!.day,
+    temptime!.hour,
+    temptime!.minute,
+  );
+
+  final snapshot = await FirebaseFirestore.instance
+      .collection('reservations')
+      .where('restaurantId', isEqualTo: 'matadorBbqPit') // filter by current restaurant
+      .get();
+
+  for (final doc in snapshot.docs) {
+    final data = doc.data();
+    final DateTime reservationStart = (data['date'] as Timestamp).toDate();
+    final int duration = data['duration'] ?? 30;
+    final DateTime reservationEnd = reservationStart.add(Duration(minutes: duration));
+    final int tableId = data['tableId'];
+
+    // Only block if requested time overlaps
+    if (selectedDateTime.isAfter(reservationStart) &&
+        selectedDateTime.isBefore(reservationEnd)) {
+      final markerId = 'table$tableId'; // You must match this to how your markers are named
+      disablemarker(markerId);
+    }
+  }
+}
+
+
+
   final PageController _pageController = PageController(initialPage: 0);
   late GoogleMapController mapController;
+
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
+
 
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -165,29 +229,36 @@ class _MatadorResApp extends State<MatadorResApp> {
                   isGoogleFont: true,
                   dayBorderWidth: 0.5,
                   onDateSelect: (selectedDate) {
-                    dateSelected = selectedDate;
-                    tempdateSelected = selectedDate;
+                    setState(() {
+                      dateSelected = selectedDate;
+                      tempdateSelected = dateSelected;
+                    });
                   },
                 ),
-                const SizedBox(height: 10),
-                // time Feild
-                TextFormField(
-                  decoration: const InputDecoration(
-                    alignLabelWithHint: true,
-                    hintText: 'Select Time',
-                    prefixIcon: Icon(Icons.schedule_outlined),
-                  ),
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.phone,
-                  onChanged: (value) => ((temptime = value), (time = value)),
+            
+                const SizedBox(height: 30),
+                // Time Picker
+                CustomTimePicker(
+                  selectedTime: selectedTime,
+                  onTimeSelected: (thistime) {
+                    setState(() {
+                      selectedTime = thistime;
+                      temptime = selectedTime;
+                      time = thistime;
+                    });
+                    //Navigator.pop(context);
+                  },
                 ),
-                const SizedBox(height: 10),
+
+
+                const SizedBox(height: 30),
+
 
                 // Party Size Input
                 TextFormField(
                   decoration: const InputDecoration(
                     alignLabelWithHint: true,
-                    hintText: 'Enter Party Size',
+                    hintText: 'Enter Ppparty Size',
                     prefixIcon: Icon(Icons.group_outlined),
                   ),
                   textInputAction: TextInputAction.next,
@@ -198,33 +269,50 @@ class _MatadorResApp extends State<MatadorResApp> {
               ],
             ),
             onConfirmBtnTap: () async {
-              if (temptime.isEmpty ||
-                  temppartySize.isEmpty ||
-                  tempdateSelected == null) {
-                await QuickAlert.show(
-                  context: context,
-                  type: QuickAlertType.error,
-                  text: 'Please fill all fields.',
-                );
-                return;
-              } else {
-                Navigator.pop(context);
-                await Future.delayed(const Duration(milliseconds: 500));
-                await QuickAlert.show(
+            if (temptime == null || temppartySize.isEmpty || tempdateSelected == null) {
+              QuickAlert.show(
+                context: context,
+                type: QuickAlertType.error,
+                title: 'Error',
+                text: 'Please fill in all fields.',
+              );
+              return;
+            } else {
+              User? user = FirebaseAuth.instance.currentUser;
+              if (user != null) {
+                await FirebaseFirestore.instance.collection('reservations').add({
+            
+
+                  'userID': user.uid,
+                  'email' : user?.email,
+                  'restaurantId': 'matadorBbqPit',  // needs to be changed to a var
+                  'partySize': partySize,
+                  'time': selectedTime!.format(context),
+                  'date': dateSelected!.toIso8601String(),
+                  'table' : 'Test Table 1',
+                  'duration': 30 // default duration
+                });
+              
+                QuickAlert.show(
                   context: context,
                   type: QuickAlertType.success,
-                  text:
-                      "Booking saved!\nTime: $time\nParty Size: $partySize\nDate: ${dateSelected!.toLocal().toString().split(' ')[0]}",
+                  title: 'Success',
+                  text: 'Reservation made for $partySize people at ${selectedTime!.format(context)} on ${dateSelected!.toLocal()}',
                 );
-                temptime = '';
-                temppartySize = '';
-                tempdateSelected = null;
-                return;
+              } else {
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: 'Error',
+                  text: 'User not logged in.',
+                );
               }
+            }
             },
           );
         },
       ),
+      // + button
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: StylishBottomBar(
         option: AnimatedBarOptions(iconStyle: IconStyle.Default),
@@ -276,12 +364,14 @@ class _MatadorResApp extends State<MatadorResApp> {
           //pages go in order 0-3 for the bottom bar
           //right now only the maps page works
           GoogleMap(
+            myLocationEnabled: true,
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(target: _center, zoom: 16.0),
             markers: _markers,
-            myLocationEnabled: false,
-            zoomControlsEnabled: false,
+            myLocationButtonEnabled: true,
+            //zoomControlsEnabled: true,
           ),
+
 
           // this is where you would add the other pages for the bottom bar
           //right now it just makes the page say what you clicked on only the maps page works
@@ -294,11 +384,17 @@ class _MatadorResApp extends State<MatadorResApp> {
   }
 }
 
-class saveReservationData {
+
+class SaveReservationData {
   //used to save data to user prefts
 }
 
-class loadReservationData {
+
+class LoadReservationData {
   //used to load data from user prefs
 }
+
+
+
+
 

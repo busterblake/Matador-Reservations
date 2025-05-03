@@ -3,18 +3,37 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'profile_page_loggedin.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
-  Future<void> initializeFirebaseIfNeeded() async {
-    if (Firebase.apps.isEmpty) {
-      await Firebase.initializeApp();
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    await Firebase.initializeApp();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // User already logged in -> directly go to logged-in page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const ProfilePageLoggedIn()),
+      );
     }
   }
 
   Future<void> handleLogin(String email, String password, BuildContext context) async {
     try {
-      await initializeFirebaseIfNeeded();
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email.trim(),
         password: password,
@@ -40,7 +59,6 @@ class ProfilePage extends StatelessWidget {
 
   Future<void> handleSignUp(String email, String password, BuildContext context) async {
     try {
-      await initializeFirebaseIfNeeded();
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email.trim(),
         password: password,
@@ -70,9 +88,6 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final emailController = TextEditingController();
-    final passwordController = TextEditingController();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
