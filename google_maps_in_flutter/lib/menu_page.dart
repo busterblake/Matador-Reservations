@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating/flutter_rating.dart';
 import 'reserve_page.dart';
-import 'custom_time_picker.dart'; // Make sure this is imported
+import 'custom_time_picker.dart';
 
 class MenuPage extends StatefulWidget {
   final Map<String, dynamic> restaurant;
@@ -15,6 +15,7 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
+  final TextEditingController partySizeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +91,6 @@ class _MenuPageState extends State<MenuPage> {
                   ),
                   const SizedBox(height: 8.0),
 
-                  // Custom Time Picker
                   CustomTimePicker(
                     selectedTime: selectedTime,
                     onTimeSelected: (time) {
@@ -99,15 +99,24 @@ class _MenuPageState extends State<MenuPage> {
                       });
                     },
                   ),
-                  const SizedBox(height: 20.0),
 
+                  const SizedBox(height: 16.0),
+                  TextField(
+                    controller: partySizeController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'Party Size',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20.0),
                   const Text(
                     'Menu',
                     style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                   ),
                   Divider(color: Colors.grey[500], thickness: 1.0),
                   ...menuList(),
-
                   const SizedBox(height: 100.0),
                 ],
               ),
@@ -128,9 +137,17 @@ class _MenuPageState extends State<MenuPage> {
                 lastDate: DateTime.now().add(const Duration(days: 30)),
               );
 
-              if (pickedDate == null || selectedTime == null) {
+              if (pickedDate == null || selectedTime == null || partySizeController.text.trim().isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Please select both a date and a time.')),
+                  const SnackBar(content: Text('Please select a date, time, and enter party size.')),
+                );
+                return;
+              }
+
+              final int? partySize = int.tryParse(partySizeController.text.trim());
+              if (partySize == null || partySize <= 0) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Enter a valid party size.')),
                 );
                 return;
               }
@@ -142,6 +159,7 @@ class _MenuPageState extends State<MenuPage> {
                     restaurant: widget.restaurant,
                     selectedDate: pickedDate,
                     selectedTime: selectedTime!,
+                    partySize: partySize,
                   ),
                 ),
               );

@@ -6,12 +6,14 @@ class ReservePage extends StatefulWidget {
   final Map<String, dynamic> restaurant;
   final DateTime selectedDate;
   final TimeOfDay selectedTime;
+  final int partySize;
 
   const ReservePage({
     super.key,
     required this.restaurant,
     required this.selectedDate,
     required this.selectedTime,
+    required this.partySize,
   });
 
   @override
@@ -21,17 +23,14 @@ class ReservePage extends StatefulWidget {
 class _ReservePageState extends State<ReservePage> {
   Map<String, bool> tableSelectionState = {};
   final nameController = TextEditingController();
-  final partySizeController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-
     final layout = widget.restaurant['layout'] as List<dynamic>;
     tableSelectionState = {
       for (var table in layout) table['id'].toString(): false,
     };
-
     _updateTableAvailability();
   }
 
@@ -40,7 +39,7 @@ class _ReservePageState extends State<ReservePage> {
     final selectedDate = widget.selectedDate;
     final selectedTime = widget.selectedTime;
 
-    final DateTime selectedDateTime = DateTime(
+    final selectedDateTime = DateTime(
       selectedDate.year,
       selectedDate.month,
       selectedDate.day,
@@ -51,29 +50,23 @@ class _ReservePageState extends State<ReservePage> {
     final snapshot = await FirebaseFirestore.instance
         .collection('reservations')
         .where('restaurantId', isEqualTo: restaurantId)
-        .get(const GetOptions(source: Source.server)); // force fresh data
+        .get(const GetOptions(source: Source.server));
 
     List<dynamic> layout = widget.restaurant['layout'];
-
-    // Reset all tables to available
     for (var table in layout) {
       table['available'] = true;
     }
 
     for (final doc in snapshot.docs) {
       final data = doc.data();
-
-      final DateTime reservationStart = data['date'] is Timestamp
+      final reservationStart = data['date'] is Timestamp
           ? (data['date'] as Timestamp).toDate()
-          : DateTime.tryParse(data['date']) ?? DateTime.now();
-
-      final int duration = data['duration'] ?? 30;
-      final DateTime reservationEnd =
-          reservationStart.add(Duration(minutes: duration));
+          : DateTime.tryParse(data['date'].toString()) ?? DateTime.now();
+      final duration = data['duration'] ?? 60;
+      final reservationEnd = reservationStart.add(Duration(minutes: duration));
       final reservedTableId = data['tableId'].toString();
 
-      final bool overlaps =
-          selectedDateTime.isAtSameMomentAs(reservationStart) ||
+      final overlaps = selectedDateTime.isAtSameMomentAs(reservationStart) ||
           (selectedDateTime.isAfter(reservationStart) &&
               selectedDateTime.isBefore(reservationEnd));
 
@@ -112,24 +105,11 @@ class _ReservePageState extends State<ReservePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: TextField(
                   controller: nameController,
                   decoration: const InputDecoration(
                     labelText: 'Name',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: TextField(
-                  controller: partySizeController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Party Size',
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -147,26 +127,20 @@ class _ReservePageState extends State<ReservePage> {
 
                     if (selectedTableId.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please select a table to reserve.'),
-                        ),
+                        const SnackBar(content: Text('Please select a table to reserve.')),
                       );
                       return;
                     }
 
-                    if (nameController.text.trim().isEmpty ||
-                        partySizeController.text.trim().isEmpty) {
+                    if (nameController.text.trim().isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content:
-                              Text('Please fill in your name and party size.'),
-                        ),
+                        const SnackBar(content: Text('Please enter your name.')),
                       );
                       return;
                     }
 
                     try {
-                      final DateTime selectedDateTime = DateTime(
+                      final selectedDateTime = DateTime(
                         widget.selectedDate.year,
                         widget.selectedDate.month,
                         widget.selectedDate.day,
@@ -176,18 +150,15 @@ class _ReservePageState extends State<ReservePage> {
 
                       final user = FirebaseAuth.instance.currentUser;
 
-                      await FirebaseFirestore.instance
-                          .collection('reservations')
-                          .add({
+                      await FirebaseFirestore.instance.collection('reservations').add({
                         'restaurantId': widget.restaurant['restaurantId'],
                         'tableId': selectedTableId,
                         'userId': user?.uid ?? 'guest',
                         'email': user?.email ?? '',
                         'name': nameController.text.trim(),
-                        'partySize':
-                            int.tryParse(partySizeController.text.trim()) ?? 1,
+                        'partySize': widget.partySize,
                         'date': selectedDateTime,
-                        'duration': 30,
+                        'duration': 60,
                       });
 
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -212,8 +183,7 @@ class _ReservePageState extends State<ReservePage> {
                   ),
                   child: const Text(
                     'Book Now',
-                    style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -264,10 +234,9 @@ class _ReservePageState extends State<ReservePage> {
                 ),
               ),
               if (!isAvailable)
-                Text(
+                const Text(
                   'Reserved',
-                  style:
-                      const TextStyle(color: Colors.black54, fontSize: 10.0),
+                  style: TextStyle(color: Colors.black54, fontSize: 10.0),
                 ),
             ],
           ),
@@ -280,7 +249,7 @@ class _ReservePageState extends State<ReservePage> {
 class RestaurantLayoutPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final Paint paint = Paint()
+    final paint = Paint()
       ..color = Colors.grey[300]!
       ..style = PaintingStyle.fill;
 
