@@ -73,4 +73,5 @@ class DefaultFirebaseOptions {
     iosClientId: '848467584016-iloln4s9oqurqa4vi1bvi446ddgjj3b0.apps.googleusercontent.com',
     iosBundleId: 'com.example.googleMapsInFlutter',
   );
+
 }
