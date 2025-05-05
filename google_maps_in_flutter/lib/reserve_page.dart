@@ -8,10 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 class ReservePage extends StatefulWidget {
   const ReservePage({super.key, required this.restaurant});
   final Map<String, dynamic> restaurant;
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
   @override
   State<ReservePage> createState() => _ReservePageState();
 }
@@ -20,6 +16,7 @@ class ReservePage extends StatefulWidget {
 // It handles the table selection, availability checking, and reservation process.
 class _ReservePageState extends State<ReservePage> {
   late Map<String, bool> tableSelectionState;
+  final TextEditingController nameController = TextEditingController();
 
   @override
   void initState() {
@@ -30,8 +27,6 @@ class _ReservePageState extends State<ReservePage> {
       for (var table in widget.restaurant['layout'])
         table['id']: false,
     };
-<<<<<<< Updated upstream
-=======
     _updateTableAvailability();
   }
 
@@ -83,7 +78,6 @@ class _ReservePageState extends State<ReservePage> {
       }
     }
     setState(() {});
->>>>>>> Stashed changes
   }
 
   @override
@@ -121,29 +115,13 @@ class _ReservePageState extends State<ReservePage> {
           )
         ],
       ),
-<<<<<<< Updated upstream
         bottomNavigationBar: SafeArea(
-=======
-      bottomNavigationBar: SafeArea(
->>>>>>> Stashed changes
         child: tableSelectionState.containsValue(true) ? Container(
           color: Colors.transparent,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
             child: ElevatedButton(
               onPressed: () async {
-<<<<<<< Updated upstream
-                // Show a loading dialog
-                showDialog(
-                  context: context,
-                  barrierDismissible: false, 
-                  builder: (BuildContext context) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.pink,
-                      ), 
-                    );
-=======
 
                 if (nameController.text.isEmpty) {
                   showDialog(
@@ -450,7 +428,6 @@ Column(
                         SnackBar(content: Text('Error saving reservation: $e')),
                       );
                     }
->>>>>>> Stashed changes
                   },
                 );
 
@@ -508,80 +485,5 @@ Column(
                   ),
                 ),
               ),
-<<<<<<< Updated upstream
-              child: const Text(
-                'Book Now',
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-        ): const SizedBox.shrink(),
-      )
-    );
-  }
-
-
-  List<Widget> _buildTables(List<dynamic> layout) {
-    return layout.map((table) {
-      return Positioned(
-        left: table['x'].toDouble(),
-        top: table['y'].toDouble(),
-        child: GestureDetector(
-          onTap: () {
-            if (table['available']) {
-              setState(() {
-                tableSelectionState.updateAll((key, value) => false);
-                tableSelectionState[table['id']] = true;
-              });
-              print('Table ${table['id']} selected');
-            } else {
-              print('Table ${table['id']} is unavailable');
-            }
-          },
-          child: Container(
-            width: table['width'].toDouble(),
-            height: table['height'].toDouble(),
-            decoration: BoxDecoration(
-              color: tableSelectionState[table['id']] == true
-                  ? Colors.pink
-                  : (table['available'] ? Colors.white : Colors.grey[400]),
-              border: table['available']
-                  ? Border.all(color: Colors.pink, width: 1.5)
-                  : null,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Center(
-              child: Text(
-                table['id'],
-                style: const TextStyle(color: Colors.black, fontSize: 12.0),
-              ),
-            ),
-          ),
-        ),
-      );
-    }).toList();
-  }
-}
-
-class RestaurantLayoutPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final Paint paint = Paint()
-      ..color = Colors.grey[300]!
-      ..style = PaintingStyle.fill;
-
-    // Currently just draws a rectangle as the restaurant layout background
-    // TODO: Find a way to draw the actual restaurant layout
-    canvas.drawRect(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-=======
           ),
 */
->>>>>>> Stashed changes
