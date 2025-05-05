@@ -1,5 +1,11 @@
 connectorId: default
 generate:
+<<<<<<< Updated upstream
   dartSdk:
     outputDir: ..\..\dataconnect-generated\dart\default_connector
     package: default_connector
+=======
+  kotlinSdk:
+    outputDir: ..\..\dataconnect-generated\kotlin
+    package: connectors.default
+>>>>>>> Stashed changes

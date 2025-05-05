@@ -8,11 +8,20 @@ import 'booking_page.dart';
 import 'search_page.dart';
 import 'package:quickalert/quickalert.dart'; // import for QuickAlerts
 import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
+<<<<<<< Updated upstream
+=======
+import 'package:shared_preferences/shared_preferences.dart';
+>>>>>>> Stashed changes
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'custom_time_picker.dart';
 import 'menu_page.dart';
+<<<<<<< Updated upstream
 import 'package:shared_preferences/shared_preferences.dart';
+=======
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+>>>>>>> Stashed changes
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -168,7 +177,8 @@ class _MatadorResApp extends State<MatadorResApp> {
                   headerText: "Select a Date",
                   fontFamilyName: "Roboto",
                   isGoogleFont: true,
-                  dayBorderWidth: 0.5,
+                  dayBorderWidth: 1.5,
+                  dateSelectionType: DateSelectionType.activeFutureDates,
                   onDateSelect: (selectedDate) {
                     dateSelected = selectedDate;
                     tempdateSelected = selectedDate;
@@ -327,9 +337,15 @@ class SaveReservationData {
   Future<Map<String, String>> loadData() async {
     final prefs = await SharedPreferences.getInstance();
     return {
+<<<<<<< Updated upstream
       'time': prefs.getString('time') ?? '',
       'date': prefs.getString('date') ?? '',
       'partySize': prefs.getString('partysize') ?? '',
+=======
+      'time': prefs.getString('time') ?? '12:00 PM',
+      'date': prefs.getString('date') ?? '2025-5-15',
+      'partySize': prefs.getString('partysize') ?? '2',
+>>>>>>> Stashed changes
     };
   }
 }

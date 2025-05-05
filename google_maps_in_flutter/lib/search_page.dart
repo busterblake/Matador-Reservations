@@ -5,6 +5,8 @@ import 'package:flutter_rating/flutter_rating.dart';
 import 'package:google_maps_in_flutter/main.dart';
 import 'menu_page.dart';
 
+
+// This is the search
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 
@@ -12,6 +14,9 @@ class SearchPage extends StatefulWidget {
   State<SearchPage> createState() => _SearchPageState();
 }
 
+
+// This is the state of the search page
+// Gives search functionality and the restaurant data
 class _SearchPageState extends State<SearchPage> {
 
   final TextEditingController _searchController = TextEditingController();
@@ -19,6 +24,10 @@ class _SearchPageState extends State<SearchPage> {
   List<Map<String, dynamic>> _restaurants = [];
   List<Map<String, dynamic>> _filteredRestaurants = [];
 
+  // This is called when search page is first switched to
+  // Loads the restaurant data and sets up the search functionality
+  // Also sets up a listener for the search controller to filter the restaurant list
+  // and update the restaurant list accordingly
   @override
   void initState() {
     super.initState();
@@ -44,6 +53,7 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
+  // Loads the restaurant data from the json file
   Future<void> _loadRestaurants() async {
     final String data = await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> jsonResult = json.decode(data);
@@ -60,6 +70,7 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
+  // Dispose of the search controller when the widget is disposed
   @override
   void dispose() {
     _searchController.dispose();
@@ -70,6 +81,12 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body:
+<<<<<<< Updated upstream
+=======
+        // For some reason stacks work bottom to top,
+        // so the search bar, although at the bottom
+        // of the stack, is on top of the restaurant cards
+>>>>>>> Stashed changes
         Stack(
           children: [ 
             Padding(
@@ -82,15 +99,24 @@ class _SearchPageState extends State<SearchPage> {
                 },
               ),
             ),
+<<<<<<< Updated upstream
             
 
+=======
+
+            // A small card that shows the reservation data
+>>>>>>> Stashed changes
             Positioned(
               top: 90.0,
               left: 100.0,
               right: 100.0,
               child: ShowReserveData(),
             ),
+<<<<<<< Updated upstream
             
+=======
+
+>>>>>>> Stashed changes
             Column(
               children: [
                 SearchBar(searchController: _searchController),
@@ -102,6 +128,10 @@ class _SearchPageState extends State<SearchPage> {
   }
 }
 
+<<<<<<< Updated upstream
+=======
+// This is the reservation data card
+>>>>>>> Stashed changes
 class ShowReserveData extends StatefulWidget {
   const ShowReserveData({super.key});
 
@@ -109,6 +139,12 @@ class ShowReserveData extends StatefulWidget {
   State<ShowReserveData> createState() => _ShowReserveDataState();
 }
 
+<<<<<<< Updated upstream
+=======
+// This is the state of the reservation data card
+// Loads the reservation data (from main) and updates
+// the card when the data changes
+>>>>>>> Stashed changes
 class _ShowReserveDataState extends State<ShowReserveData> {
   late Future<Map<String, String>> _reservationData;
 
@@ -117,7 +153,11 @@ class _ShowReserveDataState extends State<ShowReserveData> {
     super.initState();
     _loadReservationData();
 
+<<<<<<< Updated upstream
     // Listen to changes in the reservation data
+=======
+    // Listen to changes in reservation data
+>>>>>>> Stashed changes
     SaveReservationData.reservationChanged.addListener(() {
       _loadReservationData();
     });
@@ -132,12 +172,21 @@ class _ShowReserveDataState extends State<ShowReserveData> {
     super.dispose();
   }
 
+<<<<<<< Updated upstream
+=======
+  // Load the reservation data from the main file
+>>>>>>> Stashed changes
   void _loadReservationData() {
     setState(() {
       _reservationData = SaveReservationData().loadData();
     });
   }
 
+<<<<<<< Updated upstream
+=======
+  // Build the reservation data card
+  // This card shows the reservation data (time, date, party size)
+>>>>>>> Stashed changes
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -153,9 +202,15 @@ class _ShowReserveDataState extends State<ShowReserveData> {
           builder: (context, snapshot) {
 
             final data = snapshot.data!;
+<<<<<<< Updated upstream
             final time = data['time'] ?? '12:00 PM';
             final date = data['date'] ?? '2025-5-10';
             final partySize = data['partySize'] ?? '2';
+=======
+            final time = data['time'];
+            final date = data['date'];
+            final partySize = data['partySize'];
+>>>>>>> Stashed changes
 
             return Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -175,6 +230,8 @@ class _ShowReserveDataState extends State<ShowReserveData> {
   }
 }
 
+// Class that produces the restaurant cards
+// So many children...
 class RestaurantCards extends StatelessWidget {
   const RestaurantCards({
     super.key,
@@ -185,10 +242,19 @@ class RestaurantCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< Updated upstream
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 200),
       opacity: restaurant['isVisible'] ? 1.0 : 0.0,
       child: IgnorePointer(
+=======
+    
+    // The cards fade in and out when they are filtered
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 200),
+      opacity: restaurant['isVisible'] ? 1.0 : 0.0,
+      child: IgnorePointer( // IgnorePointer makes card unresponsive when not visible
+>>>>>>> Stashed changes
         ignoring: restaurant['isVisible'] != true,
         child: Card(
           margin: const EdgeInsets.all(8.0),
@@ -246,7 +312,10 @@ class RestaurantCards extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 3.0),
                 child: ElevatedButton(
                   onPressed: () {
+<<<<<<< Updated upstream
                     // Handle button press
+=======
+>>>>>>> Stashed changes
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -255,6 +324,10 @@ class RestaurantCards extends StatelessWidget {
                     );                  
                   },
                   
+<<<<<<< Updated upstream
+=======
+                  // Bunch of properties to make the button look nice
+>>>>>>> Stashed changes
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
                     foregroundColor: WidgetStateProperty.all<Color>(Colors.pink),
@@ -277,6 +350,7 @@ class RestaurantCards extends StatelessWidget {
   }
 }
 
+// It's just a search bar
 class SearchBar extends StatelessWidget {
   const SearchBar({
     super.key,
@@ -285,6 +359,7 @@ class SearchBar extends StatelessWidget {
 
   final TextEditingController _searchController;
 
+  // Search bar stuff
   @override
   Widget build(BuildContext context) {
     return Padding(
