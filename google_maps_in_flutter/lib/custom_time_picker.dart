@@ -29,10 +29,10 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
       height: 30,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 11, // 11 AM to 9 PM
+        itemCount: 6, // 12 AM to 5 PM
         padding: const EdgeInsets.symmetric(horizontal: 16),
         itemBuilder: (context, index) {
-          final hour = 11 + index;
+          final hour = 12 + index;
           final time = TimeOfDay(hour: hour, minute: 0);
           final isSelected =
               _localSelectedTime?.hour == time.hour &&
