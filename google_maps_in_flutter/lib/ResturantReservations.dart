@@ -8,6 +8,7 @@ import 'ReservationData.dart';
 import 'addReservation.dart';
 import 'search_page.dart';
 import 'profile_page.dart';
+import 'ReservationSearch.dart';
 /// controls the state of the page
 class Resturantreservations extends StatefulWidget {
 
@@ -104,7 +105,7 @@ class ResturantReservationState extends State<Resturantreservations>{
           
         Center(child: tableUI(),),
         
-          const SearchPage(), // Index 1
+          const ReservationSearch(), // Index 1
           Container(), // Index 2
           const ProfilePage(), // Index 3
         ],
