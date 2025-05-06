@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 // This page allows users to reserve a specific table at a restaurant
 // based on the restaurant's layout and the selected date and time.
+// This page allows users to reserve a specific table at a restaurant
+// based on the restaurant's layout and the selected date and time.
 class ReservePage extends StatefulWidget {
   const ReservePage({super.key, required this.restaurant});
   final Map<String, dynamic> restaurant;
@@ -12,6 +14,8 @@ class ReservePage extends StatefulWidget {
   State<ReservePage> createState() => _ReservePageState();
 }
 
+// This class manages the state of the ReservePage.
+// It handles the table selection, availability checking, and reservation process.
 // This class manages the state of the ReservePage.
 // It handles the table selection, availability checking, and reservation process.
 class _ReservePageState extends State<ReservePage> {
@@ -40,11 +44,13 @@ class _ReservePageState extends State<ReservePage> {
 
     final saveReservationData = SaveReservationData();
     final reservationData = await saveReservationData.loadData();
+
     final restaurantId = widget.restaurant['restaurantId'];
     final selectedDateTime = parseDateTime(
       reservationData['date']!,
       reservationData['time']!,
     );
+    
     
     final snapshot = await FirebaseFirestore.instance
         .collection('reservations')
@@ -102,17 +108,12 @@ class _ReservePageState extends State<ReservePage> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: TextField(
                   controller: nameController,
                   decoration: const InputDecoration(
                     hintText: 'Name',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      borderSide: BorderSide(color: Colors.pink, width: 2.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
+                    border: OutlineInputBorder(),
                   ),
                 ),
               ),
@@ -120,11 +121,11 @@ class _ReservePageState extends State<ReservePage> {
           )
         ],
       ),
-        bottomNavigationBar: SafeArea(
+      bottomNavigationBar: SafeArea(
         child: tableSelectionState.containsValue(true) ? Container(
           color: Colors.transparent,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
             child: ElevatedButton(
               onPressed: () async {
 
@@ -361,134 +362,3 @@ DateTime parseDateTime(String date, String time) {
 
   return DateTime(dateParts[0], dateParts[1], dateParts[2], hour, minute);
 }
-
-/*
-Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: TextField(
-                  controller: nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Name',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    final selectedTableId = tableSelectionState.entries
-                        .firstWhere(
-                          (entry) => entry.value == true,
-                          orElse: () => const MapEntry('', false),
-                        )
-                        .key;
-
-                    if (selectedTableId.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Please select a table to reserve.')),
-                      );
-                      return;
-                    }
-
-                    if (nameController.text.trim().isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Please enter your name.')),
-                      );
-                      return;
-                    }
-
-                    try {
-                      final selectedDateTime = DateTime(
-                        widget.selectedDate.year,
-                        widget.selectedDate.month,
-                        widget.selectedDate.day,
-                        widget.selectedTime.hour,
-                        widget.selectedTime.minute,
-                      );
-
-                      final user = FirebaseAuth.instance.currentUser;
-
-                      await FirebaseFirestore.instance.collection('reservations').add({
-                        'restaurantId': widget.restaurant['restaurantId'],
-                        'tableId': selectedTableId,
-                        'userId': user?.uid ?? 'guest',
-                        'email': user?.email ?? '',
-                        'name': nameController.text.trim(),
-                        'partySize': widget.partySize,
-                        'date': selectedDateTime,
-                        'duration': 60,
-                      });
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Reservation successful!')),
-                      );
-
-                      Navigator.pop(context);
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error saving reservation: $e')),
-                      );
-                    }
-                  },
-                );
-
-                // Fake loading hehe
-                await Future.delayed(const Duration(seconds: 1));
-                Navigator.pop(context);
-
-                // Show the confirmation dialog
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text("Reservation Confirmed!"),
-                      content: const Text("Your table has been reserved."),
-                      backgroundColor: Colors.white,
-                      actions: [
-                        Center(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MatadorResApp(),
-                                )
-                              );
-                            },
-                            style: ButtonStyle(
-                              backgroundColor: WidgetStateProperty.all<Color>(Colors.pink),
-                              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
-                              minimumSize: WidgetStateProperty.all<Size>(const Size(100.0, 50.0)),
-                              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  side: const BorderSide(color: Colors.pink, width: 2.0),
-                                ),
-                              ),
-                            ),
-                            child: const Text("Ok", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.pink),
-                foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
-                minimumSize: WidgetStateProperty.all<Size>(const Size(double.infinity, 50.0)),
-                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                    side: const BorderSide(color: Colors.pink, width: 2.0),
-                  ),
-                ),
-              ),
-          ),
-*/

@@ -1,4 +1,3 @@
-import 'package:floating_bottom_bar/constants/image_constants.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
@@ -7,6 +6,7 @@ import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'profile_page.dart';
 import 'booking_page.dart';
+import 'menu_page.dart';
 import 'search_page.dart';
 import 'package:quickalert/quickalert.dart'; // import for QuickAlerts
 import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
@@ -14,7 +14,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'custom_time_picker.dart';
-import 'menu_page.dart';
 
 
 Future<void> main() async {
@@ -112,6 +111,14 @@ class _MatadorResApp extends State<MatadorResApp> {
                 ),
                 confirmBtnColor: Colors.pink,
                 confirmBtnText: '               Book Table               ',
+                onConfirmBtnTap:() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MenuPage(restaurant: markerData),
+                    ),
+                  );
+                },
               );
             },
           );
@@ -176,7 +183,7 @@ class _MatadorResApp extends State<MatadorResApp> {
                 CalendarDaySlotNavigator(
                   slotLength: 4,
                   dayBoxHeightAspectRatio: 5,
-                  dayDisplayMode: DayDisplayMode.outsideDateBox,
+                  dayDisplayMode: DayDisplayMode.inDateBox,
                   isGradientColor: true,
                   activeGradientColor: LinearGradient(
                     colors: [Color(0xffb644ae), Color(0xff873999)],

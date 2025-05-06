@@ -105,7 +105,6 @@ class _SearchPageState extends State<SearchPage> {
               right: 100.0,
               child: ShowReserveData(),
             ),
-            
             Column(
               children: [
                 SearchBar(searchController: _searchController),
