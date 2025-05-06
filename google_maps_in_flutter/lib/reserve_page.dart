@@ -102,12 +102,17 @@ class _ReservePageState extends State<ReservePage> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                 child: TextField(
                   controller: nameController,
                   decoration: const InputDecoration(
                     hintText: 'Name',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      borderSide: BorderSide(color: Colors.pink, width: 2.0),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
                   ),
                 ),
               ),
@@ -119,7 +124,7 @@ class _ReservePageState extends State<ReservePage> {
         child: tableSelectionState.containsValue(true) ? Container(
           color: Colors.transparent,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
             child: ElevatedButton(
               onPressed: () async {
 

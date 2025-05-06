@@ -102,12 +102,6 @@ Widget build(BuildContext context) {
           padding: EdgeInsets.symmetric(horizontal: 8.0),
           child: ElevatedButton(
             onPressed: () {
-<<<<<<< Updated upstream
-              // TODO: If reservation is made, navigate to the reservation page.
-              // Otherwise, pop up reservation pop-up
-
-=======
->>>>>>> Stashed changes
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -138,15 +132,12 @@ Widget build(BuildContext context) {
 }
 
   // Method generates the menu items for each reastaurant.
-<<<<<<< Updated upstream
-=======
   // Loads from json file
   // While I would LOVE to have all the restaurants in a
   // database, not only would that most likely force us to
   // pay for firebase, (currently using the free plan)
   // but it would also unwanted latency in loading the data.
   // forgive us professor please
->>>>>>> Stashed changes
   List<Widget> menuList() {
     return List.generate(
       restaurant['menu'].length,

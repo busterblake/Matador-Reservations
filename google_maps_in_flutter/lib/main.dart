@@ -1,6 +1,8 @@
+import 'package:floating_bottom_bar/constants/image_constants.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_rating/flutter_rating.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'profile_page.dart';
@@ -13,7 +15,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'custom_time_picker.dart';
 import 'menu_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 Future<void> main() async {
@@ -79,21 +80,38 @@ class _MatadorResApp extends State<MatadorResApp> {
             onTap: () {
               QuickAlert.show(
                 context: context,
-                type: QuickAlertType.info,
-                title: markerData['title'],
-                text: markerData['description'],
+                type: QuickAlertType.custom,
                 customAsset: markerData['image'],
-                confirmBtnText: "View Menu",
-                confirmBtnColor: Colors.pink,
-                onConfirmBtnTap: () {
-                  //navigate to the menu page
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MenuPage(restaurant: markerData),
+                title: markerData['title'],
+                titleAlignment: TextAlign.start,
+                widget: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        StarRating(
+                          rating: markerData['rating'],
+                          size: 16.0,
+                          color: Colors.pink,
+                          borderColor: Colors.pink,
+                          starCount: 5,
+                          allowHalfRating: true,
+                        ),
+                        const SizedBox(width: 5.0),
+                        Text('${markerData['reviews']} reviews', style: TextStyle(fontSize: 16)),
+                      ],
                     ),
-                  );
-                },
+                    Text(markerData['address'], style: TextStyle(fontSize: 16)),
+                    Text('${markerData['genre']} • ${markerData['price']}', style: TextStyle(fontSize: 16)),
+                    Text(markerData['seating'], style: TextStyle(fontSize: 16)),
+                    Divider(),
+                    Text(markerData['summary'], style: TextStyle(fontSize: 18))
+                  ],
+                ),
+                confirmBtnColor: Colors.pink,
+                confirmBtnText: '               Book Table               ',
               );
             },
           );
