@@ -91,7 +91,6 @@ class MenuPage extends StatelessWidget {
                     height: 10.0,
                   ),
                   const SizedBox(height: 8.0),
-                  Text("Test"),
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'profile_page.dart';
@@ -12,9 +13,9 @@ import 'package:quickalert/quickalert.dart'; // import for QuickAlerts
 import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'custom_time_picker.dart';
 import 'menu_page.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,16 +62,30 @@ class _MatadorResApp extends State<MatadorResApp> {
   List<Map<String, dynamic>> _restaurants = [];
   List<Map<String, dynamic>> _filteredRestaurants = [];
 
+  // void testFirestoreConnection() async {
+  //   FirebaseFirestore.instance
+  //       .collection(' restaurant list ')
+  //       .doc('test_write')
+  //       .set({'test': true})
+  //       .then((_) {
+  //         print("✅ Write test success");
+  //       })
+  //       .catchError((e) {
+  //         print("❌ Write test failed: $e");
+  //       });
+  // }
+
   @override
   void initState() {
     super.initState();
     _loadMarkersFromJson();
+    // testFirestoreConnection();
   }
 
   Future<void> _loadMarkersFromJson() async {
     final String data = await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> jsonResult = json.decode(data);
-  
+
     Set<Marker> loadedMarkers =
         jsonResult.map((markerData) {
           return Marker(
@@ -145,12 +160,51 @@ class _MatadorResApp extends State<MatadorResApp> {
     });
   }
 
-  void checkmarkers() {
-    // check firebase for reservations
-    // if there is a reservation, disable the marker
-    // if they is no reservation, enable the marker
-    // disablemarker(_markers.first.markerId.value);
-    // enablemarker(_markers.first.markerId.value);
+  void checkMarkers() async {
+    final db = FirebaseFirestore.instance;
+    final collectionRef = db.collection(
+      ' restaurant list ',
+    ); //make sure to use the correct collection name
+
+    final querySnapshot = await collectionRef.get();
+
+    final dateString =
+        dateSelected!.toLocal().toString().split(' ')[0]; // format "2025-05-02"
+    final timeString = time!.format(context); // format "11:00 AM"
+
+    for (var doc in querySnapshot.docs) {
+      final restaurantId = doc.id;
+      final data = doc.data();
+
+      if (data.containsKey(dateString)) {
+        final timeMap = data[dateString];
+
+        if (timeMap is Map<String, dynamic> &&
+            timeMap.containsKey(timeString)) {
+          final value = timeMap[timeString];
+          int tablesAvailable;
+
+          if (value is int) {
+            tablesAvailable = value;
+          } else if (value is String) {
+            tablesAvailable = int.tryParse(value) ?? 0;
+          } else {
+            tablesAvailable = 0;
+          }
+
+          if (tablesAvailable > 0) {
+            enablemarker(restaurantId);
+          } else {
+            disablemarker(restaurantId);
+          }
+          continue;
+        }
+      }
+
+      // No date or time info — assume available
+      print('No reservation info for $restaurantId — enabling');
+      enablemarker(restaurantId);
+    }
   }
 
   final PageController _pageController = PageController(initialPage: 0);
@@ -164,13 +218,6 @@ class _MatadorResApp extends State<MatadorResApp> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
-  }
-
-  Future<void>
-  saveReservationToFile(saveReservationData) async {
-     // try{
-       // final directory = await
-      //}
   }
 
   @override
@@ -255,14 +302,23 @@ class _MatadorResApp extends State<MatadorResApp> {
                 );
                 return;
               } else {
-                checkmarkers();
+                checkMarkers();
+                final saveReservationData = SaveReservationData();
+                await saveReservationData.saveData(
+                  time!.format(context), // Format the time as a string
+                  dateSelected!.toLocal().toString().split(
+                    ' ',
+                  )[0], // Format the date
+                  partySize, // Party size
+                );
+                await saveReservationData.printData();
                 Navigator.pop(context);
                 await Future.delayed(const Duration(milliseconds: 500));
                 await QuickAlert.show(
                   context: context,
                   type: QuickAlertType.success,
                   text:
-                      "Booking saved!\nTime: ${time?.format(context)}\nParty Size: $partySize\nDate: ${dateSelected!.toLocal().toString().split(' ')[0]}",
+                      "Party saved!\nTime: ${time?.format(context)}\nParty Size: $partySize\nDate: ${dateSelected!.toLocal().toString().split(' ')[0]}",
                 );
                 temptime = null;
                 temppartySize = '';
@@ -316,7 +372,7 @@ class _MatadorResApp extends State<MatadorResApp> {
           });
           _pageController.jumpToPage(index);
         },
-      ), 
+      ),
       body: PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
@@ -329,7 +385,6 @@ class _MatadorResApp extends State<MatadorResApp> {
             initialCameraPosition: CameraPosition(target: _center, zoom: 16.0),
             markers: _markers,
             //zoomControlsEnabled: true,
-            myLocationButtonEnabled: false 
           ),
 
           // this is where you would add the other pages for the bottom bar
@@ -344,9 +399,22 @@ class _MatadorResApp extends State<MatadorResApp> {
 }
 
 class SaveReservationData {
-  //used to save data to user prefts
-}
+  // Save reservation data to user preferences
+  Future<void> saveData(String time, String date, String partySize) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('time', time);
+    prefs.setString('date', date);
+    prefs.setString('partysize', partySize);
+  }
 
-class LoadReservationData {
-  //used to load data from user prefs
+  // Print data for debugging
+  Future<void> printData() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? time = prefs.getString('time');
+    String? date = prefs.getString('date');
+    String? partySize = prefs.getString('partysize');
+    print('Time: $time');
+    print('Date: $date');
+    print('Party Size: $partySize');
+  }
 }

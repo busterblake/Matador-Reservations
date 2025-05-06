@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'profile_page_loggedin.dart';
 import 'ResturantReservations.dart';
 
-
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
@@ -14,7 +13,11 @@ class ProfilePage extends StatelessWidget {
     }
   }
 
-  Future<void> handleLogin(String email, String password, BuildContext context) async {
+  Future<void> handleLogin(
+    String email,
+    String password,
+    BuildContext context,
+  ) async {
     try {
       await initializeFirebaseIfNeeded();
       /*await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -29,18 +32,26 @@ class ProfilePage extends StatelessWidget {
     } catch (e) {
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Login Failed'),
-          content: Text(e.toString()),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
-          ],
-        ),
+        builder:
+            (context) => AlertDialog(
+              title: const Text('Login Failed'),
+              content: Text(e.toString()),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
       );
     }
   }
 
-  Future<void> handleSignUp(String email, String password, BuildContext context) async {
+  Future<void> handleSignUp(
+    String email,
+    String password,
+    BuildContext context,
+  ) async {
     try {
       await initializeFirebaseIfNeeded();
       /*await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -59,13 +70,17 @@ class ProfilePage extends StatelessWidget {
     } catch (e) {
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Sign Up Failed'),
-          content: Text(e.toString()),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
-          ],
-        ),
+        builder:
+            (context) => AlertDialog(
+              title: const Text('Sign Up Failed'),
+              content: Text(e.toString()),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
       );
     }
   }
@@ -76,10 +91,7 @@ class ProfilePage extends StatelessWidget {
     final passwordController = TextEditingController();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Profile'), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -132,4 +144,6 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
+
 }
+

@@ -34,10 +34,10 @@
               "client_type": 3
             },
             {
-              "client_id": "848467584016-om2ji27pqvjr8l8ekjm9rs7sl2oiatll.apps.googleusercontent.com",
+              "client_id": "848467584016-iloln4s9oqurqa4vi1bvi446ddgjj3b0.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.matadorReservations"
+                "bundle_id": "com.example.googleMapsInFlutter"
               }
             }
           ]
@@ -73,10 +73,10 @@
               "client_type": 3
             },
             {
-              "client_id": "848467584016-om2ji27pqvjr8l8ekjm9rs7sl2oiatll.apps.googleusercontent.com",
+              "client_id": "848467584016-iloln4s9oqurqa4vi1bvi446ddgjj3b0.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.matadorReservations"
+                "bundle_id": "com.example.googleMapsInFlutter"
               }
             }
           ]

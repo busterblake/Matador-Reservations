@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'ResturantReservations.dart';
 import 'ReservationData.dart';
 
+
 class Addreservation extends StatefulWidget{
+
   const Addreservation({super.key});
 
   @override 
   State<Addreservation> createState() => AddreservationState();
   /// @nodoc
   @override
+
   dynamic noSuchMethod(Invocation invocation) =>
       super.noSuchMethod(invocation);
   /// @nodoc
@@ -115,3 +118,4 @@ class AddreservationState extends State<Addreservation>{
   @override
   bool operator ==(Object other) => identical(this, other);
 }
+
