@@ -28,7 +28,6 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  path_provider: ^2.1.1
   flutter:
     sdk: flutter
 
@@ -44,12 +43,11 @@ dependencies:
   shared_preferences: ^2.5.3
   time_range: ^1.1.1
   calendar_day_slot_navigator: ^0.0.1
-  location: ^5.0.0
-  firebase_core: ^3.13.0
-  flutter_rating: ^2.0.2
-  firebase_auth: ^5.5.2
-  cloud_firestore: ^5.6.6
 
+  flutter_rating: ^2.0.2
+  firebase_core: ^3.13.0
+  firebase_auth: ^5.1.3
+  
 
 dev_dependencies:
   flutter_test:
@@ -75,7 +73,6 @@ flutter:
     - lib/Assets/Pizza.jpg
     - lib/Assets/burger1.jpg
     - lib/Assets/burger2.jpg
-    - lib/Assets/giordanachos.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

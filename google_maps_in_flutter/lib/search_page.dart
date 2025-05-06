@@ -4,6 +4,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_rating/flutter_rating.dart';
 import 'menu_page.dart';
 
+
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 
@@ -24,6 +25,7 @@ class _SearchPageState extends State<SearchPage> {
     _loadRestaurants();
     _searchController.addListener(() {
       setState(() {
+
         _filteredRestaurants = _restaurants
           .where((restaurant) => restaurant['title'] != null && restaurant['title']
           .toLowerCase()
@@ -34,6 +36,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _loadRestaurants() async {
+
     final String data = await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> jsonResult = json.decode(data);
     setState(() {
@@ -71,11 +74,13 @@ class _SearchPageState extends State<SearchPage> {
             )
           ],
         ),
+
     );
   }
 }
 
 class RestaurantCards extends StatelessWidget {
+
   const RestaurantCards({
     super.key,
     required this.restaurant,
@@ -92,7 +97,9 @@ class RestaurantCards extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
+
             title: Text('${restaurant['title']}', style: const TextStyle(fontSize: 18.0)),
+
             subtitle: Row(
               children: [
                 Column(
@@ -117,7 +124,7 @@ class RestaurantCards extends StatelessWidget {
                     Text(restaurant['seating']),
                   ],
                 ),
-          
+
                 // Restaurant image
                 Expanded(
                   child: Align(
@@ -136,12 +143,14 @@ class RestaurantCards extends StatelessWidget {
                 )
               ],
             )
+
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 3.0),
             child: ElevatedButton(
               onPressed: () {
                 // Handle button press
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -158,30 +167,37 @@ class RestaurantCards extends StatelessWidget {
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     side: const BorderSide(color: Color.fromARGB(255, 200, 200, 200), width: 1.5),
+
                   ),
                 ),
               ),
               child: const Text('Book Now', style: TextStyle(fontSize: 16.0)),
             ),
+
           )
         ],
       )
+
     );
   }
 }
 
 class SearchBar extends StatelessWidget {
+
   const SearchBar({
     super.key,
     required TextEditingController searchController,
   }) : _searchController = searchController;
+
 
   final TextEditingController _searchController;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
+
       padding: const EdgeInsets.only(top: 30.0, left: 8.0, right: 8.0, bottom: 0),
+
       child: TextField(
         controller: _searchController,
         decoration: InputDecoration(
@@ -190,7 +206,7 @@ class SearchBar extends StatelessWidget {
             icon: Icon(Icons.clear),
             onPressed: () => _searchController.clear(),
           ),
-          
+ 
           prefixIcon: Icon(Icons.search),
         
           border: OutlineInputBorder(
