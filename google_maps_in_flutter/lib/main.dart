@@ -181,16 +181,18 @@ class _MatadorResApp extends State<MatadorResApp> {
     final db = FirebaseFirestore.instance;
     final collectionRef = db.collection(
       ' restaurant list ',
-    ); //make sure to use the correct collection name
+    ); // Make sure it the right name of the collection
 
     final querySnapshot = await collectionRef.get();
 
     final dateString =
-        dateSelected!.toLocal().toString().split(' ')[0]; // format "2025-05-02"
-    final timeString = time!.format(context); // format "11:00 AM"
+        dateSelected!.toLocal().toString().split(' ')[0]; // e.g., "2025-05-06"
+    final timeString = time!.format(context); // e.g., "11:00 AM"
 
     for (var doc in querySnapshot.docs) {
+      //gets the restaurant id from the marker
       final restaurantId = doc.id;
+      //gets the data from the firebase document
       final data = doc.data();
 
       if (data.containsKey(dateString)) {
@@ -198,28 +200,24 @@ class _MatadorResApp extends State<MatadorResApp> {
 
         if (timeMap is Map<String, dynamic> &&
             timeMap.containsKey(timeString)) {
-          final value = timeMap[timeString];
-          int tablesAvailable;
+          final timeEntry = timeMap[timeString];
+          int available = 0;
 
-          if (value is int) {
-            tablesAvailable = value;
-          } else if (value is String) {
-            tablesAvailable = int.tryParse(value) ?? 0;
-          } else {
-            tablesAvailable = 0;
+          if (timeEntry is Map<String, dynamic> &&
+              timeEntry.containsKey("available")) {
+            final availableValue = timeEntry["available"];
+            available = availableValue;
           }
-
-          if (tablesAvailable > 0) {
-            enablemarker(restaurantId);
-          } else {
+          // if the available value is 0, disable the marker
+          // else enable the marker
+          if (available <= 0) {
             disablemarker(restaurantId);
+          } else {
+            enablemarker(restaurantId);
           }
           continue;
         }
       }
-
-      // No date or time info — assume available
-      print('No reservation info for $restaurantId — enabling');
       enablemarker(restaurantId);
     }
   }
