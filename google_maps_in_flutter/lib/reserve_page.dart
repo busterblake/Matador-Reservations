@@ -88,6 +88,7 @@ class _ReservePageState extends State<ReservePage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -108,7 +109,7 @@ class _ReservePageState extends State<ReservePage> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
                 child: TextField(
                   controller: nameController,
                   decoration: const InputDecoration(
@@ -117,6 +118,18 @@ class _ReservePageState extends State<ReservePage> {
                   ),
                 ),
               ),
+
+              if (user == null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                      hintText: 'Email',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                )
             ],
           )
         ],

@@ -117,7 +117,7 @@ class BookingPage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                           ),
-                          child: const Text("Cancel"),
+                          child: const Text("Don't"),
                         ),
                         Spacer(),
                         ElevatedButton(
