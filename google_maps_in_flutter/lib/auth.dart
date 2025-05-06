@@ -45,3 +45,4 @@ class Auth {
   @override
   bool operator ==(Object other) => identical(this, other);
 }
+

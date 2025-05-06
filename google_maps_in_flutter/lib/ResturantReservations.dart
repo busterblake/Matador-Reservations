@@ -1,15 +1,20 @@
+
 /// Page That controls the Reservations for the Resturant
 import 'package:flutter/material.dart';
 import 'package:google_maps_in_flutter/ReservationData.dart';
 import 'dart:ui';
 import 'dart:convert';
+import 'package:flutter/material.dart';
+// import 'dart:convert'; unsed import
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 import 'ReservationData.dart';
 import 'addReservation.dart';
 import 'search_page.dart';
 import 'profile_page.dart';
+
 import 'ReservationSearch.dart';
 /// controls the state of the page
+
 class Resturantreservations extends StatefulWidget {
 
   
@@ -19,10 +24,12 @@ class Resturantreservations extends StatefulWidget {
   State<Resturantreservations> createState() => ResturantReservationState();
   
 }
+
 /// shows the currents reservations in [reservations]
 class ResturantReservationState extends State<Resturantreservations>{
    int myIndex = 0;
    ///Adds the resurants list of [reservations]
+
    List<Reservation> data =List.from(reservations);
    final PageController _pageController = PageController(initialPage: 0);
 
@@ -35,7 +42,9 @@ class ResturantReservationState extends State<Resturantreservations>{
    Widget build(BuildContext context) {
     return Scaffold(
       
+
       /// Controls the Bar at the botom of the page 
+
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: StylishBottomBar(
@@ -133,6 +142,7 @@ class ResturantReservationState extends State<Resturantreservations>{
       )
     );
   }
+
 /// cretes the Columns for the table of [reservations]
   List<DataColumn> createColumns() {
     return[

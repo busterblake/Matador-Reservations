@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+
 import 'ResturantReservations.dart';
 import 'ReservationData.dart';
 
 
 class Addreservation extends StatefulWidget{
 
+
   const Addreservation({super.key});
 
   @override 
   State<Addreservation> createState() => AddreservationState();
+
   /// @nodoc
   @override
 
@@ -21,6 +24,7 @@ class Addreservation extends StatefulWidget{
   /// @nodoc
   @override
   bool operator ==(Object other) => identical(this, other);
+
 }
 
 class AddreservationState extends State<Addreservation>{

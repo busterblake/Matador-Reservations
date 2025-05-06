@@ -11,6 +11,7 @@ class Reservation{
   /// stores the name for the reservation
   final String name;
   /// stores the phone number for the reservation
+
   final int number;
 
   Reservation({
@@ -21,6 +22,7 @@ class Reservation{
     required this.name,
     required this.number,
   });
+
    /// @nodoc
   @override
   dynamic noSuchMethod(Invocation invocation) =>
@@ -32,6 +34,7 @@ class Reservation{
   /// @nodoc
   @override
   bool operator ==(Object other) => identical(this, other);
+
 }
 
 List<Reservation> reservations = [
