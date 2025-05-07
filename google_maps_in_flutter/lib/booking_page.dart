@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_maps_in_flutter/time_formatter.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
+import 'package:quickalert/quickalert.dart';
 
 
 class BookingPage extends StatefulWidget {
@@ -13,38 +15,61 @@ class BookingPage extends StatefulWidget {
 
 class _BookingPageState extends State<BookingPage> {
   late Future<List<Map<String, dynamic>>> _userReservations;
-
-  final Map<String, Map<String, String>> restaurantInfoMap = {
-    "matadorBbqPit": {"title": "Matador BBQ Pit", "address": "18111 Nordhoff St"},
-    "the818Eatery": {"title": "The 818 Eatery", "address": "18123 Nordhoff St"},
-    "northridgeBites": {"title": "Northridge Bites", "address": "18127 Zelzah Ave"},
-    "freddyFazbearsPizza": {"title": "Freddy Fazbear's Pizza", "address": "18000 Nordhoff St"},
-    "beastBurger": {"title": "Beast Burger", "address": "18103 Nordhoff St"},
-    "giordanachos": {"title": "Giordanacho's", "address": "18401 Nordhoff St"},
-  };
+  List<Map<String, dynamic>> restaurants = [];
 
   @override
   void initState() {
     super.initState();
+    _loadRestaurants();
     _userReservations = _fetchUserReservations();
   }
 
-
+  Future<void> _loadRestaurants() async {
+    final String data = await rootBundle.loadString('lib/Assets/markers.json');
+    final List<dynamic> jsonResult = json.decode(data);
+    setState(() {
+      restaurants = jsonResult.cast<Map<String, dynamic>>();
+    });
+  }
 
   Future<List<Map<String, dynamic>>> _fetchUserReservations() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return [];
 
-    final snapshot = await FirebaseFirestore.instance
-        .collection('reservations')
-        .where('userId', isEqualTo: user.uid)
-        .get();
+    final List<String> restaurantIds = [
+      "matador1",
+      "matador2",
+      "matador3",
+      "matador4",
+      "matador5",
+      "matador6",
+    ];
 
-    return snapshot.docs.map((doc) {
-      final data = doc.data();
-      data['id'] = doc.id;
-      return data;
-    }).toList();
+    List<Map<String, dynamic>> reservations = [];
+
+    for (String restaurantId in restaurantIds) {
+      final docSnapshot = await FirebaseFirestore.instance
+          .collection('reservations')
+          .doc(restaurantId)
+          .get();
+
+      if (docSnapshot.exists) {
+        final data = docSnapshot.data();
+        if (data != null) {
+          data.forEach((key, value) {
+            if (value is Map<String, dynamic> && value['email'] == user.email) {
+              reservations.add({
+                'id': key, // Use the field key as the reservation ID
+                ...value,  // Include the reservation details
+                'restaurantId': restaurantId, // Add the restaurant ID for context
+              });
+            }
+          });
+        }
+      }
+    }
+
+    return reservations;
   }
 
   @override
@@ -57,7 +82,7 @@ class _BookingPageState extends State<BookingPage> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(8.0),
         child: user == null
             ? const Center(
                 child: Text(
@@ -83,27 +108,90 @@ class _BookingPageState extends State<BookingPage> {
                     itemBuilder: (context, index) {
                       final reservation = reservations[index];
                       final restaurantId = reservation['restaurantId'];
-                      final info = restaurantInfoMap[restaurantId] ??
-                          {'title': reservation['place'] ?? 'Unknown', 'address': 'Unknown'};
+                      final restaurant = restaurants.firstWhere(
+                        (r) => r['id'] == restaurantId,
+                        orElse: () => {
+                          'title': 'Unknown',
+                          'address': 'Unknown',
+                        },
+                      );
 
                       return Card(
+                        color: Colors.white,
                         margin: const EdgeInsets.symmetric(vertical: 8),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 12.0, horizontal: 16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
                             children: [
-                              Text(
-                                info['title']!,
-                                style: const TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    restaurant['title'] ?? 'Unknown',
+                                    style: const TextStyle(
+                                        fontSize: 22, fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(restaurant['address'] ?? 'Unknown', style: TextStyle(fontSize: 16)),
+                                  Text('Reservation: ${(reservation['date'])}', style: TextStyle(fontSize: 16)),
+                                  Text("Party Size: ${reservation['partySize'] ?? 'Unknown'}", style: TextStyle(fontSize: 16)),
+                                  Text("Table ${reservation['tableId']?.replaceAll(RegExp(r'[^0-9]'), '') ?? 'Unknown'}", style: TextStyle(fontSize: 16)),
+                                ],
                               ),
-                              const SizedBox(height: 5),
-                              Text(info['address'] ?? ''),
-                              Text('Reservation: ${formatTimestampToReadable(reservation['date'])}'),
-                              Text("Party Size: ${reservation['partySize'] ?? 'Unknown'}"),
-                              Text("Table: ${reservation['tableId'] ?? 'Unknown'}"),
+                              const Spacer(),
+                              Column(
+                                children: [
+                                  Center(
+                                    child: IconButton(
+                                      icon: const Icon(Icons.delete),
+                                      iconSize: MediaQuery.of(context).size.width * 0.08,
+                                      color: Colors.pink,
+                                      onPressed: () async {
+                                        QuickAlert.show(
+                                          context: context,
+                                          type: QuickAlertType.warning,
+                                          title: 'Delete reservation?',
+                                          confirmBtnText: 'Keep',
+                                          confirmBtnColor: Colors.pink,
+                                          confirmBtnTextStyle: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                                          showCancelBtn: true,
+                                          cancelBtnText: 'Delete',
+                                          cancelBtnTextStyle: TextStyle(color: Colors.pink, fontSize: 18, fontWeight: FontWeight.bold),
+                                          onCancelBtnTap: () async {
+                                            final docRef = FirebaseFirestore.instance
+                                            .collection('reservations')
+                                            .doc(restaurantId);
+
+                                            await docRef.update({
+                                              reservation['id']: FieldValue.delete(),
+                                            });
+
+                                            final docRef2 = FirebaseFirestore.instance
+                                              .collection('restaurant list')
+                                              .doc(restaurantId);
+
+                                            final date = reservation['date'];
+                                            final time = reservation['time'];
+                                            final tableId = reservation['tableId'];
+                                            final available = reservation['available'];
+                                        
+                                            await docRef2.update({
+                                              '$date.$time.$tableId': FieldValue.delete(),
+                                              '$date.$time.$available': FieldValue.increment(1),
+                                            });
+
+                                            setState(() {
+                                              _userReservations = _fetchUserReservations();
+                                            });
+                                          },
+                                        );
+                                      },
+                                      tooltip: 'Delete Reservation',
+                                    )
+                                  )
+                                ]
+                              )
                             ],
                           ),
                         ),

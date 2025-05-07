@@ -78,6 +78,7 @@ flutter:
     - lib/Assets/burger1.jpg
     - lib/Assets/burger2.jpg
     - lib/Assets/giordanachos.png
+    - lib/Assets/pekinghampalace_logo.png
 
 
   # The following line ensures that the Material Icons font is
