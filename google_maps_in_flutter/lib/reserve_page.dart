@@ -41,45 +41,41 @@ class _ReservePageState extends State<ReservePage> {
     final saveReservationData = SaveReservationData();
     final reservationData = await saveReservationData.loadData();
 
-    final restaurantId = widget.restaurant['restaurantId'];
-    final selectedDateTime = parseDateTime(
-      reservationData['date']!,
-      reservationData['time']!,
-    );
+    final restaurantId = widget.restaurant['id'];
+    final dateString = reservationData['date'];
+    final timeString = reservationData['time'];
 
-    final snapshot = await FirebaseFirestore.instance
-        .collection('reservations')
-        .where('restaurantId', isEqualTo: restaurantId)
-        .get(const GetOptions(source: Source.server));
+    final docRef = FirebaseFirestore.instance
+        .collection('restaurant list')
+        .doc(restaurantId);
+    final docSnapshot = await docRef.get();
 
     List<dynamic> layout = widget.restaurant['layout'];
+
+    // Mark all tables as available initially
     for (var table in layout) {
       table['available'] = true;
     }
 
-    for (final doc in snapshot.docs) {
-      final data = doc.data();
-      final reservationStart =
-          data['date'] is Timestamp
-              ? (data['date'] as Timestamp).toDate()
-              : DateTime.tryParse(data['date'].toString()) ?? DateTime.now();
-      final duration = data['duration'] ?? 60;
-      final reservationEnd = reservationStart.add(Duration(minutes: duration));
-      final reservedTableId = data['tableId'].toString();
-
-      final overlaps =
-          selectedDateTime.isAtSameMomentAs(reservationStart) ||
-          (selectedDateTime.isAfter(reservationStart) &&
-              selectedDateTime.isBefore(reservationEnd));
-
-      if (overlaps) {
-        for (var table in layout) {
-          if (table['id'].toString() == reservedTableId) {
-            table['available'] = false;
+    if (docSnapshot.exists) {
+      final data = docSnapshot.data();
+      if (data != null && data.containsKey(dateString)) {
+        final timeMap = data[dateString];
+        if (timeMap is Map<String, dynamic> &&
+            timeMap.containsKey(timeString)) {
+          final timeEntry = timeMap[timeString];
+          if (timeEntry is Map<String, dynamic>) {
+            for (var table in layout) {
+              final tableId = table['id'].toString();
+              if (timeEntry.containsKey(tableId)) {
+                table['available'] = false; // Mark as unavailable if reserved
+              }
+            }
           }
         }
       }
     }
+
     setState(() {});
   }
 
@@ -472,6 +468,7 @@ DateTime parseDateTime(String date, String time) {
 
 void createCollection(date, time, restaurantId, resid, tablenum) async {
   print("Create collection called");
+
   final db = FirebaseFirestore.instance;
   final collectionRef = db.collection(
     'restaurant list',
