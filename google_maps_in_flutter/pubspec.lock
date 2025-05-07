@@ -61,26 +61,26 @@ packages:
     dependency: "direct main"
     description:
       name: cloud_firestore
-      sha256: "89a5e32716794b6a8d0ec1b5dfda988194e92daedaa3f3bed66fa0d0a595252e"
+      sha256: "6ca737017131a77940fdcca3e13bf6efb5633d50b83514bba24f5fd68e7f340f"
       url: "https://pub.dev"
     source: hosted
-    version: "5.6.6"
+    version: "5.6.7"
   cloud_firestore_platform_interface:
     dependency: transitive
     description:
       name: cloud_firestore_platform_interface
-      sha256: "9f012844eb59be6827ed97415875c5a29ccacd28bc79bf85b4680738251a33df"
+      sha256: "082c9aa0602efc1ee8c44c4e8a29a456b198f79a7f62657df39144c97e364cfb"
       url: "https://pub.dev"
     source: hosted
-    version: "6.6.6"
+    version: "6.6.7"
   cloud_firestore_web:
     dependency: transitive
     description:
       name: cloud_firestore_web
-      sha256: b8b754269be0e907acd9ff63ad60f66b84c78d330ca1d7e474f86c9527ddc803
+      sha256: e1ddeacedd1c5a2e54089bbeb2d95d03b0096eccf8889024598f09f092ed8746
       url: "https://pub.dev"
     source: hosted
-    version: "4.4.6"
+    version: "4.4.7"
   collection:
     dependency: transitive
     description:
@@ -141,10 +141,10 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_auth
-      sha256: "54c62b2d187709114dd09ce658a8803ee91f9119b0e0d3fc2245130ad9bff9ad"
+      sha256: "06787c45d773af3db3ae693ff648ef488e6048a00b654620b3b8849988f63793"
       url: "https://pub.dev"
     source: hosted
-    version: "5.5.2"
+    version: "5.5.3"
   firebase_auth_platform_interface:
     dependency: transitive
     description:
@@ -226,10 +226,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_svg
-      sha256: c200fd79c918a40c5cd50ea0877fa13f81bdaf6f0a5d3dbcc2a13e3285d6aa1b
+      sha256: d44bf546b13025ec7353091516f6881f1d4c633993cb109c3916c3a0159dadf1
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.17"
+    version: "2.1.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -268,10 +268,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_maps_flutter
-      sha256: b42ff7f3875a5eedbe388d883100561b85c62beed1c39ad66dd60537c75bb424
+      sha256: "830d8f7b51b4a950bf0d7daa675324fed6c9beb57a7ecca2a59018270c96b4e0"
       url: "https://pub.dev"
     source: hosted
-    version: "2.12.0"
+    version: "2.12.1"
   google_maps_flutter_android:
     dependency: transitive
     description:
@@ -336,14 +336,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.19.0"
-  js:
-    dependency: transitive
-    description:
-      name: js
-      sha256: f2c445dce49627136094980615a031419f7f3eb393237e4ecd97ac15dea343f3
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.6.7"
   leak_tracker:
     dependency: transitive
     description:
@@ -376,30 +368,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.1"
-  location:
-    dependency: "direct main"
-    description:
-      name: location
-      sha256: "06be54f682c9073cbfec3899eb9bc8ed90faa0e17735c9d9fa7fe426f5be1dd1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.0.3"
-  location_platform_interface:
-    dependency: transitive
-    description:
-      name: location_platform_interface
-      sha256: "8aa1d34eeecc979d7c9fe372931d84f6d2ebbd52226a54fe1620de6fdc0753b1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.2"
-  location_web:
-    dependency: transitive
-    description:
-      name: location_web
-      sha256: ec484c66e8a4ff1ee5d044c203f4b6b71e3a0556a97b739a5bc9616de672412b
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.2.0"
   logging:
     dependency: transitive
     description:
@@ -457,7 +425,7 @@ packages:
     source: hosted
     version: "1.1.0"
   path_provider:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: path_provider
       sha256: "50c5dd5b6e1aaf6fb3a78b33f6aa3afca52bf903a8a5298f53101fdaee55bbcd"
@@ -468,10 +436,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_android
-      sha256: "0ca7359dad67fd7063cb2892ab0c0737b2daafd807cf1acecd62374c8fae6c12"
+      sha256: d0d310befe2c8ab9e7f393288ccbb11b60c019c6b5afc21973eeee4dda2b35e9
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.16"
+    version: "2.2.17"
   path_provider_foundation:
     dependency: transitive
     description:
@@ -564,10 +532,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: "3ec7210872c4ba945e3244982918e502fa2bfb5230dff6832459ca0e1879b7ad"
+      sha256: "20cbd561f743a342c76c151d6ddb93a9ce6005751e7aa458baad3858bfbfb6ac"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.8"
+    version: "2.4.10"
   shared_preferences_foundation:
     dependency: transitive
     description:
@@ -673,18 +641,18 @@ packages:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: f56ee689d572c86a0d96cc986120a1e81a9cee9ff6d3c33acb030766a2ad1c04
+      sha256: "458fb70ad9a6a5fa286a0062ddafa536038d21d6afffe2b0cd057e091108311f"
       url: "https://pub.dev"
     source: hosted
-    version: "29.1.33"
+    version: "29.1.40"
   syncfusion_flutter_datepicker:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_datepicker
-      sha256: "948368b2b4b2df05f2829efa58cfefd0b5bed1c9d388ed628636c45c59ff1be4"
+      sha256: f55c16f5fd5fe0620b746cb04812c8442ff1c26c5a151e13d6d81b62727df25b
       url: "https://pub.dev"
     source: hosted
-    version: "29.1.33"
+    version: "29.1.40"
   term_glyph:
     dependency: transitive
     description:
@@ -709,6 +677,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  timeago:
+    dependency: "direct main"
+    description:
+      name: timeago
+      sha256: "054cedf68706bb142839ba0ae6b135f6b68039f0b8301cbe8784ae653d5ff8de"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.7.0"
   typed_data:
     dependency: transitive
     description:
