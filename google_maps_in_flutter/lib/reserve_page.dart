@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:uuid/uuid.dart';
 
-// This page allows users to reserve a specific table at a restaurant
-// based on the restaurant's layout and the selected date and time.
 // This page allows users to reserve a specific table at a restaurant
 // based on the restaurant's layout and the selected date and time.
 class ReservePage extends StatefulWidget {
@@ -14,8 +13,6 @@ class ReservePage extends StatefulWidget {
   State<ReservePage> createState() => _ReservePageState();
 }
 
-// This class manages the state of the ReservePage.
-// It handles the table selection, availability checking, and reservation process.
 // This class manages the state of the ReservePage.
 // It handles the table selection, availability checking, and reservation process.
 class _ReservePageState extends State<ReservePage> {
@@ -219,6 +216,17 @@ class _ReservePageState extends State<ReservePage> {
 
                   print('test!!!!!!');
 
+                  var uuid = Uuid();
+                  final resID = uuid.v4().toString();
+
+                  createCollection(
+                    reservationData['date'],
+                    reservationData['time'],
+                    restaurantId,
+                    resID,
+                    selectedTable,
+                    );
+
                   await FirebaseFirestore.instance.collection('reservations').add({
                     'restaurantId': restaurantId,
                     'userId': user?.uid ?? 'guest',
@@ -378,3 +386,64 @@ DateTime parseDateTime(String date, String time) {
 
   return DateTime(dateParts[0], dateParts[1], dateParts[2], hour, minute);
 }
+
+void createCollection(date, time, restaurantId, resid, tablenum) async {
+    final db = FirebaseFirestore.instance;
+    final collectionRef = db.collection(
+      'restaurant list',
+    ); // Make sure it the right name of the collection !!!!!!!! --------------
+  
+
+    final dateString =
+        date!.toLocal().toString().split(' ')[0]; // EX: "2025-05-06"
+    final timeString = time!.format(); // EX: "11:00 AM"
+
+    // if date exists check if time exists
+    // if it does, add the reservation to the time
+    // if it doesn't, create a new time entry
+    // if the date doesn't exist, create a new date entry and time then add table x as string
+
+    // check if the date exists
+    final docRef = collectionRef.doc(restaurantId);
+    final docSnapshot = await docRef.get();
+    if (docSnapshot.exists) {
+      final data = docSnapshot.data();
+      if (data != null && data.containsKey(dateString)) {
+        // the date exists so check if time exists
+        final timeMap = data[dateString];
+        if (timeMap is Map<String, dynamic> &&
+            timeMap.containsKey(timeString)) {
+          // time does exists so add a reservation
+          final timeEntry = timeMap[timeString];
+          if (timeEntry is Map<String, dynamic>) {
+            int available = 0;
+            if (timeEntry.containsKey("available")) {
+              final availableValue = timeEntry["available"];
+              available = availableValue;
+            }
+            // check if the reservation is available
+            if (available > 0) {
+              // add the reservation
+              await docRef.update({
+                '$dateString.$timeString.available': available - 1,
+                '$dateString.$timeString.$tablenum': resid,
+              });
+            }
+          }
+        } else {
+          // Time doesn't exist, create a new time entry
+          await docRef.update({
+            '$dateString.$timeString': {'available': 5, '$tablenum': resid},
+          });
+        }
+      } else {
+        // Date doesn't exist, create a new date entry and time
+        // sets available to 5 and adds the reservation id to the table number
+        await docRef.set({
+          dateString: {
+            timeString: {'available': 5, '$tablenum': resid},
+          },
+        }, SetOptions(merge: true));
+      }
+    }
+  }
