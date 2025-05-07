@@ -13,6 +13,7 @@ import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'custom_time_picker.dart';
 
 Future<void> main() async {
@@ -118,7 +119,7 @@ class _MatadorResApp extends State<MatadorResApp> {
                   ],
                 ),
                 confirmBtnColor: Colors.pink,
-                confirmBtnText: '               Book Table               ',
+                confirmBtnText: '             Book Table             ',
                 onConfirmBtnTap: () {
                   Navigator.push(
                     context,
@@ -220,70 +221,70 @@ class _MatadorResApp extends State<MatadorResApp> {
     }
   }
 
-  void testreservationcreation() async {
-    final db = FirebaseFirestore.instance;
-    final collectionRef = db.collection(
-      'restaurant list',
-    ); // Make sure it the right name of the collection !!!!!!!! --------------
+  // void testreservationcreation() async {
+  //   final db = FirebaseFirestore.instance;
+  //   final collectionRef = db.collection(
+  //     'restaurant list',
+  //   ); // Make sure it the right name of the collection !!!!!!!! --------------
 
-    final dateString =
-        dateSelected!.toLocal().toString().split(' ')[0]; // EX: "2025-05-06"
-    final timeString = time!.format(context); // EX: "11:00 AM"
+  //   final dateString =
+  //       dateSelected!.toLocal().toString().split(' ')[0]; // EX: "2025-05-06"
+  //   final timeString = time!.format(context); // EX: "11:00 AM"
 
-    final restaurantId = 'matador2'; // Replace with the actual marker id ------
+  //   final restaurantId = 'matador2'; // Replace with the actual marker id ------
 
-    final resid = "123abc"; // Replace with the actual resevation id ------
-    final tablenum = 1; // Replace with the actual table number  -------
+  //   final resid = "123abc"; // Replace with the actual resevation id ------
+  //   final tablenum = 1; // Replace with the actual table number  -------
 
-    // if date exists check if time exists
-    // if it does, add the reservation to the time
-    // if it doesn't, create a new time entry
-    // if the date doesn't exist, create a new date entry and time then add table x as string
+  //   // if date exists check if time exists
+  //   // if it does, add the reservation to the time
+  //   // if it doesn't, create a new time entry
+  //   // if the date doesn't exist, create a new date entry and time then add table x as string
 
-    // check if the date exists
-    final docRef = collectionRef.doc(restaurantId);
-    final docSnapshot = await docRef.get();
-    if (docSnapshot.exists) {
-      final data = docSnapshot.data();
-      if (data != null && data.containsKey(dateString)) {
-        // the date exists so check if time exists
-        final timeMap = data[dateString];
-        if (timeMap is Map<String, dynamic> &&
-            timeMap.containsKey(timeString)) {
-          // time does exists so add a reservation
-          final timeEntry = timeMap[timeString];
-          if (timeEntry is Map<String, dynamic>) {
-            int available = 0;
-            if (timeEntry.containsKey("available")) {
-              final availableValue = timeEntry["available"];
-              available = availableValue;
-            }
-            // check if the reservation is available
-            if (available > 0) {
-              // add the reservation
-              await docRef.update({
-                '$dateString.$timeString.available': available - 1,
-                '$dateString.$timeString.$tablenum': resid,
-              });
-            }
-          }
-        } else {
-          // Time doesn't exist, create a new time entry
-          await docRef.update({
-            '$dateString.$timeString': {'available': 5, '$tablenum': resid},
-          });
-        }
-      } else {
-        // Date doesn't exist, create a new date entry and time
-        // sets available to 5 and adds the reservation id to the table number
-        await docRef.set({
-          dateString: {
-            timeString: {'available': 5, '$tablenum': resid},
-          },
-        }, SetOptions(merge: true));
-      }
-    }
-  }
+  //   // check if the date exists
+  //   final docRef = collectionRef.doc(restaurantId);
+  //   final docSnapshot = await docRef.get();
+  //   if (docSnapshot.exists) {
+  //     final data = docSnapshot.data();
+  //     if (data != null && data.containsKey(dateString)) {
+  //       // the date exists so check if time exists
+  //       final timeMap = data[dateString];
+  //       if (timeMap is Map<String, dynamic> &&
+  //           timeMap.containsKey(timeString)) {
+  //         // time does exists so add a reservation
+  //         final timeEntry = timeMap[timeString];
+  //         if (timeEntry is Map<String, dynamic>) {
+  //           int available = 0;
+  //           if (timeEntry.containsKey("available")) {
+  //             final availableValue = timeEntry["available"];
+  //             available = availableValue;
+  //           }
+  //           // check if the reservation is available
+  //           if (available > 0) {
+  //             // add the reservation
+  //             await docRef.update({
+  //               '$dateString.$timeString.available': available - 1,
+  //               '$dateString.$timeString.$tablenum': resid,
+  //             });
+  //           }
+  //         }
+  //       } else {
+  //         // Time doesn't exist, create a new time entry
+  //         await docRef.update({
+  //           '$dateString.$timeString': {'available': 5, '$tablenum': resid},
+  //         });
+  //       }
+  //     } else {
+  //       // Date doesn't exist, create a new date entry and time
+  //       // sets available to 5 and adds the reservation id to the table number
+  //       await docRef.set({
+  //         dateString: {
+  //           timeString: {'available': 5, '$tablenum': resid},
+  //         },
+  //       }, SetOptions(merge: true));
+  //     }
+  //   }
+  // }
 
   final PageController _pageController = PageController(initialPage: 0);
   late GoogleMapController mapController;
@@ -381,7 +382,6 @@ class _MatadorResApp extends State<MatadorResApp> {
                 return;
               } else {
                 checkMarkers();
-                testreservationcreation();
                 final saveReservationData = SaveReservationData();
                 await saveReservationData.saveData(
                   time!.format(context), // Format the time as a string
