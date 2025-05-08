@@ -1,9 +1,13 @@
+/// The Add reservation class allows the restaurant to manually add a Reservation to their Reservation list
 import 'package:flutter/material.dart';
-
 import 'ResturantReservations.dart';
 import 'ReservationData.dart';
 
-
+/// Allows restaurant to Manualy add a reservation to their [reservations] list
+/// 
+/// This Class will:
+///  1. Ask for enrty in all feilds
+///  2. at the click of a button the reservation is added to the List 
 class Addreservation extends StatefulWidget{
 
 

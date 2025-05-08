@@ -1,16 +1,35 @@
-# google_maps_in_flutter
+# Matador Reservations
 
-A new Flutter project.
+A Restaurant Reservation app
 
-## Getting Started
+# The Basics
 
-This project is a starting point for a Flutter application.
+This project allows a user to view nearby restaurants and filter them by 
+choosing a date, time, party size. 
 
-A few resources to get you started if this is your first Flutter project:
+Any restaurant that do not have any available reservations for the given date, 
+time, and party size will be filterd out and only restaurants that fit the criteria 
+will remain. 
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+The User is also able to search for specific restaurants and see thier ratings, menu, 
+prices and the user can then choose to book a reservation at that restaurant and enter 
+the reservation details. 
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Reserved reservation can be viiwed in its own page and saved onto your account. 
+
+## Restaurant Owners
+
+Restaurant owners are able to sign in as well and acess a list of their current 
+reservations. If the restaurant decides to do so they can delete reservations
+
+In the event that someone calls the restaurant can add a reservation to their list at 
+any time. 
+
+Restaurant are also able to search through their list of reservations by name, date, time, 
+and table number. 
+
+# Reservations
+
+All reservations are stored using firebase allowing the user and restaurants to view their 
+reservations. 
+

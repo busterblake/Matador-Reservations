@@ -1,3 +1,6 @@
+/// Stores the restaurants reservatons localy
+
+
 /// defines the data that will be in the [reservations] list. 
 class Reservation{
   /// stores the date for the reservation

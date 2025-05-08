@@ -1,3 +1,6 @@
+/// This is the search page
+/// 
+/// This page shows the restaurant cards and the search bar allowing the user to search for certain restauruants
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
@@ -6,18 +9,38 @@ import 'package:google_maps_in_flutter/main.dart';
 import 'menu_page.dart';
 
 
-// This is the search page
-// This page shows the restaurant cards and the search bar
+/// This is the state of the search page,
+/// Gives search functionality and the restaurant data
+/// 
+/// This Class will:
+/// 1. Load the restaurant data and sets up the search functionality
+/// 
+/// 2. sets up a listener for the search controller to filter the restaurant list
+/// and update the restaurant list accordingly
+/// 
+/// 3. Loads the restaurant data from the json file
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
+  /// @nodoc
+  @override
+
+  dynamic noSuchMethod(Invocation invocation) =>
+      super.noSuchMethod(invocation);
+  /// @nodoc
+  @override
+  int get hashCode => super.hashCode;
+
+  /// @nodoc
+  @override
+  bool operator ==(Object other) => identical(this, other);
+
 }
 
 
-// This is the state of the search page
-// Gives search functionality and the restaurant data
+
 class _SearchPageState extends State<SearchPage> {
 
   final TextEditingController _searchController = TextEditingController();
@@ -25,10 +48,6 @@ class _SearchPageState extends State<SearchPage> {
   List<Map<String, dynamic>> _restaurants = [];
   List<Map<String, dynamic>> _filteredRestaurants = [];
 
-  // This is called when search page is first switched to
-  // Loads the restaurant data and sets up the search functionality
-  // Also sets up a listener for the search controller to filter the restaurant list
-  // and update the restaurant list accordingly
   @override
   void initState() {
     super.initState();
@@ -54,7 +73,7 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-  // Loads the restaurant data from the json file
+  
   Future<void> _loadRestaurants() async {
 
     final String data = await rootBundle.loadString('lib/Assets/markers.json');
@@ -72,7 +91,7 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-  // Dispose of the search controller when the widget is disposed
+  /// Dispose of the search controller when the widget is disposed
   @override
   void dispose() {
     _searchController.dispose();
@@ -83,9 +102,9 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body:
-        // For some reason stacks work bottom to top,
-        // so the search bar, although at the bottom
-        // of the stack, is on top of the restaurant cards
+        /// stacks work bottom to top,
+        /// so the search bar, although at the bottom
+        /// of the stack, is on top of the restaurant cards
         Stack(
           children: [ 
             Padding(
@@ -99,7 +118,7 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
 
-            // A small card that shows the reservation data
+            /// A small card that shows the reservation data
             Positioned(
               top: 90.0,
               left: 100.0,
@@ -118,7 +137,14 @@ class _SearchPageState extends State<SearchPage> {
   }
 }
 
-// This is the reservation data card
+/// This is the reservation data card <br>
+///
+/// This class will:
+/// 1. Load the reservation data (from main) <br>
+/// 
+/// 2. Listen and reload Reservation data whenever its changed <br>
+/// 
+/// 3. Builds and displays the Reservation cards
 class ShowReserveData extends StatefulWidget {
   const ShowReserveData({super.key});
 
@@ -126,9 +152,7 @@ class ShowReserveData extends StatefulWidget {
   State<ShowReserveData> createState() => _ShowReserveDataState();
 }
 
-// This is the state of the reservation data card
-// Loads the reservation data (from main) and updates
-// the card when the data changes
+
 class _ShowReserveDataState extends State<ShowReserveData> {
   late Future<Map<String, String>> _reservationData;
 
@@ -137,7 +161,7 @@ class _ShowReserveDataState extends State<ShowReserveData> {
     super.initState();
     _loadReservationData();
 
-    // Listen to changes in reservation data
+    /// Listen to changes in reservation data
     SaveReservationData.reservationChanged.addListener(() {
       _loadReservationData();
     });
@@ -145,22 +169,22 @@ class _ShowReserveDataState extends State<ShowReserveData> {
 
   @override
   void dispose() {
-    // Remove the listener when the widget is disposed
+    /// Remove the listener when the widget is disposed
     SaveReservationData.reservationChanged.removeListener(() {
       _loadReservationData();
     });
     super.dispose();
   }
 
-  // Load the reservation data from the main file
+  /// Load the reservation data from the main file
   void _loadReservationData() {
     setState(() {
       _reservationData = SaveReservationData().loadData();
     });
   }
 
-  // Build the reservation data card
-  // This card shows the reservation data (time, date, party size)
+  /// Build the reservation data card
+  /// This card shows the reservation data (time, date, party size)
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -198,8 +222,11 @@ class _ShowReserveDataState extends State<ShowReserveData> {
   }
 }
 
-// Class that produces the restaurant cards
-// So many children...
+/// Creates the restaurant cards<br>
+/// 
+/// This Class Will
+/// 1. Allow cards fade in and out when they are filtered
+/// 2. Allow the Cards to display the name, ratings, pricing, etc. of each restaurant
 class RestaurantCards extends StatelessWidget {
 
   const RestaurantCards({
@@ -212,7 +239,7 @@ class RestaurantCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     
-    // The cards fade in and out when they are filtered
+    
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 200),
       opacity: restaurant['isVisible'] ? 1.0 : 0.0,
@@ -305,9 +332,11 @@ class RestaurantCards extends StatelessWidget {
   }
 }
 
-// It's just a search bar
+/// The Search Bar 
+/// 
+/// Allows the user to search is quite simple 
 class SearchBar extends StatelessWidget {
-
+/// allows the user to search for a certain restauruant
   const SearchBar({
     super.key,
     required TextEditingController searchController,
@@ -340,4 +369,17 @@ class SearchBar extends StatelessWidget {
       )
     );
   }
+  /// @nodoc
+  @override
+
+  dynamic noSuchMethod(Invocation invocation) =>
+      super.noSuchMethod(invocation);
+  /// @nodoc
+  @override
+  int get hashCode => super.hashCode;
+
+  /// @nodoc
+  @override
+  bool operator ==(Object other) => identical(this, other);
+
 }

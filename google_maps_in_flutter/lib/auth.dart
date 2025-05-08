@@ -1,5 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 /// Firebase authentication
+import 'package:firebase_auth/firebase_auth.dart';
+
 /// manages user sign-in, sign-up, sign-out
 class Auth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;

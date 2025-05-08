@@ -1,8 +1,13 @@
+/// The Menu page Loads and displays each restaurants Menu
 import 'package:flutter/material.dart';
 import 'package:flutter_rating/flutter_rating.dart';
 import 'reserve_page.dart';
 
-
+/// The Menu page Class displays the menu for each restaurant
+/// 
+/// This Class will: 
+///  1. load the menu from a json file
+///  2. Display the menu items for each restaurants menu 
 class MenuPage extends StatelessWidget {
   final Map<String, dynamic> restaurant;
 
@@ -18,6 +23,7 @@ Widget build(BuildContext context) {
       backgroundColor: Colors.transparent,
       foregroundColor: Colors.white,
     ),
+    /// Lists all the menu information
     body: SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,13 +138,15 @@ Widget build(BuildContext context) {
   );
 }
 
-  // Method generates the menu items for each reastaurant.
-  // Loads from json file
-  // While I would LOVE to have all the restaurants in a
-  // database, not only would that most likely force us to
-  // pay for firebase, (currently using the free plan)
-  // but it would also unwanted latency in loading the data.
-  // forgive us professor please
+  /// This Method generates the menu items for each reastaurant.
+  /// 
+  /// This Method will:
+  /// 1. Load menu items from a json file
+  ///
+  /// While this information should be in a database,<br>
+  /// it force us to pay for firebase, (currently using the free plan)
+  /// while also causing unwanted latency in loading the data.
+  
   List<Widget> menuList() {
     return List.generate(
       restaurant['menu'].length,
@@ -147,7 +155,7 @@ Widget build(BuildContext context) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
         
-        // Name and price in the same row
+        /// Name and price in the same row
         Row(
           children: [
           Text(
@@ -162,7 +170,7 @@ Widget build(BuildContext context) {
           ],
         ),
 
-        // Description + Divider
+        /// Description + Divider
         Text(
           restaurant['menu'][index]['description'],
           style: const TextStyle(fontSize: 16.0),

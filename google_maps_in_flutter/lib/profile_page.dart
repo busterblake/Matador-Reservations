@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'profile_page_loggedin.dart';
+import 'ResturantReservations.dart';
 
 
 class ProfilePage extends StatelessWidget {
@@ -27,7 +28,7 @@ class ProfilePage extends StatelessWidget {
 
      Navigator.pushReplacement(
        context,
-       MaterialPageRoute(builder: (context) => const ProfilePageLoggedIn()),
+       MaterialPageRoute(builder: (context) => const Resturantreservations()),
      );
    } catch (e) {
      showDialog(
