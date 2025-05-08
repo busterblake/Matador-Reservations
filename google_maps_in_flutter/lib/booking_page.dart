@@ -11,7 +11,6 @@ class BookingPage extends StatefulWidget {
   State<BookingPage> createState() => _BookingPageState();
 }
 
-// This needed for displaying the reservation data
 class _BookingPageState extends State<BookingPage> {
   Future<List<Map<String, dynamic>>> _userReservations = Future.value([]);
   Map<String, Map<String, String>> restaurantInfoMap = {};
@@ -30,7 +29,8 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Future<Map<String, Map<String, String>>> _loadRestaurantInfoFromJson() async {
-    final String jsonString = await rootBundle.loadString('lib/Assets/markers.json');
+    final String jsonString =
+        await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> jsonData = json.decode(jsonString);
 
     return {
@@ -46,38 +46,28 @@ class _BookingPageState extends State<BookingPage> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return [];
 
-    final snapshot = await FirebaseFirestore.instance
-        .collection('reservations')
-        .where('userId', isEqualTo: user.uid)
-        .get();
+    final firestore = FirebaseFirestore.instance;
+    final reservationsCollection = firestore.collection('reservations');
+    final List<Map<String, dynamic>> userReservations = [];
 
-    return snapshot.docs.map((doc) {
+    final restaurants = await reservationsCollection.get();
+
+    for (final doc in restaurants.docs) {
+      final restaurantId = doc.id;
       final data = doc.data();
-      data['id'] = doc.id;
-      return data;
-    }).toList();
-  }
 
-  String _formatTimestampToReadable(dynamic value) {
-    try {
-      if (value is Timestamp) {
-        final dateTime = value.toDate();
-        return '${dateTime.month}/${dateTime.day}/${dateTime.year} at ${_formatTime(dateTime)}';
-      } else if (value is DateTime) {
-        return '${value.month}/${value.day}/${value.year} at ${_formatTime(value)}';
-      } else {
-        return 'Invalid time';
-      }
-    } catch (e) {
-      return 'Error parsing time';
+      data.forEach((resID, value) {
+        if (value is Map<String, dynamic> && value['userId'] == user.uid) {
+          userReservations.add({
+            ...value,
+            'id': resID,
+            'restaurantId': restaurantId,
+          });
+        }
+      });
     }
-  }
 
-  String _formatTime(DateTime dt) {
-    final hour = dt.hour > 12 ? dt.hour - 12 : dt.hour;
-    final ampm = dt.hour >= 12 ? 'PM' : 'AM';
-    final minute = dt.minute.toString().padLeft(2, '0');
-    return '$hour:$minute $ampm';
+    return userReservations;
   }
 
   @override
@@ -121,7 +111,8 @@ class _BookingPageState extends State<BookingPage> {
                       final partyName = reservation['name'] ?? 'Unknown';
                       final partySize = reservation['partySize'] ?? 'Unknown';
                       final tableId = reservation['tableId'] ?? 'Unknown';
-                      final dateTime = reservation['date'];
+                      final date = reservation['date'] ?? '';
+                      final time = reservation['time'] ?? '';
 
                       return Card(
                         margin: const EdgeInsets.symmetric(vertical: 8),
@@ -139,7 +130,8 @@ class _BookingPageState extends State<BookingPage> {
                               const SizedBox(height: 5),
                               Text(info['address'] ?? ''),
                               Text('Party Name: $partyName'),
-                              Text('Reservation: ${_formatTimestampToReadable(dateTime)}'),
+                              Text('Date: $date'),
+                              Text('Time: $time'),
                               Text('Party Size: $partySize'),
                               Text('Table: $tableId'),
                             ],

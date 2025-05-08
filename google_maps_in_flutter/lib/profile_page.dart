@@ -7,7 +7,6 @@ import 'profile_page_loggedin.dart';
 // added for json/restaurant email check
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
-//import 'Ricardos.dart page';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -26,13 +25,13 @@ class _ProfilePageState extends State<ProfilePage> {
     _checkLoginStatus();
   }
 
-  Future<bool> isRestaurantEmail(String email) async{
+  Future<bool> isRestaurantEmail(String email) async {
     final String jsonString = await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> markers = json.decode(jsonString);
     return markers.any((marker) => marker['email'] == email);
   }
 
-  Future<Map<String, dynamic>?> getRestaurantEmail(String email) async{
+  Future<Map<String, dynamic>?> getRestaurantEmail(String email) async {
     final String jsonString = await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> markers = json.decode(jsonString);
     return markers.cast<Map<String, dynamic>>().firstWhere(
@@ -62,15 +61,34 @@ class _ProfilePageState extends State<ProfilePage> {
 
       final isRestaurant = await isRestaurantEmail(email.trim());
 
-      if(isRestaurant) {
+      if (isRestaurant) {
         final restaurant = await getRestaurantEmail(email.trim());
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ReservationSearch(),
-          ),
-        );
-      }else{
+
+        if (restaurant != null) {
+          // Proceed to ReservationSearch if restaurant data is valid
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ReservationSearch(restaurant: restaurant),
+            ),
+          );
+        } else {
+          // Handle missing restaurant data
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Error'),
+              content: const Text('No restaurant data found for this email.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        }
+      } else {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const ProfilePageLoggedIn()),

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ReservationSearch extends StatefulWidget {
-  const ReservationSearch({super.key});
+  final Map<String, dynamic> restaurant;
+
+  const ReservationSearch({super.key, required this.restaurant});
 
   @override
   State<ReservationSearch> createState() => ReservationSearchPageState();
@@ -18,24 +20,46 @@ class ReservationSearchPageState extends State<ReservationSearch> {
   Future<void> _performSearch() async {
     if (_searchQuery.isEmpty) return;
 
-    final QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection('reservations').get();
+    final restaurantId = widget.restaurant['id'];
 
-    final results = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).where((res) {
-      switch (_searchField) {
-        case 'Name':
-          return res['name'] != null &&
-              res['name'].toString().toLowerCase().contains(_searchQuery.toLowerCase());
-        case 'Time':
-          return res['time']?.toString() == _searchQuery;
-        case 'Table':
-          return res['tableId']?.toString() == _searchQuery;
-        case 'Date':
-          return _formatDate(res['date']) == _searchQuery;
-        default:
-          return false;
-      }
-    }).toList();
+    final doc = await FirebaseFirestore.instance
+        .collection('reservations')
+        .doc(restaurantId)
+        .get();
+
+    final data = doc.data();
+    if (data == null) return;
+
+    final results = data.entries
+        .map((e) {
+          final res = e.value;
+          if (res is Map<String, dynamic>) {
+            res['id'] = e.key;
+            return res;
+          }
+          return null;
+        })
+        .where((res) {
+          if (res == null) return false;
+          switch (_searchField) {
+            case 'Name':
+              return res['name'] != null &&
+                  res['name']
+                      .toString()
+                      .toLowerCase()
+                      .contains(_searchQuery.toLowerCase());
+            case 'Time':
+              return res['time']?.toString() == _searchQuery;
+            case 'Table':
+              return res['tableId']?.toString() == _searchQuery;
+            case 'Date':
+              return res['date']?.toString() == _searchQuery;
+            default:
+              return false;
+          }
+        })
+        .cast<Map<String, dynamic>>()
+        .toList();
 
     setState(() {
       _searchResults = results;
@@ -43,28 +67,11 @@ class ReservationSearchPageState extends State<ReservationSearch> {
   }
 
   String _formatDate(dynamic value) {
-    try {
-      if (value is Timestamp) {
-        final dt = value.toDate();
-        return '${dt.month}/${dt.day}/${dt.year}';
-      } else if (value is DateTime) {
-        return '${value.month}/${value.day}/${value.year}';
-      }
-    } catch (_) {}
-    return '';
+    return value?.toString() ?? '';
   }
 
   String _formatTime(dynamic value) {
-    try {
-      if (value is Timestamp) {
-        final dt = value.toDate();
-        final hour = dt.hour > 12 ? dt.hour - 12 : dt.hour;
-        final ampm = dt.hour >= 12 ? 'PM' : 'AM';
-        final minute = dt.minute.toString().padLeft(2, '0');
-        return '$hour:$minute $ampm';
-      }
-    } catch (_) {}
-    return 'Invalid';
+    return value?.toString() ?? '';
   }
 
   @override
@@ -109,7 +116,7 @@ class ReservationSearchPageState extends State<ReservationSearch> {
                         return ListTile(
                           title: Text('${r['name'] ?? 'Unknown'} - Table ${r['tableId'] ?? 'N/A'}'),
                           subtitle: Text(
-                              'Date: ${_formatDate(r['date'])}, Time: ${_formatTime(r['date'])}'),
+                              'Date: ${_formatDate(r['date'])}, Time: ${_formatTime(r['time'])}'),
                         );
                       },
                     ),

@@ -15,15 +15,15 @@ class ProfilePageLoggedIn extends StatefulWidget {
 class _ProfilePageLoggedInState extends State<ProfilePageLoggedIn> {
   final user = FirebaseAuth.instance.currentUser;
   Future<List<Map<String, dynamic>>> _userReservations = Future.value([]);
-  
-  // for restaurant info to load properly in reservations
+
+  // For restaurant info to load properly in reservations
   Map<String, Map<String, String>> restaurantInfoMap = {};
 
   Future<Map<String, Map<String, String>>> loadRestaurantInfo() async {
     final String jsonString = await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> jsonData = json.decode(jsonString);
 
-    return{
+    return {
       for (var restaurant in jsonData)
         restaurant['id']: {
           'title': restaurant['title'],
@@ -41,46 +41,34 @@ class _ProfilePageLoggedInState extends State<ProfilePageLoggedIn> {
   void _loadInitialData() async {
     restaurantInfoMap = await loadRestaurantInfo();
     _userReservations = _fetchUserReservations();
-    setState(() {
-    });
-
+    setState(() {});
   }
 
   Future<List<Map<String, dynamic>>> _fetchUserReservations() async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('reservations')
-        .where('userId', isEqualTo: user?.uid)
-        .get();
+    final uid = user?.uid ?? '';
+    final firestore = FirebaseFirestore.instance;
+    final reservationsCollection = firestore.collection('reservations');
+    final List<Map<String, dynamic>> userReservations = [];
 
-    return snapshot.docs.map((doc) {
+    final restaurants = await reservationsCollection.get();
+
+    for (final doc in restaurants.docs) {
+      final restaurantId = doc.id;
       final data = doc.data();
-      data['id'] = doc.id;
-      return data;
-    }).toList();
-  }
-  // For firebase to read the time from the databse in "MM/DD/YYYY at HH:MM AM/PM" format
-  String _formatTimestampToReadable(dynamic value) {
-  try {
-    if (value is Timestamp) {
-      final dateTime = value.toDate();
-      return '${dateTime.month}/${dateTime.day}/${dateTime.year} at ${_formatTime(dateTime)}';
-    } else if (value is DateTime) {
-      return '${value.month}/${value.day}/${value.year} at ${_formatTime(value)}';
-    } else {
-      return 'Invalid time';
-    }
-  } catch (e) {
-    return 'Error parsing time';
-  }
-}
-// include this too for firebase to read the time
-String _formatTime(DateTime dt) {
-  final hour = dt.hour > 12 ? dt.hour - 12 : dt.hour;
-  final ampm = dt.hour >= 12 ? 'PM' : 'AM';
-  final minute = dt.minute.toString().padLeft(2, '0');
-  return '$hour:$minute $ampm';
-}
 
+      data.forEach((resID, value) {
+        if (value is Map<String, dynamic> && value['userId'] == uid) {
+          userReservations.add({
+            ...value,
+            'id': resID,
+            'restaurantId': restaurantId,
+          });
+        }
+      });
+    }
+
+    return userReservations;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,8 +112,9 @@ String _formatTime(DateTime dt) {
 
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Center(
-                        child: Text('No reservations yet.',
-                            style: TextStyle(fontSize: 16)));
+                      child: Text('No reservations yet.',
+                          style: TextStyle(fontSize: 16)),
+                    );
                   }
 
                   final reservations = snapshot.data!;
@@ -135,7 +124,8 @@ String _formatTime(DateTime dt) {
                       final reservation = reservations[index];
                       final restaurantId = reservation['restaurantId'];
                       final tableId = reservation['tableId'] ?? 'N/A';
-                      final time = reservation['date'] ?? 'Time not set';
+                      final date = reservation['date'] ?? '';
+                      final time = reservation['time'] ?? '';
 
                       final info = restaurantInfoMap[restaurantId] ??
                           {'title': 'Unknown', 'address': 'Unknown'};
@@ -153,7 +143,7 @@ String _formatTime(DateTime dt) {
                             children: [
                               Text(info['address'] ?? ''),
                               Text('Table: $tableId'),
-                              Text('Time: ${_formatTimestampToReadable(time)}'),
+                              Text('Date: $date at $time'),
                             ],
                           ),
                           trailing: IconButton(
@@ -161,8 +151,10 @@ String _formatTime(DateTime dt) {
                             onPressed: () async {
                               await FirebaseFirestore.instance
                                   .collection('reservations')
-                                  .doc(reservation['id'])
-                                  .delete();
+                                  .doc(reservation['restaurantId'])
+                                  .update({
+                                reservation['id']: FieldValue.delete(),
+                              });
                               setState(() {
                                 _userReservations =
                                     _fetchUserReservations(); // Refresh
