@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+
 class CustomTimePicker extends StatefulWidget {
   final TimeOfDay? selectedTime;
   final Function(TimeOfDay) onTimeSelected;
+
 
   const CustomTimePicker({
     super.key,
@@ -10,12 +12,15 @@ class CustomTimePicker extends StatefulWidget {
     required this.onTimeSelected,
   });
 
+
   @override
   State<CustomTimePicker> createState() => _CustomTimePickerState();
 }
 
+
 class _CustomTimePickerState extends State<CustomTimePicker> {
   TimeOfDay? _localSelectedTime;
+
 
   @override
   void initState() {
@@ -23,20 +28,22 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
     _localSelectedTime = widget.selectedTime;
   }
 
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 30,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 6, // 12 PM to 5 PM
+        itemCount: 11, // 11 AM to 9 PM
         padding: const EdgeInsets.symmetric(horizontal: 16),
         itemBuilder: (context, index) {
-          final hour = 12 + index;
+          final hour = 11 + index;
           final time = TimeOfDay(hour: hour, minute: 0);
           final isSelected =
               _localSelectedTime?.hour == time.hour &&
               _localSelectedTime?.minute == time.minute;
+
 
           return Padding(
             padding: const EdgeInsets.only(right: 12, bottom: 2),
@@ -66,3 +73,8 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
     );
   }
 }
+
+
+
+
+

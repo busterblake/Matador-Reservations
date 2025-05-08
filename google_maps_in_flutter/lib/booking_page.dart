@@ -1,285 +1,219 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
 import 'package:quickalert/quickalert.dart';
-import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
-import 'custom_time_picker.dart';
 
-class BookingPage extends StatelessWidget {
+// The page accesses the Firebase Database and displays any reservations
+// that are tied to the email that was used for the reservation
+class BookingPage extends StatefulWidget {
   const BookingPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-  final reservations = [
-      {
-        "restaurant": "Matador BBQ Pit",
-        "date": "April 30, 2025",
-        "time": "7:00 PM",
-        "partySize": 4,
-        "table": 1
-      },
-      {
-        "restaurant": "The 818 Eatery",
-        "date": "May 1, 2025",
-        "time": "9:00 AM",
-        "partySize": 2,
-        "table": 3
-      },
+  State<BookingPage> createState() => _BookingPageState();
+}
+
+// Manages the state of the booking page
+// Loads restaurant data and grabs reservation data from database
+class _BookingPageState extends State<BookingPage> {
+  late Future<List<Map<String, dynamic>>> _userReservations;
+  List<Map<String, dynamic>> restaurants = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRestaurants();
+    _userReservations = _fetchUserReservations();
+  }
+
+  // Load restaurant info from JSON
+  Future<void> _loadRestaurants() async {
+    final String data = await rootBundle.loadString('lib/Assets/markers.json');
+    final List<dynamic> jsonResult = json.decode(data);
+    setState(() {
+      restaurants = jsonResult.cast<Map<String, dynamic>>();
+    });
+  }
+
+  // Grabs reservations based on email
+  Future<List<Map<String, dynamic>>> _fetchUserReservations() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return [];
+
+    final List<String> restaurantIds = [
+      "matador1",
+      "matador2",
+      "matador3",
+      "matador4",
+      "matador5",
+      "matador6",
     ];
 
-    TimeOfDay? time;
-    String partySize = '';
-    DateTime? dateSelected;
+    List<Map<String, dynamic>> reservations = [];
 
-    TimeOfDay? temptime;
-    String temppartySize = '';
-    DateTime? tempdateSelected;
+    // Iterates through database collections and documents to grab reservations
+    for (String restaurantId in restaurantIds) {
+      final docSnapshot = await FirebaseFirestore.instance
+          .collection('reservations')
+          .doc(restaurantId)
+          .get();
 
-    TimeOfDay? selectedTime;
+      if (docSnapshot.exists) {
+        final data = docSnapshot.data();
+        if (data != null) {
+          data.forEach((key, value) {
+            if (value is Map<String, dynamic> && value['email'] == user.email) {
+              reservations.add({
+                'id': key, // Use the field key as the reservation ID
+                ...value,  // Include the reservation details
+                'restaurantId': restaurantId, // Add the restaurant ID for context
+              });
+            }
+          });
+        }
+      }
+    }
+
+    return reservations;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Saved Reservations"),
+        title: const Text('Saved Reservations'),
+        centerTitle: true,
       ),
-      body: ListView.builder(
-        itemCount: reservations.length,
-        itemBuilder: (context, index) {
-          final reservation = reservations[index];
-          return Card(
-            color: Colors.white,
-            margin: const EdgeInsets.all(8.0),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${reservation["restaurant"]}',
-                        style: const TextStyle(
-                          fontSize: 22,
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text("Date: ${reservation["date"]}", style: TextStyle(fontSize: 16)),
-                      Text("Time: ${reservation["time"]}", style: TextStyle(fontSize: 16)),
-                      Text("Party Size: ${reservation["partySize"]}", style: TextStyle(fontSize: 16)),
-                      Text("Table: ${reservation["table"]}", style: TextStyle(fontSize: 16)),
-                    ],
-                  ),
-                  const Spacer(),
-                  cancelOrEdit(
-                    context,
-                    reservation,
-                    dateSelected,
-                    tempdateSelected,
-                    selectedTime,
-                    temptime,
-                    time,
-                    temppartySize,
-                    partySize),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-      
-    );
-  }
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: user == null
+            ? const Center(
+                child: Text(
+                  // Displays this message if user is not logged in
+                  'You are currently not logged in.\nPlease create an account or sign in under the Profile tab.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18),
+                ),
+              )
+            : FutureBuilder<List<Map<String, dynamic>>>(
+                future: _userReservations,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-  Column cancelOrEdit(BuildContext context, Map<String, Object> reservation, DateTime? dateSelected, DateTime? tempdateSelected, TimeOfDay? selectedTime, TimeOfDay? temptime, TimeOfDay? time, String temppartySize, String partySize) {
-    return Column(
-      children: [
-        ElevatedButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  backgroundColor: Colors.white,
-                  title: const Text("Delete Reservation", style: TextStyle(fontSize: 24)),
-                  content: Text(
-                    "Are you sure you want to delete your reservation at ${reservation["restaurant"]}?",
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                  actions: [
-                    Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.purple,
-                            side: const BorderSide(color: Colors.purple, width: 1.5),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('No reservations found.'));
+                  }
+
+                  final reservations = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: reservations.length,
+                    itemBuilder: (context, index) {
+                      final reservation = reservations[index];
+                      final restaurantId = reservation['restaurantId'];
+                      final restaurant = restaurants.firstWhere(
+                        (r) => r['id'] == restaurantId,
+                        orElse: () => {
+                          'title': 'Unknown',
+                          'address': 'Unknown',
+                        },
+                      );
+
+                      // Displays every reservation as a card with 
+                      // important info and deletion functionality
+                      return Card(
+                        color: Colors.white,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 16.0),
+                          child: Row(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    restaurant['title'] ?? 'Unknown',
+                                    style: const TextStyle(
+                                        fontSize: 22, fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(restaurant['address'] ?? 'Unknown', style: TextStyle(fontSize: 16)),
+                                  Text('Reservation: ${reservation['date']}', style: TextStyle(fontSize: 16)),
+                                  Text('Time: ${reservation['time']}', style: TextStyle(fontSize: 16)),
+                                  Text("Party Size: ${reservation['partySize'] ?? 'Unknown'}", style: TextStyle(fontSize: 16)),
+                                  Text("Table ${reservation['tableId']?.replaceAll(RegExp(r'[^0-9]'), '') ?? 'Unknown'}", style: TextStyle(fontSize: 16)),
+                                ],
+                              ),
+                              const Spacer(),
+                              Column(
+                                children: [
+                                  Center(
+                                    child: IconButton(
+                                      icon: const Icon(Icons.delete),
+                                      iconSize: MediaQuery.of(context).size.width * 0.08,
+                                      color: Colors.pink,
+                                      onPressed: () async {
+                                        QuickAlert.show(
+                                          context: context,
+                                          type: QuickAlertType.warning,
+                                          title: 'Delete reservation?',
+                                          confirmBtnText: 'Keep',
+                                          confirmBtnColor: Colors.pink,
+                                          confirmBtnTextStyle: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                                          showCancelBtn: true,
+                                          cancelBtnText: 'Delete',
+                                          cancelBtnTextStyle: TextStyle(color: Colors.pink, fontSize: 18, fontWeight: FontWeight.bold),
+                                          onCancelBtnTap: () async {
+
+                                            final docRef = FirebaseFirestore.instance
+                                            .collection('reservations')
+                                            .doc(restaurantId);
+
+                                            // Delete saved reservation
+                                            await docRef.update({
+                                              reservation['id']: FieldValue.delete(),
+                                            });
+
+                                            final docRef2 = FirebaseFirestore.instance
+                                              .collection('restaurant list')
+                                              .doc(restaurantId);
+
+                                            final date = reservation['date'];
+                                            final time = reservation['time'];
+                                            final tableId = reservation['tableId'];
+                                            final available = reservation['available'];
+                                        
+                                            // Update table availability in restaurant
+                                            await docRef2.update({
+                                              '$date.$time.$tableId': FieldValue.delete(),
+                                              '$date.$time.$available': FieldValue.increment(1),
+                                            });
+
+                                            setState(() {
+                                              _userReservations = _fetchUserReservations();
+                                            });
+                                          },
+                                        );
+                                      },
+                                      tooltip: 'Delete Reservation',
+                                    )
+                                  )
+                                ]
+                              )
+                            ],
                           ),
-                          child: const Text("Cancel"),
                         ),
-                        Spacer(),
-                        ElevatedButton(
-                          onPressed: () async {
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false, 
-                              builder: (BuildContext context) {
-                                return const Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.pink,
-                                  ), 
-                                );
-                              },
-                            );
-                              await Future.delayed(const Duration(seconds: 1));
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                              
-                              await QuickAlert.show(
-                                context: context,
-                                type: QuickAlertType.success,
-                                text: "Reservation deleted",
-                                confirmBtnColor: Colors.pink,
-                              );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.pink,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                          ),
-                          child: const Text("Delete"),
-                        ),
-                      ],
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.pink,
-            side: const BorderSide(color: Colors.pink, width: 1.5),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-          ),
-          child: const Text("Cancel"),
-        ),
-        const SizedBox(height: 5),
-        ElevatedButton(
-          onPressed: () {
-            QuickAlert.show(
-              context: context,
-              type: QuickAlertType.custom,
-              barrierDismissible: true,
-              confirmBtnText: "Save",
-              widget: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CalendarDaySlotNavigator(
-                    slotLength: 4,
-                    dayBoxHeightAspectRatio: 5,
-                    dayDisplayMode: DayDisplayMode.outsideDateBox,
-                    isGradientColor: true,
-                    activeGradientColor: LinearGradient(
-                      colors: [Color(0xffb644ae), Color(0xff873999)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    monthYearTabBorderRadius: 15,
-                    dayBoxBorderRadius: 10,
-                    headerText: "Select a Date",
-                    fontFamilyName: "Roboto",
-                    isGoogleFont: true,
-                    dayBorderWidth: 1.5,
-                    onDateSelect: (selectedDate) {
-                      dateSelected = selectedDate;
-                      tempdateSelected = selectedDate;
+                      );
                     },
-                  ),
-                  const SizedBox(height: 30),
-                  CustomTimePicker(
-                    selectedTime: selectedTime,
-                    onTimeSelected: (thistime) {
-                      selectedTime = thistime;
-                      temptime = thistime;
-                      time = thistime;
-                    },
-                  ),
-                  const SizedBox(height: 30),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      alignLabelWithHint: true,
-                      hintText: 'Enter Party Size',
-                      prefixIcon: Icon(Icons.group_outlined),
-                    ),
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.number,
-                    onChanged:
-                        (value) => ((temppartySize = value), (partySize = value)),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed:() {
-                      
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
-                      foregroundColor: WidgetStateProperty.all<Color>(Colors.purple),
-                      minimumSize: WidgetStateProperty.all<Size>(const Size(200, 50)),
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          side: const BorderSide(color: Colors.purple, width: 2.0),
-                        ),
-                      ),
-                    ),
-                    child: Text('Change Table')
-                  )
-                ]
+                  );
+                },
               ),
-              onConfirmBtnTap: () async {
-                if (temptime == null ||
-                    temppartySize.isEmpty ||
-                    tempdateSelected == null) {
-                  await QuickAlert.show(
-                    context: context,
-                    type: QuickAlertType.error,
-                    text: 'Please fill all fields.',
-                  );
-                  return;
-                } else {
-                  Navigator.pop(context);
-                  await Future.delayed(const Duration(milliseconds: 500));
-                  await QuickAlert.show(
-                    context: context,
-                    type: QuickAlertType.success,
-                    text: "Booking saved!\nTime: ${time?.format(context)}\nParty Size: $partySize\nDate: ${dateSelected!.toLocal().toString().split(' ')[0]}",
-                  );
-                  temptime = null;
-                  temppartySize = '';
-                  tempdateSelected = null;
-                  return;
-                }
-              },
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.purple,
-            side: const BorderSide(color: Colors.purple, width: 1.5),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-          ),
-          child: const Text("Edit"),
-        ),
-      ],
+      ),
     );
   }
 }

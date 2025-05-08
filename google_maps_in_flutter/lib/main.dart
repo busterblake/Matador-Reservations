@@ -13,20 +13,19 @@ import 'menu_page.dart';
 import 'search_page.dart';
 import 'package:quickalert/quickalert.dart'; // import for QuickAlerts
 import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'custom_time_picker.dart';
-import 'menu_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'custom_time_picker.dart';
 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(
+    name: "res",
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
@@ -64,7 +63,6 @@ class _MatadorResApp extends State<MatadorResApp> {
   final LatLng _center = const LatLng(34.240547308790596, -118.52942529186363);
   Set<Marker> _markers = {};
 
-
   final List<Map<String, dynamic>> _restaurants = [];
   final List<Map<String, dynamic>> _filteredRestaurants = [];
 
@@ -72,7 +70,6 @@ class _MatadorResApp extends State<MatadorResApp> {
   void initState() {
     super.initState();
     _loadMarkersFromJson();
-    // testFirestoreConnection();
   }
 
   Future<void> _loadMarkersFromJson() async {
@@ -109,19 +106,25 @@ class _MatadorResApp extends State<MatadorResApp> {
                           allowHalfRating: true,
                         ),
                         const SizedBox(width: 5.0),
-                        Text('${markerData['reviews']} reviews', style: TextStyle(fontSize: 16)),
+                        Text(
+                          '${markerData['reviews']} reviews',
+                          style: TextStyle(fontSize: 16),
+                        ),
                       ],
                     ),
                     Text(markerData['address'], style: TextStyle(fontSize: 16)),
-                    Text('${markerData['genre']} • ${markerData['price']}', style: TextStyle(fontSize: 16)),
+                    Text(
+                      '${markerData['genre']} • ${markerData['price']}',
+                      style: TextStyle(fontSize: 16),
+                    ),
                     Text(markerData['seating'], style: TextStyle(fontSize: 16)),
                     Divider(),
-                    Text(markerData['summary'], style: TextStyle(fontSize: 18))
+                    Text(markerData['summary'], style: TextStyle(fontSize: 18)),
                   ],
                 ),
                 confirmBtnColor: Colors.pink,
-                confirmBtnText: '               Book Table               ',
-                onConfirmBtnTap:() {
+                confirmBtnText: '             Book Table             ',
+                onConfirmBtnTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -180,7 +183,7 @@ class _MatadorResApp extends State<MatadorResApp> {
   void checkMarkers() async {
     final db = FirebaseFirestore.instance;
     final collectionRef = db.collection(
-      ' restaurant list ',
+      'restaurant list',
     ); // Make sure it the right name of the collection
 
     final querySnapshot = await collectionRef.get();
@@ -221,6 +224,71 @@ class _MatadorResApp extends State<MatadorResApp> {
       enablemarker(restaurantId);
     }
   }
+
+  // void testreservationcreation() async {
+  //   final db = FirebaseFirestore.instance;
+  //   final collectionRef = db.collection(
+  //     'restaurant list',
+  //   ); // Make sure it the right name of the collection !!!!!!!! --------------
+
+  //   final dateString =
+  //       dateSelected!.toLocal().toString().split(' ')[0]; // EX: "2025-05-06"
+  //   final timeString = time!.format(context); // EX: "11:00 AM"
+
+  //   final restaurantId = 'matador2'; // Replace with the actual marker id ------
+
+  //   final resid = "123abc"; // Replace with the actual resevation id ------
+  //   final tablenum = 1; // Replace with the actual table number  -------
+
+  //   // if date exists check if time exists
+  //   // if it does, add the reservation to the time
+  //   // if it doesn't, create a new time entry
+  //   // if the date doesn't exist, create a new date entry and time then add table x as string
+
+  //   // check if the date exists
+  //   final docRef = collectionRef.doc(restaurantId);
+  //   final docSnapshot = await docRef.get();
+  //   if (docSnapshot.exists) {
+  //     final data = docSnapshot.data();
+  //     if (data != null && data.containsKey(dateString)) {
+  //       // the date exists so check if time exists
+  //       final timeMap = data[dateString];
+  //       if (timeMap is Map<String, dynamic> &&
+  //           timeMap.containsKey(timeString)) {
+  //         // time does exists so add a reservation
+  //         final timeEntry = timeMap[timeString];
+  //         if (timeEntry is Map<String, dynamic>) {
+  //           int available = 0;
+  //           if (timeEntry.containsKey("available")) {
+  //             final availableValue = timeEntry["available"];
+  //             available = availableValue;
+  //           }
+  //           // check if the reservation is available
+  //           if (available > 0) {
+  //             // add the reservation
+  //             await docRef.update({
+  //               '$dateString.$timeString.available': available - 1,
+  //               '$dateString.$timeString.$tablenum': resid,
+  //             });
+  //           }
+  //         }
+  //       } else {
+  //         // Time doesn't exist, create a new time entry
+  //         await docRef.update({
+  //           '$dateString.$timeString': {'available': 5, '$tablenum': resid},
+  //         });
+  //       }
+  //     } else {
+  //       // Date doesn't exist, create a new date entry and time
+  //       // sets available to 5 and adds the reservation id to the table number
+  //       await docRef.set({
+  //         dateString: {
+  //           timeString: {'available': 5, '$tablenum': resid},
+  //         },
+  //       }, SetOptions(merge: true));
+  //     }
+  //   }
+  // }
 
   final PageController _pageController = PageController(initialPage: 0);
   late GoogleMapController mapController;
@@ -321,7 +389,6 @@ class _MatadorResApp extends State<MatadorResApp> {
                   dateSelected!.toLocal().toString().split(' ')[0], // Format the date
                   partySize, // Party size
                 );
-
                 Navigator.pop(context);
                 await QuickAlert.show(
                   context: context,
@@ -378,27 +445,37 @@ class _MatadorResApp extends State<MatadorResApp> {
           _pageController.jumpToPage(index);
         },
       ),
-      body: PageView(
-        controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(),
+      body: Stack(
         children: [
-          //pages go in order 0-3 for the bottom bar
-          //right now only the maps page works
-          GoogleMap(
-            myLocationEnabled: true,
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(target: _center, zoom: 16.0),
-            markers: _markers,
-            myLocationButtonEnabled: true,
-
-            //zoomControlsEnabled: true,
+          PageView(
+            controller: _pageController,
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              //pages go in order 0-3 for the bottom bar
+              //right now only the maps page works
+              GoogleMap(
+                myLocationEnabled: true,
+                onMapCreated: _onMapCreated,
+                initialCameraPosition: CameraPosition(target: _center, zoom: 16.0),
+                markers: _markers,
+                myLocationButtonEnabled: true,
+                //zoomControlsEnabled: true,
+              ),
+          
+              // this is where you would add the other pages for the bottom bar
+              //right now it just makes the page say what you clicked on only the maps page works
+              const SearchPage(), // Index 1
+              const BookingPage(), // Index 2
+              const ProfilePage(), // Index 3
+            ],
           ),
-
-          // this is where you would add the other pages for the bottom bar
-          //right now it just makes the page say what you clicked on only the maps page works
-          const SearchPage(), // Index 1
-          const BookingPage(), // Index 2
-          const ProfilePage(), // Index 3
+          if (currentIndex == 0)
+            SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.2, vertical: MediaQuery.of(context).size.height * 0.07),
+                //child: ShowReservationData(),
+              )
+            )
         ],
       ),
     );
