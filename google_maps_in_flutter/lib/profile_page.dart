@@ -65,14 +65,6 @@ class _ProfilePageState extends State<ProfilePage> {
         email: email.trim(),
         password: password,
       );
-
- Future<void> handleLogin(String email, String password, BuildContext context) async {
-   try {
-     await initializeFirebaseIfNeeded();
-     await FirebaseAuth.instance.signInWithEmailAndPassword(
-       email: email.trim(),
-       password: password,
-     );
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Account created successfully!')),
       );
@@ -149,6 +141,5 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
->>>>>>> origin/Chris-Branch-but-better
 }
 

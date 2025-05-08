@@ -1,3 +1,4 @@
+/// // The page that accesses the Firebase Database and displays any reservations
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,8 +6,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
 import 'package:quickalert/quickalert.dart';
 
-// The page accesses the Firebase Database and displays any reservations
-// that are tied to the email that was used for the reservation
+/// 
+/// that are tied to the email that was used for the reservation
 class BookingPage extends StatefulWidget {
   const BookingPage({super.key});
 

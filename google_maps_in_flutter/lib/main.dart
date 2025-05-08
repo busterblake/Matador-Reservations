@@ -473,7 +473,7 @@ class _MatadorResApp extends State<MatadorResApp> {
             SafeArea(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.2, vertical: MediaQuery.of(context).size.height * 0.07),
-                //child: ShowReservationData(),
+                child: ShowReserveData(),
               )
             )
         ],
