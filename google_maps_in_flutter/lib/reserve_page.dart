@@ -31,12 +31,23 @@ class _ReservePageState extends State<ReservePage> {
     _updateTableAvailability();
   }
 
+  // Disposes both the name and email text entries when no longer in use
   @override
   void dispose() {
     nameController.dispose();
+    emailController.dispose();
     super.dispose();
   }
 
+  // Function which checks the database to see if there is already
+  // a reservation for any tables in the restaurant.
+  // It will mark tables with a reservation as unavailable, otherwise
+  // the table is available
+  //
+  // FirebaseFirestore checks the current instance in the database
+  // at a certain collection(restaurant list) ==> document(restaurant)
+  // ==> Field(Date) ==> Map(Time) and takes a snapshot of all the
+  // tables currently have a reservation.
   Future<void> _updateTableAvailability() async {
     final saveReservationData = SaveReservationData();
     final reservationData = await saveReservationData.loadData();
@@ -75,10 +86,10 @@ class _ReservePageState extends State<ReservePage> {
         }
       }
     }
-
     setState(() {});
   }
 
+  
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -92,12 +103,12 @@ class _ReservePageState extends State<ReservePage> {
       ),
       body: Stack(
         children: [
-          CustomPaint(
-            size: Size(double.infinity, 800),
-            painter: RestaurantLayoutPainter(),
-          ),
+
+          // Calls Function to build the tables of the restaurant
+          // and place them on the screen to reserve.
           ..._buildTables(widget.restaurant['layout']),
 
+          // Column to place name and email text boxes
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -118,6 +129,8 @@ class _ReservePageState extends State<ReservePage> {
                 ),
               ),
 
+              // If the user is not signed it, the email textbox
+              // is placed below the name text box
               if (user == null)
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -138,6 +151,7 @@ class _ReservePageState extends State<ReservePage> {
           ),
         ],
       ),
+      // The 'book now' button only pops up when a table is selected.
       bottomNavigationBar: SafeArea(
         child:
             tableSelectionState.containsValue(true)
@@ -151,15 +165,10 @@ class _ReservePageState extends State<ReservePage> {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
+                              // Forces user to type in name
                               return AlertDialog(
-                                title: const Text(
-                                  "Error",
-                                  style: TextStyle(fontSize: 20.0),
-                                ),
-                                content: const Text(
-                                  "Please enter your name.",
-                                  style: TextStyle(fontSize: 18.0),
-                                ),
+                                title: const Text("Error", style: TextStyle(fontSize: 20.0)),
+                                content: const Text("Please enter your name.", style: TextStyle(fontSize: 18.0)),
                                 actions: [
                                   Center(
                                     child: ElevatedButton(
@@ -167,39 +176,16 @@ class _ReservePageState extends State<ReservePage> {
                                         Navigator.pop(context);
                                       },
                                       style: ButtonStyle(
-                                        backgroundColor:
-                                            WidgetStateProperty.all<Color>(
-                                              Colors.pink,
-                                            ),
-                                        foregroundColor:
-                                            WidgetStateProperty.all<Color>(
-                                              Colors.white,
-                                            ),
-                                        minimumSize:
-                                            WidgetStateProperty.all<Size>(
-                                              const Size(100.0, 50.0),
-                                            ),
-                                        shape: WidgetStateProperty.all<
-                                          RoundedRectangleBorder
-                                        >(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              20.0,
-                                            ),
-                                            side: const BorderSide(
-                                              color: Colors.pink,
-                                              width: 2.0,
-                                            ),
+                                        backgroundColor: WidgetStateProperty.all<Color>(Colors.pink),
+                                        foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                                        minimumSize: WidgetStateProperty.all<Size>( const Size(100.0, 50.0)),
+                                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0),
+                                            side: const BorderSide(color: Colors.pink, width: 2.0),
                                           ),
                                         ),
                                       ),
-                                      child: const Text(
-                                        "Ok",
-                                        style: TextStyle(
-                                          fontSize: 20.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
+                                      child: const Text("Ok", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                                     ),
                                   ),
                                 ],
@@ -213,10 +199,6 @@ class _ReservePageState extends State<ReservePage> {
                           final saveReservationData = SaveReservationData();
                           final reservationData =
                               await saveReservationData.loadData();
-                          final selectedDateTime = parseDateTime(
-                            reservationData['date']!,
-                            reservationData['time']!,
-                          );
                           final selectedTable =
                               tableSelectionState.entries
                                   .firstWhere((entry) => entry.value)
@@ -228,17 +210,18 @@ class _ReservePageState extends State<ReservePage> {
                           final name = nameController.text.trim();
                           final email = emailController.text.trim();
 
-                          if (name.isEmpty && email.isEmpty) {
+                          // Forces user to enter email to properly save reservation
+                          // Doesn't notify if they're already signed in because email isnt empty
+                          if (name.isEmpty || email.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text(
-                                  'Please enter your name and email address.',
-                                ),
+                                content: Text('Please enter your name and email address.'),
                               ),
                             );
                             return;
                           }
 
+                          // Show loading circle thing
                           showDialog(
                             context: context,
                             barrierDismissible: false,
@@ -251,15 +234,18 @@ class _ReservePageState extends State<ReservePage> {
                             },
                           );
 
-                          // Fake loading hehe
+                          // Fake loading for a second because it looks better with one
                           await Future.delayed(const Duration(seconds: 1));
                           Navigator.pop(context);
 
                           print('test!!!!!!');
 
+                          
                           var uuid = Uuid();
                           final resID = uuid.v4().toString();
 
+                          // Calls createCollection function to add a new
+                          // reservation in database, 'restaurant list' collection
                           createCollection(
                             reservationData['date'],
                             reservationData['time'],
@@ -270,6 +256,7 @@ class _ReservePageState extends State<ReservePage> {
 
                           print('test!!!!!! 1.5');
 
+                          // Add reservation to 'reservations' collection
                           await FirebaseFirestore.instance
                               .collection('reservations')
                               .doc(restaurantId)
@@ -288,6 +275,8 @@ class _ReservePageState extends State<ReservePage> {
 
                           print('test2!!!!!!');
 
+                          // Once all the database stuff is done, the user
+                          // is shown confirmation dialogue
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -309,29 +298,13 @@ class _ReservePageState extends State<ReservePage> {
                                         );
                                       },
                                       style: ButtonStyle(
-                                        backgroundColor:
-                                            WidgetStateProperty.all<Color>(
-                                              Colors.pink,
-                                            ),
-                                        foregroundColor:
-                                            WidgetStateProperty.all<Color>(
-                                              Colors.white,
-                                            ),
-                                        minimumSize:
-                                            WidgetStateProperty.all<Size>(
-                                              const Size(100.0, 50.0),
-                                            ),
-                                        shape: WidgetStateProperty.all<
-                                          RoundedRectangleBorder
-                                        >(
+                                        backgroundColor: WidgetStateProperty.all<Color>(Colors.pink),
+                                        foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                                        minimumSize: WidgetStateProperty.all<Size>( const Size(100.0, 50.0)),
+                                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                                           RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              20.0,
-                                            ),
-                                            side: const BorderSide(
-                                              color: Colors.pink,
-                                              width: 2.0,
-                                            ),
+                                            borderRadius: BorderRadius.circular(20.0),
+                                            side: const BorderSide(color: Colors.pink, width: 2.0),
                                           ),
                                         ),
                                       ),
@@ -348,6 +321,7 @@ class _ReservePageState extends State<ReservePage> {
                               );
                             },
                           );
+                          // Some sort of error occurred
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -358,22 +332,13 @@ class _ReservePageState extends State<ReservePage> {
                         }
                       },
                       style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all<Color>(
-                          Colors.pink,
-                        ),
-                        foregroundColor: WidgetStateProperty.all<Color>(
-                          Colors.white,
-                        ),
-                        minimumSize: WidgetStateProperty.all<Size>(
-                          const Size(double.infinity, 50.0),
-                        ),
+                        backgroundColor: WidgetStateProperty.all<Color>(Colors.pink),
+                        foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                        minimumSize: WidgetStateProperty.all<Size>(const Size(double.infinity, 50.0)),
                         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
-                            side: const BorderSide(
-                              color: Colors.pink,
-                              width: 2.0,
-                            ),
+                            side: const BorderSide(color: Colors.pink, width: 2.0),
                           ),
                         ),
                       ),
@@ -392,12 +357,15 @@ class _ReservePageState extends State<ReservePage> {
     );
   }
 
+  // Function dedicated to building and placing tables based on the restaurant's table data
   List<Widget> _buildTables(List<dynamic> layout) {
     return layout.map((table) {
       final id = 'Table ${table['id']?.replaceAll(RegExp(r'[^0-9]'), '')}';
       final isAvailable = table['available'] ?? true;
       final isSelected = tableSelectionState[id] == true;
 
+      // Places table at listed X and Y coordinate
+      // Displays whether it's available or not
       return Positioned(
         left: table['x'].toDouble(),
         top: table['y'].toDouble(),
@@ -410,6 +378,8 @@ class _ReservePageState extends State<ReservePage> {
               });
             }
           },
+
+          // Builds table shape
           child: Column(
             children: [
               Container(
@@ -441,30 +411,6 @@ class _ReservePageState extends State<ReservePage> {
       );
     }).toList();
   }
-}
-
-class RestaurantLayoutPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = Colors.transparent
-          ..style = PaintingStyle.fill;
-
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-DateTime parseDateTime(String date, String time) {
-  final dateParts = date.split('-').map(int.parse).toList();
-  final timeParts = time.split(RegExp(r'[: ]')).toList();
-  final hour = int.parse(timeParts[0]) % 12 + (timeParts[2] == 'PM' ? 12 : 0);
-  final minute = int.parse(timeParts[1]);
-
-  return DateTime(dateParts[0], dateParts[1], dateParts[2], hour, minute);
 }
 
 void createCollection(date, time, restaurantId, resid, tablenum) async {

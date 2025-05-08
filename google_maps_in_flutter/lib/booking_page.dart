@@ -5,7 +5,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
 import 'package:quickalert/quickalert.dart';
 
-
+// The page accesses the Firebase Database and displays any reservations
+// that are tied to the email that was used for the reservation
 class BookingPage extends StatefulWidget {
   const BookingPage({super.key});
 
@@ -13,6 +14,8 @@ class BookingPage extends StatefulWidget {
   State<BookingPage> createState() => _BookingPageState();
 }
 
+// Manages the state of the booking page
+// Loads restaurant data and grabs reservation data from database
 class _BookingPageState extends State<BookingPage> {
   late Future<List<Map<String, dynamic>>> _userReservations;
   List<Map<String, dynamic>> restaurants = [];
@@ -24,6 +27,7 @@ class _BookingPageState extends State<BookingPage> {
     _userReservations = _fetchUserReservations();
   }
 
+  // Load restaurant info from JSON
   Future<void> _loadRestaurants() async {
     final String data = await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> jsonResult = json.decode(data);
@@ -32,6 +36,7 @@ class _BookingPageState extends State<BookingPage> {
     });
   }
 
+  // Grabs reservations based on email
   Future<List<Map<String, dynamic>>> _fetchUserReservations() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return [];
@@ -47,6 +52,7 @@ class _BookingPageState extends State<BookingPage> {
 
     List<Map<String, dynamic>> reservations = [];
 
+    // Iterates through database collections and documents to grab reservations
     for (String restaurantId in restaurantIds) {
       final docSnapshot = await FirebaseFirestore.instance
           .collection('reservations')
@@ -86,6 +92,7 @@ class _BookingPageState extends State<BookingPage> {
         child: user == null
             ? const Center(
                 child: Text(
+                  // Displays this message if user is not logged in
                   'You are currently not logged in.\nPlease create an account or sign in under the Profile tab.',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 18),
@@ -116,6 +123,8 @@ class _BookingPageState extends State<BookingPage> {
                         },
                       );
 
+                      // Displays every reservation as a card with 
+                      // important info and deletion functionality
                       return Card(
                         color: Colors.white,
                         margin: const EdgeInsets.symmetric(vertical: 8),
@@ -134,7 +143,8 @@ class _BookingPageState extends State<BookingPage> {
                                   ),
                                   const SizedBox(height: 5),
                                   Text(restaurant['address'] ?? 'Unknown', style: TextStyle(fontSize: 16)),
-                                  Text('Reservation: ${(reservation['date'])}', style: TextStyle(fontSize: 16)),
+                                  Text('Reservation: ${reservation['date']}', style: TextStyle(fontSize: 16)),
+                                  Text('Time: ${reservation['time']}', style: TextStyle(fontSize: 16)),
                                   Text("Party Size: ${reservation['partySize'] ?? 'Unknown'}", style: TextStyle(fontSize: 16)),
                                   Text("Table ${reservation['tableId']?.replaceAll(RegExp(r'[^0-9]'), '') ?? 'Unknown'}", style: TextStyle(fontSize: 16)),
                                 ],
@@ -159,10 +169,12 @@ class _BookingPageState extends State<BookingPage> {
                                           cancelBtnText: 'Delete',
                                           cancelBtnTextStyle: TextStyle(color: Colors.pink, fontSize: 18, fontWeight: FontWeight.bold),
                                           onCancelBtnTap: () async {
+
                                             final docRef = FirebaseFirestore.instance
                                             .collection('reservations')
                                             .doc(restaurantId);
 
+                                            // Delete saved reservation
                                             await docRef.update({
                                               reservation['id']: FieldValue.delete(),
                                             });
@@ -176,6 +188,7 @@ class _BookingPageState extends State<BookingPage> {
                                             final tableId = reservation['tableId'];
                                             final available = reservation['available'];
                                         
+                                            // Update table availability in restaurant
                                             await docRef2.update({
                                               '$date.$time.$tableId': FieldValue.delete(),
                                               '$date.$time.$available': FieldValue.increment(1),
