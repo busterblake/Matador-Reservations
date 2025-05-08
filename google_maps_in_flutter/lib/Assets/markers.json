@@ -1,7 +1,6 @@
 [
   {
     "id": "matador1",
-    "restaurantId": "matadorBbqPit",
     "title": "Matador BBQ Pit",
     "description": "This is a BBQ Restaurant",
     "summary": "A Down-to-Earth BBQ Joint serving up classic BBQ meals in a casual setting.",
@@ -14,6 +13,8 @@
     "lat": 34.23796594969169,
     "lng": -118.53662856651358,
     "image": "lib/Assets/BBQ.jpg",
+    "email": "matadorbbqpit@gmail.com",
+    "password": "password",
     "layout": [
       { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
       { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
@@ -66,8 +67,152 @@
     ]
   },
   {
+    "id": "matador5",
+    "title": "Pekingham Palace",
+    "description": "A british/chinese fusion restaurant",
+    "summary": "A fusion restaurant",
+    "address": "18103 Nordhoff St, Northridge",
+    "rating": 0.0,
+    "reviews": 4326,
+    "genre": "British/Chinese",
+    "price": "$$",
+    "seating": "Indoor",
+    "lat": 34.243181956884065,
+    "lng": -118.52853961742417,
+    "image": "/Users/jacobarce/Documents/GitHub/Matador-Reservations/google_maps_in_flutter/lib/Assets/pekinghampalace_logo.png",
+    "email": "pekinghampalace@gmail.com",
+    "password": "password",
+    "layout": [
+      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
+      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
+      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
+      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
+    ],
+    "menu": [
+      {
+        "name": "Full English Bibimbap",
+        "price": 14.99,
+        "description": "A full english breakfast, slapped over hot rice with the national british museum's culture-swiping confusion."
+      },
+
+      {
+        "name": "Century Scotch Egg",
+        "price": 4.99,
+        "description": "A century egg wrapped in sausage and deep fried."
+      },
+      {
+        "name": "The Big Beige™",
+        "price": 29.99,
+        "description": "A plate of the finest chinese takeaway, perfectly color matched to the color of your nan's wallpaper."
+      },
+      {
+        "name": "Mushy Pea Wonton Soup",
+        "price": 7.99,
+        "description": "A bowl of wonton soup with wontons filled with mushy peas."
+      },
+      {
+        "name": "Lukewarm Pot",
+        "price": 8.99,
+        "description": "Lukewarm soup accompanied with fried meats and NO vegetables to dip into"
+      },
+      {
+        "name": "Mushy Pea Wonton Soup",
+        "price": 7.99,
+        "description": "A bowl of wonton soup with wontons filled with mushy peas."
+      },
+      {
+        "name": "The Boba Milk Pea",
+        "price": 5.99,
+        "description": "A Special Milk tea with peas instead of boba."
+      },
+      {
+        "name": "Chicken Tikka Mochisala",
+        "price": 12.99,
+        "description": "Mochi filled with chicken tikka masala. Cold."
+      },
+      {
+        "name": "Jellied Eel Rangoon",
+        "price": 6.99,
+        "description": "A fried wonton filled with jellied eel. Eat at your own risk."
+      },
+      {
+        "name": "Fortune Biscuits",
+        "price": 2.99,
+        "description": "A buscuit with a fortune inside. The fortune is always 'You will die alone'."
+      }
+    ]
+  },
+  {
+    "id": "matador6",
+    "title": "Giordanacho's",
+    "description": "Italian nacho fusion, they just throw spaghetti on top of nachos",
+    "summary": "Classic Italian Kitchen serving up Italian Mexican dishes. The head chef does NOT know how to cook.",
+    "address": "18401 Nordhoff St, Northridge",
+    "rating": 2.5,
+    "reviews": 15,
+    "genre": "Italian Mexican",
+    "price": "$$",
+    "seating": "Indoor (Food Court)",
+    "lat": 34.2357274106314,
+    "lng": -118.53403046268451,
+    "email" : "giordanachos@gmail.com",
+    "password" : "password",
+    "image": "/Users/jacobarce/Documents/GitHub/Matador-Reservations/google_maps_in_flutter/lib/Assets/giordanachos.png",
+    "layout": [
+      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
+      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
+      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
+      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
+      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
+    ],
+    "menu": [
+      {
+        "name": "Nacho Mama's Spaghetti",
+        "price": 13.99,
+        "description": "Spaghetti topped with nacho cheese and jalapenos."
+      },
+      {
+        "name": "Classic Spaghachos",
+        "price": 15.99,
+        "description": "Nachos topped with spaghetti, marinara sauce, and mozzarella cheese."
+      },
+      {
+        "name": "Alfre-Don Julio Crunchip XXL",
+        "price": 49.99,
+        "description": "An oversized plate of nachos topped with Alfredo sauce, ground beef, and jalapenos."
+      },
+      {
+        "name": "Torta-llini",
+        "price": 5.99,
+        "description": "Nachos topped with tortellini and marinara sauce."
+      },
+      {
+        "name": "Pastaquitos",
+        "price": 7.99,
+        "description": "Nachos topped with pasta and cheese."
+      },
+      {
+        "name": "Spaghetti Fries",
+        "price": 4.99,
+        "description": "Fries topped with spaghetti and marinara sauce."
+      },
+      {
+        "name": "Nacho Pizza",
+        "price": 12.99,
+        "description": "Pizza topped with nachos and cheese."
+      },
+      {
+        "name": "Spaghetti Salad",
+        "price": 6.99,
+        "description": "Salad topped with spaghetti and dressing."
+      }
+    ]
+  },
+  {
     "id": "matador2",
-    "restaurantId" : "the818Eatery",
     "title": "The 818 Eatery",
     "description": "A small cafe/restaraunt",
     "summary": "A cozy cafe with a few food options and a great place to relax.",
@@ -80,6 +225,8 @@
     "lat": 34.23982826085725,
     "lng": -118.52539003612064,
     "image": "lib/Assets/KC310124-27.jpg",
+    "email": "the818eatery@gmail.com",
+    "password": "password",
     "layout": [
       { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
       { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
@@ -133,7 +280,6 @@
   },
   {
     "id": "matador3",
-    "restaurantId" : "northridgeBites",
     "title": "Northridge Bites",
     "description": "Cafe with a few food options",
     "summary": "A small cafe with a few food options and a great place to relax.",
@@ -146,6 +292,8 @@
     "lat": 34.24131729261727,
     "lng": -118.5296862650247,
     "image": "lib/Assets/Bites.jpg",
+    "email": "northridgebites@gmail.com",
+    "password": "password",
     "layout": [
       { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
       { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
@@ -199,7 +347,6 @@
   },
   {
     "id": "matador4",
-    "restaurantId" : "freddyFazbearsPizza",
     "title": "Freddy Fazbear's Pizza",
     "description": "Har har har har har har har har",
     "summary": "A family-friendly pizzeria with animatronic mascots, arcade games, and a fun atmosphere!",
@@ -212,6 +359,8 @@
     "lat": 34.2381180947572,
     "lng": -118.53078391029187,
     "image": "lib/Assets/Pizza.jpg",
+    "email" : "freddyfazbearspizza@gmail.com",
+    "password" : "password",
     "layout": [
       { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
       { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
@@ -260,203 +409,6 @@
         "name": "Soda",
         "price": 1.99,
         "description": "Soft drink of your choice."
-      }
-    ]
-  },
-  {
-    "id": "matador5",
-    "restaurantId" : "beastBurger",
-    "title": "Beast Burger",
-    "description": "This is a ghost kitchen",
-    "summary": "A ghost kitchen serving up burgers and fries, available for delivery only.",
-    "address": "18103 Nordhoff St, Northridge",
-    "rating": 0.5,
-    "reviews": 15,
-    "genre": "Hamburger",
-    "price": "$$$",
-    "seating": "No Seating",
-    "lat": 34.243181956884065,
-    "lng": -118.52853961742417,
-    "image": "lib/Assets/burger1.jpg",
-    "layout": [
-      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
-      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
-      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
-      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
-    ],
-    "menu": [
-      {
-        "name": "Classic Burger",
-        "price": 8.99,
-        "description": "Juicy beef patty with lettuce and tomato."
-      },
-      {
-        "name": "Cheeseburger",
-        "price": 9.99,
-        "description": "Beef patty with cheese, lettuce, and tomato."
-      },
-      {
-        "name": "Fries",
-        "price": 3.99,
-        "description": "Crispy fries served with ketchup."
-      },
-      {
-        "name": "Onion Rings",
-        "price": 4.99,
-        "description": "Crispy onion rings served with ranch."
-      },
-      {
-        "name": "Milkshake",
-        "price": 5.99,
-        "description": "Thick milkshake in various flavors."
-      },
-      {
-        "name": "Chicken Sandwich",
-        "price": 10.99,
-        "description": "Crispy chicken sandwich with lettuce and mayo."
-      },
-      {
-        "name": "Veggie Burger",
-        "price": 8.99,
-        "description": "Vegetarian burger with lettuce and tomato."
-      },
-      {
-        "name": "Salad",
-        "price": 6.99,
-        "description": "Fresh salad with mixed greens and dressing."
-      }
-    ]
-  },
-  {
-    "id": "matador6",
-    "restaurantId" : "giordanachos",
-    "title": "Giordanacho's",
-    "description": "Italian nacho fusion, they just throw spaghetti on top of nachos",
-    "summary": "Classic Italian Kitchen serving up Italian Mexican dishes. The head chef does NOT know how to cook.",
-    "address": "18401 Nordhoff St, Northridge",
-    "rating": 2.5,
-    "reviews": 15,
-    "genre": "Italian Mexican",
-    "price": "$$",
-    "seating": "Indoor (Food Court)",
-    "lat": 34.2357274106314,
-    "lng": -118.53403046268451,
-    "image": "lib/Assets/giordanachos.png",
-    "layout": [
-      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
-      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
-      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
-      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
-    ],
-    "menu": [
-      {
-        "name": "Nacho Mama's Spaghetti",
-        "price": 13.99,
-        "description": "Spaghetti topped with nacho cheese and jalapenos."
-      },
-      {
-        "name": "Classic Spaghachos",
-        "price": 15.99,
-        "description": "Nachos topped with spaghetti, marinara sauce, and mozzarella cheese."
-      },
-      {
-        "name": "Alfre-Don Julio Crunchip XXL",
-        "price": 49.99,
-        "description": "An oversized plate of nachos topped with Alfredo sauce, ground beef, and jalapenos."
-      },
-      {
-        "name": "Torta-llini",
-        "price": 5.99,
-        "description": "Nachos topped with tortellini and marinara sauce."
-      },
-      {
-        "name": "Pastaquitos",
-        "price": 7.99,
-        "description": "Nachos topped with pasta and cheese."
-      },
-      {
-        "name": "Spaghetti Fries",
-        "price": 4.99,
-        "description": "Fries topped with spaghetti and marinara sauce."
-      },
-      {
-        "name": "Nacho Pizza",
-        "price": 12.99,
-        "description": "Pizza topped with nachos and cheese."
-      },
-      {
-        "name": "Spaghetti Salad",
-        "price": 6.99,
-        "description": "Salad topped with spaghetti and dressing."
-      }
-    ]
-  },
-  {
-    "id": "matador7",
-    "title": "Burger",
-    "description": "Burga.",
-    "summary": "Burger",
-    "address": "ur mom's house",
-    "rating": 5.0,
-    "reviews": 498000,
-    "genre": "Burger",
-    "price": "$$",
-    "seating": "Indoor (at your mom's house)",
-    "lat": 34.235851007002424,
-    "lng": -118.52350977257075,
-    "image": "lib/Assets/burger2.jpg",
-    "layout": [
-      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
-      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
-      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
-      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
-    ],
-    "menu": [
-      {
-        "name": "Cheeseburger",
-        "price": 8.99,
-        "description": "Burger with cheese"
-      },
-      {
-        "name": "Double Cheeseburger",
-        "price": 10.99,
-        "description": "Like cheeseburger but double"
-      },
-      {
-        "name": "Veggie Burger",
-        "price": 9.99,
-        "description": "Like burger but veggie"
-      },
-      {
-        "name": "Fried Burger",
-        "price": 3.99,
-        "description": "Like burger but fried"
-      },
-      {
-        "name": "Onion Ring Burger",
-        "price": 4.99,
-        "description": "Like burger but with onion rings"
-      },
-      {
-        "name": "Bacon Burger",
-        "price": 5.99,
-        "description": "Like burger but with bacon"
-      },
-      {
-        "name": "Chicken Burger",
-        "price": 6.99,
-        "description": "Like burger but chicken"
-      },
-      {
-        "name": "Fish Burger",
-        "price": 7.99,
-        "description": "Like burger but fish"
       }
     ]
   }

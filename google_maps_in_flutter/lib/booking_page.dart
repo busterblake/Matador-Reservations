@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_maps_in_flutter/time_formatter.dart';
-
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
 
 class BookingPage extends StatefulWidget {
   const BookingPage({super.key});
@@ -11,25 +11,36 @@ class BookingPage extends StatefulWidget {
   State<BookingPage> createState() => _BookingPageState();
 }
 
+// This needed for displaying the reservation data
 class _BookingPageState extends State<BookingPage> {
-  late Future<List<Map<String, dynamic>>> _userReservations;
-
-  final Map<String, Map<String, String>> restaurantInfoMap = {
-    "matadorBbqPit": {"title": "Matador BBQ Pit", "address": "18111 Nordhoff St"},
-    "the818Eatery": {"title": "The 818 Eatery", "address": "18123 Nordhoff St"},
-    "northridgeBites": {"title": "Northridge Bites", "address": "18127 Zelzah Ave"},
-    "freddyFazbearsPizza": {"title": "Freddy Fazbear's Pizza", "address": "18000 Nordhoff St"},
-    "beastBurger": {"title": "Beast Burger", "address": "18103 Nordhoff St"},
-    "giordanachos": {"title": "Giordanacho's", "address": "18401 Nordhoff St"},
-  };
+  Future<List<Map<String, dynamic>>> _userReservations = Future.value([]);
+  Map<String, Map<String, String>> restaurantInfoMap = {};
 
   @override
   void initState() {
     super.initState();
-    _userReservations = _fetchUserReservations();
+    _loadInitialData();
   }
 
+  void _loadInitialData() async {
+    restaurantInfoMap = await _loadRestaurantInfoFromJson();
+    setState(() {
+      _userReservations = _fetchUserReservations();
+    });
+  }
 
+  Future<Map<String, Map<String, String>>> _loadRestaurantInfoFromJson() async {
+    final String jsonString = await rootBundle.loadString('lib/Assets/markers.json');
+    final List<dynamic> jsonData = json.decode(jsonString);
+
+    return {
+      for (var marker in jsonData)
+        marker['id']: {
+          'title': marker['title'],
+          'address': marker['address'],
+        }
+    };
+  }
 
   Future<List<Map<String, dynamic>>> _fetchUserReservations() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -45,6 +56,28 @@ class _BookingPageState extends State<BookingPage> {
       data['id'] = doc.id;
       return data;
     }).toList();
+  }
+
+  String _formatTimestampToReadable(dynamic value) {
+    try {
+      if (value is Timestamp) {
+        final dateTime = value.toDate();
+        return '${dateTime.month}/${dateTime.day}/${dateTime.year} at ${_formatTime(dateTime)}';
+      } else if (value is DateTime) {
+        return '${value.month}/${value.day}/${value.year} at ${_formatTime(value)}';
+      } else {
+        return 'Invalid time';
+      }
+    } catch (e) {
+      return 'Error parsing time';
+    }
+  }
+
+  String _formatTime(DateTime dt) {
+    final hour = dt.hour > 12 ? dt.hour - 12 : dt.hour;
+    final ampm = dt.hour >= 12 ? 'PM' : 'AM';
+    final minute = dt.minute.toString().padLeft(2, '0');
+    return '$hour:$minute $ampm';
   }
 
   @override
@@ -84,7 +117,11 @@ class _BookingPageState extends State<BookingPage> {
                       final reservation = reservations[index];
                       final restaurantId = reservation['restaurantId'];
                       final info = restaurantInfoMap[restaurantId] ??
-                          {'title': reservation['place'] ?? 'Unknown', 'address': 'Unknown'};
+                          {'title': 'Unknown', 'address': 'Unknown'};
+                      final partyName = reservation['name'] ?? 'Unknown';
+                      final partySize = reservation['partySize'] ?? 'Unknown';
+                      final tableId = reservation['tableId'] ?? 'Unknown';
+                      final dateTime = reservation['date'];
 
                       return Card(
                         margin: const EdgeInsets.symmetric(vertical: 8),
@@ -101,9 +138,10 @@ class _BookingPageState extends State<BookingPage> {
                               ),
                               const SizedBox(height: 5),
                               Text(info['address'] ?? ''),
-                              Text('Reservation: ${formatTimestampToReadable(reservation['date'])}'),
-                              Text("Party Size: ${reservation['partySize'] ?? 'Unknown'}"),
-                              Text("Table: ${reservation['tableId'] ?? 'Unknown'}"),
+                              Text('Party Name: $partyName'),
+                              Text('Reservation: ${_formatTimestampToReadable(dateTime)}'),
+                              Text('Party Size: $partySize'),
+                              Text('Table: $tableId'),
                             ],
                           ),
                         ),

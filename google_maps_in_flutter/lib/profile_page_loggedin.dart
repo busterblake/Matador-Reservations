@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_in_flutter/main.dart';
+import 'dart:convert';
 
 class ProfilePageLoggedIn extends StatefulWidget {
   const ProfilePageLoggedIn({super.key});
@@ -12,40 +14,36 @@ class ProfilePageLoggedIn extends StatefulWidget {
 
 class _ProfilePageLoggedInState extends State<ProfilePageLoggedIn> {
   final user = FirebaseAuth.instance.currentUser;
-  late Future<List<Map<String, dynamic>>> _userReservations;
+  Future<List<Map<String, dynamic>>> _userReservations = Future.value([]);
+  
+  // for restaurant info to load properly in reservations
+  Map<String, Map<String, String>> restaurantInfoMap = {};
 
-  // Simulate loading from markers.json — replace with real file read if needed
-  final Map<String, Map<String, String>> restaurantInfoMap = {
-    "matadorBbqPit": {
-      "title": "Matador BBQ Pit",
-      "address": "18111 Nordhoff St, Northridge"
-    },
-    "the818Eatery": {
-      "title": "The 818 Eatery",
-      "address": "18123 Nordhoff St, Northridge"
-    },
-    "northridgeBites": {
-      "title": "Northridge Bites",
-      "address": "18127 Zelzah Ave, Northridge"
-    },
-    "freddyFazbearsPizza": {
-      "title": "Freddy Fazbear's Pizza",
-      "address": "18000 Nordhoff St, Northridge"
-    },
-    "beastBurger": {
-      "title": "Beast Burger",
-      "address": "18103 Nordhoff St, Northridge"
-    },
-    "giordanachos": {
-      "title": "Giordanacho's",
-      "address": "18401 Nordhoff St, Northridge"
-    }
-  };
+  Future<Map<String, Map<String, String>>> loadRestaurantInfo() async {
+    final String jsonString = await rootBundle.loadString('lib/Assets/markers.json');
+    final List<dynamic> jsonData = json.decode(jsonString);
+
+    return{
+      for (var restaurant in jsonData)
+        restaurant['id']: {
+          'title': restaurant['title'],
+          'address': restaurant['address'],
+        }
+    };
+  }
 
   @override
   void initState() {
     super.initState();
+    _loadInitialData();
+  }
+
+  void _loadInitialData() async {
+    restaurantInfoMap = await loadRestaurantInfo();
     _userReservations = _fetchUserReservations();
+    setState(() {
+    });
+
   }
 
   Future<List<Map<String, dynamic>>> _fetchUserReservations() async {
