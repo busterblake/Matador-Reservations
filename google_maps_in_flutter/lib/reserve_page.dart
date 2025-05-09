@@ -203,6 +203,67 @@ class _ReservePageState extends State<ReservePage> {
                             },
                           );
                           return;
+                        } else if (emailController.text.isEmpty &&
+                            user?.email == null) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text(
+                                  "Error",
+                                  style: TextStyle(fontSize: 20.0),
+                                ),
+                                content: const Text(
+                                  "Please enter your Email.",
+                                  style: TextStyle(fontSize: 18.0),
+                                ),
+                                actions: [
+                                  Center(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            WidgetStateProperty.all<Color>(
+                                              Colors.pink,
+                                            ),
+                                        foregroundColor:
+                                            WidgetStateProperty.all<Color>(
+                                              Colors.white,
+                                            ),
+                                        minimumSize:
+                                            WidgetStateProperty.all<Size>(
+                                              const Size(100.0, 50.0),
+                                            ),
+                                        shape: WidgetStateProperty.all<
+                                          RoundedRectangleBorder
+                                        >(
+                                          RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              20.0,
+                                            ),
+                                            side: const BorderSide(
+                                              color: Colors.pink,
+                                              width: 2.0,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        "Ok",
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                          return;
                         }
 
                         try {
@@ -265,6 +326,22 @@ class _ReservePageState extends State<ReservePage> {
                           );
 
                           print('test!!!!!! 1.5');
+
+                          final userref = FirebaseAuth.instance.currentUser;
+                          final userEmail = userref?.email ?? email;
+
+                          final docRef = FirebaseFirestore.instance
+                              .collection('userinfo')
+                              .doc(userEmail);
+                          final docSnapshot = await docRef.get();
+
+                          if (docSnapshot.exists) {
+                            await docRef.update({
+                              'reservations': FieldValue.increment(1),
+                            });
+                          } else {
+                            docRef.set({'reservations': 1});
+                          }
 
                           await FirebaseFirestore.instance
                               .collection('reservations')
