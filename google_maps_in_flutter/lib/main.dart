@@ -1,29 +1,32 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_rating/flutter_rating.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'profile_page.dart';
 import 'booking_page.dart';
+import 'menu_page.dart';
 import 'search_page.dart';
 import 'package:quickalert/quickalert.dart'; // import for QuickAlerts
 import 'package:calendar_day_slot_navigator/calendar_day_slot_navigator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'custom_time_picker.dart';
-import 'menu_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(
+    name: "res",
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -42,7 +45,7 @@ class MatadorResApp extends StatefulWidget {
 }
 
 class _MatadorResApp extends State<MatadorResApp> {
-  int _currentIndex = 0; // Start with Home/maps
+  int currentIndex = 0; // Start with Home/maps
   TimeOfDay? time;
   String partySize = '';
   DateTime? dateSelected;
@@ -54,36 +57,20 @@ class _MatadorResApp extends State<MatadorResApp> {
   TimeOfDay? selectedTime;
 
   final LatLng _center = const LatLng(34.240547308790596, -118.52942529186363);
-  final Map<String, Marker> _markerMap = {};
   Set<Marker> _markers = {};
 
-  List<Map<String, dynamic>> _restaurants = [];
-  List<Map<String, dynamic>> _filteredRestaurants = [];
-
-  // void testFirestoreConnection() async {
-  //   FirebaseFirestore.instance
-  //       .collection(' restaurant list ')
-  //       .doc('test_write')
-  //       .set({'test': true})
-  //       .then((_) {
-  //         print("✅ Write test success");
-  //       })
-  //       .catchError((e) {
-  //         print("❌ Write test failed: $e");
-  //       });
-  // }
+  final List<Map<String, dynamic>> _restaurants = [];
+  final List<Map<String, dynamic>> _filteredRestaurants = [];
 
   @override
   void initState() {
     super.initState();
     _loadMarkersFromJson();
-    // testFirestoreConnection();
   }
 
   Future<void> _loadMarkersFromJson() async {
     final String data = await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> jsonResult = json.decode(data);
-
     Set<Marker> loadedMarkers =
         jsonResult.map((markerData) {
           return Marker(
@@ -95,14 +82,45 @@ class _MatadorResApp extends State<MatadorResApp> {
             onTap: () {
               QuickAlert.show(
                 context: context,
-                type: QuickAlertType.info,
-                title: markerData['title'],
-                text: markerData['description'],
+                type: QuickAlertType.custom,
                 customAsset: markerData['image'],
-                confirmBtnText: "View Menu",
+                title: markerData['title'],
+                titleAlignment: TextAlign.start,
+                widget: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        StarRating(
+                          rating: markerData['rating'],
+                          size: 16.0,
+                          color: Colors.pink,
+                          borderColor: Colors.pink,
+                          starCount: 5,
+                          allowHalfRating: true,
+                        ),
+                        const SizedBox(width: 5.0),
+                        Text(
+                          '${markerData['reviews']} reviews',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                    Text(markerData['address'], style: TextStyle(fontSize: 16)),
+                    Text(
+                      '${markerData['genre']} • ${markerData['price']}',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Text(markerData['seating'], style: TextStyle(fontSize: 16)),
+                    Divider(),
+                    Text(markerData['summary'], style: TextStyle(fontSize: 18)),
+                  ],
+                ),
                 confirmBtnColor: Colors.pink,
+                confirmBtnText: '             Book Table             ',
                 onConfirmBtnTap: () {
-                  //navigate to the menu page
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -161,7 +179,7 @@ class _MatadorResApp extends State<MatadorResApp> {
   void checkMarkers() async {
     final db = FirebaseFirestore.instance;
     final collectionRef = db.collection(
-      ' restaurant list ',
+      'restaurant list',
     ); // Make sure it the right name of the collection
 
     final querySnapshot = await collectionRef.get();
@@ -203,6 +221,71 @@ class _MatadorResApp extends State<MatadorResApp> {
     }
   }
 
+  // void testreservationcreation() async {
+  //   final db = FirebaseFirestore.instance;
+  //   final collectionRef = db.collection(
+  //     'restaurant list',
+  //   ); // Make sure it the right name of the collection !!!!!!!! --------------
+
+  //   final dateString =
+  //       dateSelected!.toLocal().toString().split(' ')[0]; // EX: "2025-05-06"
+  //   final timeString = time!.format(context); // EX: "11:00 AM"
+
+  //   final restaurantId = 'matador2'; // Replace with the actual marker id ------
+
+  //   final resid = "123abc"; // Replace with the actual resevation id ------
+  //   final tablenum = 1; // Replace with the actual table number  -------
+
+  //   // if date exists check if time exists
+  //   // if it does, add the reservation to the time
+  //   // if it doesn't, create a new time entry
+  //   // if the date doesn't exist, create a new date entry and time then add table x as string
+
+  //   // check if the date exists
+  //   final docRef = collectionRef.doc(restaurantId);
+  //   final docSnapshot = await docRef.get();
+  //   if (docSnapshot.exists) {
+  //     final data = docSnapshot.data();
+  //     if (data != null && data.containsKey(dateString)) {
+  //       // the date exists so check if time exists
+  //       final timeMap = data[dateString];
+  //       if (timeMap is Map<String, dynamic> &&
+  //           timeMap.containsKey(timeString)) {
+  //         // time does exists so add a reservation
+  //         final timeEntry = timeMap[timeString];
+  //         if (timeEntry is Map<String, dynamic>) {
+  //           int available = 0;
+  //           if (timeEntry.containsKey("available")) {
+  //             final availableValue = timeEntry["available"];
+  //             available = availableValue;
+  //           }
+  //           // check if the reservation is available
+  //           if (available > 0) {
+  //             // add the reservation
+  //             await docRef.update({
+  //               '$dateString.$timeString.available': available - 1,
+  //               '$dateString.$timeString.$tablenum': resid,
+  //             });
+  //           }
+  //         }
+  //       } else {
+  //         // Time doesn't exist, create a new time entry
+  //         await docRef.update({
+  //           '$dateString.$timeString': {'available': 5, '$tablenum': resid},
+  //         });
+  //       }
+  //     } else {
+  //       // Date doesn't exist, create a new date entry and time
+  //       // sets available to 5 and adds the reservation id to the table number
+  //       await docRef.set({
+  //         dateString: {
+  //           timeString: {'available': 5, '$tablenum': resid},
+  //         },
+  //       }, SetOptions(merge: true));
+  //     }
+  //   }
+  // }
+
   final PageController _pageController = PageController(initialPage: 0);
   late GoogleMapController mapController;
 
@@ -238,7 +321,7 @@ class _MatadorResApp extends State<MatadorResApp> {
                 CalendarDaySlotNavigator(
                   slotLength: 4,
                   dayBoxHeightAspectRatio: 5,
-                  dayDisplayMode: DayDisplayMode.outsideDateBox,
+                  dayDisplayMode: DayDisplayMode.inDateBox,
                   isGradientColor: true,
                   activeGradientColor: LinearGradient(
                     colors: [Color(0xffb644ae), Color(0xff873999)],
@@ -250,13 +333,13 @@ class _MatadorResApp extends State<MatadorResApp> {
                   headerText: "Select a Date",
                   fontFamilyName: "Roboto",
                   isGoogleFont: true,
-                  dayBorderWidth: 0.5,
+                  dayBorderWidth: 1.5,
+                  dateSelectionType: DateSelectionType.activeFutureDates,
                   onDateSelect: (selectedDate) {
                     dateSelected = selectedDate;
                     tempdateSelected = selectedDate;
                   },
                 ),
-
                 const SizedBox(height: 30),
                 // Time Picker
                 CustomTimePicker(
@@ -307,19 +390,13 @@ class _MatadorResApp extends State<MatadorResApp> {
                   )[0], // Format the date
                   partySize, // Party size
                 );
-                await saveReservationData.printData();
                 Navigator.pop(context);
-                await Future.delayed(const Duration(milliseconds: 500));
                 await QuickAlert.show(
                   context: context,
                   type: QuickAlertType.success,
                   text:
-                      "Party saved!\nTime: ${time?.format(context)}\nParty Size: $partySize\nDate: ${dateSelected!.toLocal().toString().split(' ')[0]}",
+                      "Booking saved!\nTime: ${time?.format(context)}\nParty Size: $partySize\nDate: ${dateSelected!.toLocal().toString().split(' ')[0]}",
                 );
-                temptime = null;
-                temppartySize = '';
-                tempdateSelected = null;
-                return;
               }
             },
           );
@@ -331,7 +408,7 @@ class _MatadorResApp extends State<MatadorResApp> {
         hasNotch: true,
         fabLocation: StylishBarFabLocation.center,
         notchStyle: NotchStyle.circle,
-        currentIndex: _currentIndex,
+        currentIndex: currentIndex,
         items: [
           BottomBarItem(
             icon: const Icon(Icons.map_outlined),
@@ -364,7 +441,7 @@ class _MatadorResApp extends State<MatadorResApp> {
         ],
         onTap: (index) {
           setState(() {
-            _currentIndex = index;
+            currentIndex = index;
           });
           _pageController.jumpToPage(index);
         },
@@ -396,15 +473,18 @@ class _MatadorResApp extends State<MatadorResApp> {
 }
 
 class SaveReservationData {
-  // Save reservation data to user preferences
+  static final ValueNotifier<bool> reservationChanged = ValueNotifier(false);
+
   Future<void> saveData(String time, String date, String partySize) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('time', time);
     prefs.setString('date', date);
     prefs.setString('partysize', partySize);
+
+    // Notify listeners that the reservation data has changed
+    reservationChanged.value = !reservationChanged.value;
   }
 
-  // Print data for debugging
   Future<void> printData() async {
     final prefs = await SharedPreferences.getInstance();
     String? time = prefs.getString('time');
@@ -413,5 +493,14 @@ class SaveReservationData {
     print('Time: $time');
     print('Date: $date');
     print('Party Size: $partySize');
+  }
+
+  Future<Map<String, String>> loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    return {
+      'time': prefs.getString('time') ?? '12:00 PM',
+      'date': prefs.getString('date') ?? '2025-5-15',
+      'partySize': prefs.getString('partysize') ?? '2',
+    };
   }
 }
