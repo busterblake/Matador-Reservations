@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'addReservation.dart';
 
 class ReservationSearch extends StatefulWidget {
   final Map<String, dynamic> restaurant;
@@ -29,6 +30,10 @@ class ReservationSearchPageState extends State<ReservationSearch> {
   Future<void> _loadReservationsForRestaurant() async {
     final restaurantId = widget.restaurant['id'];
 
+  // reservations are stored as 
+  // reservations (collections) ->
+  // matador# (document) -> fields are ->
+  // email, name, partySize, restaurantId, tableId, time, userId...
     final docSnapshot = await FirebaseFirestore.instance
         .collection('reservations')
         .doc(restaurantId)
@@ -84,15 +89,14 @@ class ReservationSearchPageState extends State<ReservationSearch> {
                         int.parse(inputParts[0]), // year
                         int.parse(inputParts[1]), // month
                         int.parse(inputParts[2]), // day
-      );
-
-      if (res['date'] is Timestamp) {
-        final reservationDate = (res['date'] as Timestamp).toDate();
-        return reservationDate.year == inputDate.year &&
-            reservationDate.month == inputDate.month &&
-            reservationDate.day == inputDate.day;
-      }
-    }
+                  );
+                      if (res['date'] is Timestamp) {
+                      final reservationDate = (res['date'] as Timestamp).toDate();
+                      return reservationDate.year == inputDate.year &&
+                      reservationDate.month == inputDate.month &&
+                      reservationDate.day == inputDate.day;
+              }
+         }
   } catch (_) {
     return false;
   }
@@ -151,85 +155,107 @@ class ReservationSearchPageState extends State<ReservationSearch> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Search Reservations"),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text("Search Reservations"),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () => Navigator.pop(context),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            DropdownButton<String>(
-              value: _searchField,
-              items: _searchOptions.map((String field) {
-                return DropdownMenuItem(
-                  value: field,
-                  child: Text("Search by $field"),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _searchField = value!;
-                });
-              },
+    ),
+    body: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          DropdownButton<String>(
+            value: _searchField,
+            items: _searchOptions.map((String field) {
+              return DropdownMenuItem(
+                value: field,
+                child: Text("Search by $field"),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                _searchField = value!;
+              });
+            },
+          ),
+          if (_searchField != 'Today')
+            TextField(
+              decoration: const InputDecoration(labelText: 'Enter search value'),
+              onChanged: (value) => _searchQuery = value,
             ),
-            if (_searchField != 'Today')
-              TextField(
-                decoration: const InputDecoration(labelText: 'Enter search value'),
-                onChanged: (value) => _searchQuery = value,
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                onPressed: _performSearch,
+                child: const Text('Search'),
               ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _performSearch,
-              child: const Text('Search'),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                const Text("Sort by: "),
-                const SizedBox(width: 10),
-                DropdownButton<String>(
-                  value: _sortField,
-                  items: _sortOptions.map((String field) {
-                    return DropdownMenuItem(
-                      value: field,
-                      child: Text(field),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _sortField = value!;
-                      _sortResults(_searchResults); // Re-sort on dropdown change
-                    });
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: _searchResults.isEmpty
-                  ? const Center(child: Text('No results.'))
-                  : ListView.builder(
-                      itemCount: _searchResults.length,
-                      itemBuilder: (context, index) {
-                        final r = _searchResults[index];
-                        return ListTile(
-                          title: Text('${r['name'] ?? 'Unknown'} - Table ${r['tableId'] ?? 'N/A'}'),
-                          subtitle: Text(
-                            'Date: ${_formatDate(r['date'])}, Time: ${_formatTime(r['time'])}, Party Size: ${r['partySize'] ?? 'N/A'}',
-                          ),
-                        );
-                      },
+              ElevatedButton(
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => Addreservation(
+                        restaurantId: widget.restaurant['id'],
+                      ),
                     ),
-            )
-          ],
-        ),
+                  );
+                  if (result == true) {
+                    _loadReservationsForRestaurant(); // Refresh list
+                  }
+                },
+                child: const Text('Add a Reservation'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              const Text("Sort by: "),
+              const SizedBox(width: 10),
+              DropdownButton<String>(
+                value: _sortField,
+                items: _sortOptions.map((String field) {
+                  return DropdownMenuItem(
+                    value: field,
+                    child: Text(field),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _sortField = value!;
+                    _sortResults(_searchResults); // Re-sort on dropdown change
+                  });
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: _searchResults.isEmpty
+                ? const Center(child: Text('No results.'))
+                : ListView.builder(
+                    itemCount: _searchResults.length,
+                    itemBuilder: (context, index) {
+                      final r = _searchResults[index];
+                      return ListTile(
+                        title: Text('${r['name'] ?? 'Unknown'} - Table ${r['tableId'] ?? 'N/A'}'),
+                        subtitle: Text(
+                          'Date: ${_formatDate(r['date'])}, Time: ${_formatTime(r['time'])}, Party Size: ${r['partySize'] ?? 'N/A'}',
+                        ),
+                      );
+                    },
+                  ),
+          )
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 }
