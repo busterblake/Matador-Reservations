@@ -167,6 +167,20 @@ class _BookingPageState extends State<BookingPage> {
                                                 FieldValue.delete(),
                                           });
 
+                                      // Decrease user's reservation count
+                                      await FirebaseFirestore.instance
+                                          .collection('userinfo')
+                                          .doc(
+                                            FirebaseAuth
+                                                .instance
+                                                .currentUser
+                                                ?.email,
+                                          )
+                                          .update({
+                                            'reservations':
+                                                FieldValue.increment(-1),
+                                          });
+
                                       setState(() {
                                         _userReservations =
                                             _fetchUserReservations();
