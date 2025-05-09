@@ -209,10 +209,7 @@ class _ReservePageState extends State<ReservePage> {
                           final saveReservationData = SaveReservationData();
                           final reservationData =
                               await saveReservationData.loadData();
-                          final selectedDateTime = parseDateTime(
-                            reservationData['date']!,
-                            reservationData['time']!,
-                          );
+                          final selectedDateTime = parseDateTime(reservationData['date']!,reservationData['time']!,);
                           final selectedTable =
                               tableSelectionState.entries
                                   .firstWhere((entry) => entry.value)

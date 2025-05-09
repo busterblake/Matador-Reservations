@@ -66,7 +66,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
         if (restaurant != null) {
           // Proceed to ReservationSearch if restaurant data is valid
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => ReservationSearch(restaurant: restaurant),
