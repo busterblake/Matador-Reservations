@@ -27,16 +27,28 @@ class _ReservePageState extends State<ReservePage> {
     // This creates a map where each table's ID is a key, and the value is a boolean indicating whether the table is selected
     tableSelectionState = {
       for (var table in widget.restaurant['layout']) table['id']: false,
+      for (var table in widget.restaurant['layout']) table['id']: false,
     };
     _updateTableAvailability();
   }
 
+  // Disposes both the name and email text entries when no longer in use
   @override
   void dispose() {
     nameController.dispose();
+    emailController.dispose();
     super.dispose();
   }
 
+  // Function which checks the database to see if there is already
+  // a reservation for any tables in the restaurant.
+  // It will mark tables with a reservation as unavailable, otherwise
+  // the table is available
+  //
+  // FirebaseFirestore checks the current instance in the database
+  // at a certain collection(restaurant list) ==> document(restaurant)
+  // ==> Field(Date) ==> Map(Time) and takes a snapshot of all the
+  // tables currently have a reservation.
   Future<void> _updateTableAvailability() async {
     final saveReservationData = SaveReservationData();
     final reservationData = await saveReservationData.loadData();
@@ -49,14 +61,38 @@ class _ReservePageState extends State<ReservePage> {
         .collection('restaurant list')
         .doc(restaurantId);
     final docSnapshot = await docRef.get();
+    final restaurantId = widget.restaurant['id'];
+    final dateString = reservationData['date'];
+    final timeString = reservationData['time'];
+
+    final docRef = FirebaseFirestore.instance
+        .collection('restaurant list')
+        .doc(restaurantId);
+    final docSnapshot = await docRef.get();
 
     List<dynamic> layout = widget.restaurant['layout'];
+
+    // Mark all tables as available initially
 
     // Mark all tables as available initially
     for (var table in layout) {
       table['available'] = true;
     }
 
+    if (docSnapshot.exists) {
+      final data = docSnapshot.data();
+      if (data != null && data.containsKey(dateString)) {
+        final timeMap = data[dateString];
+        if (timeMap is Map<String, dynamic> &&
+            timeMap.containsKey(timeString)) {
+          final timeEntry = timeMap[timeString];
+          if (timeEntry is Map<String, dynamic>) {
+            for (var table in layout) {
+              final tableId = table['id'].toString();
+              if (timeEntry.containsKey(tableId)) {
+                table['available'] = false; // Mark as unavailable if reserved
+              }
+            }
     if (docSnapshot.exists) {
       final data = docSnapshot.data();
       if (data != null && data.containsKey(dateString)) {
@@ -92,16 +128,20 @@ class _ReservePageState extends State<ReservePage> {
       ),
       body: Stack(
         children: [
-          CustomPaint(
-            size: Size(double.infinity, 800),
-            painter: RestaurantLayoutPainter(),
-          ),
+          // Calls Function to build the tables of the restaurant
+          // and place them on the screen to reserve.
           ..._buildTables(widget.restaurant['layout']),
 
+          // Column to place name and email text boxes
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
+                padding: const EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  bottom: 8.0,
+                ),
                 padding: const EdgeInsets.only(
                   left: 16.0,
                   right: 16.0,
@@ -112,12 +152,20 @@ class _ReservePageState extends State<ReservePage> {
                   decoration: const InputDecoration(
                     hintText: 'Name',
                     border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
                   ),
                 ),
               ),
 
+              // If the user is not signed it, the email textbox
+              // is placed below the name text box
               if (user == null)
                 Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
+                  ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16.0,
                     vertical: 8.0,
@@ -127,10 +175,14 @@ class _ReservePageState extends State<ReservePage> {
                     decoration: const InputDecoration(
                       hintText: 'Email',
                       border: OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.white,
                     ),
                   ),
                 ),
+                ),
             ],
+          ),
           ),
         ],
       ),
@@ -360,6 +412,7 @@ class _ReservePageState extends State<ReservePage> {
                               });
 
                           print('test2!!!!!!');
+                          print('test2!!!!!!');
 
                           showDialog(
                             context: context,
@@ -465,12 +518,15 @@ class _ReservePageState extends State<ReservePage> {
     );
   }
 
+  // Function dedicated to building and placing tables based on the restaurant's table data
   List<Widget> _buildTables(List<dynamic> layout) {
     return layout.map((table) {
-      final id = table['id'].toString();
+      final id = 'Table ${table['id']?.replaceAll(RegExp(r'[^0-9]'), '')}';
       final isAvailable = table['available'] ?? true;
       final isSelected = tableSelectionState[id] == true;
 
+      // Places table at listed X and Y coordinate
+      // Displays whether it's available or not
       return Positioned(
         left: table['x'].toDouble(),
         top: table['y'].toDouble(),
@@ -483,6 +539,8 @@ class _ReservePageState extends State<ReservePage> {
               });
             }
           },
+
+          // Builds table shape
           child: Column(
             children: [
               Container(
@@ -502,7 +560,7 @@ class _ReservePageState extends State<ReservePage> {
                 child: Center(
                   child: Text(
                     id,
-                    style: const TextStyle(color: Colors.black, fontSize: 12.0),
+                    style: const TextStyle(color: Colors.black, fontSize: 14.0),
                   ),
                 ),
               ),
