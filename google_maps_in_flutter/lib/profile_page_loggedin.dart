@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_in_flutter/main.dart';
+import 'dart:convert';
 
 class ProfilePageLoggedIn extends StatefulWidget {
   const ProfilePageLoggedIn({super.key});
@@ -24,8 +26,8 @@ class _ProfilePageLoggedInState extends State<ProfilePageLoggedIn> {
   // Fetches the total number of reservations made by the user from Firestore
   Future<int> _fetchReservationsCount() async {
     final docRef = FirebaseFirestore.instance
-      .collection('userinfo')
-      .doc(user?.email);
+        .collection('userinfo')
+        .doc(user?.email);
     final docSnapshot = await docRef.get();
 
     if (!docSnapshot.exists) {
@@ -103,8 +105,12 @@ class _ProfilePageLoggedInState extends State<ProfilePageLoggedIn> {
                 },
                 child: const Text('Logout'),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.pink),
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Colors.white,
+                  ),
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                    Colors.pink,
+                  ),
                 ),
               ),
             ),

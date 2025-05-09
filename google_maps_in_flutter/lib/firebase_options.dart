@@ -72,5 +72,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'restaurant-85689.firebasestorage.app',
     iosBundleId: 'com.example.googleMapsInFlutter',
   );
-
 }

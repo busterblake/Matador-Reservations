@@ -19,7 +19,8 @@ import 'custom_time_picker.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    name: "res",
+    // name was causing me errors loading firebase
+    // name: "res",
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(MyApp());
@@ -457,12 +458,15 @@ class _MatadorResApp extends State<MatadorResApp> {
               GoogleMap(
                 myLocationEnabled: true,
                 onMapCreated: _onMapCreated,
-                initialCameraPosition: CameraPosition(target: _center, zoom: 16.0),
+                initialCameraPosition: CameraPosition(
+                  target: _center,
+                  zoom: 16.0,
+                ),
                 markers: _markers,
                 myLocationButtonEnabled: true,
                 //zoomControlsEnabled: true,
               ),
-          
+
               // this is where you would add the other pages for the bottom bar
               //right now it just makes the page say what you clicked on only the maps page works
               const SearchPage(), // Index 1
@@ -473,10 +477,13 @@ class _MatadorResApp extends State<MatadorResApp> {
           if (currentIndex == 0)
             SafeArea(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.2, vertical: MediaQuery.of(context).size.height * 0.02),
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.2,
+                  vertical: MediaQuery.of(context).size.height * 0.02,
+                ),
                 child: ShowReserveData(),
-              )
-            )
+              ),
+            ),
         ],
       ),
     );
@@ -509,7 +516,7 @@ class SaveReservationData {
   Future<Map<String, String>> loadData() async {
     final prefs = await SharedPreferences.getInstance();
     return {
-      'time': prefs.getString('time') ?? '12:f0 PM',
+      'time': prefs.getString('time') ?? '12:00 PM',
       'date': prefs.getString('date') ?? '2025-5-15',
       'partySize': prefs.getString('partysize') ?? '2',
     };
