@@ -17,11 +17,10 @@
     "password": "password",
     "layout": [
       { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
-      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
+      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": true },
       { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
       { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
-      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
+      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": true }
     ],
     "menu": [
       {
@@ -79,16 +78,16 @@
     "seating": "Indoor",
     "lat": 34.243181956884065,
     "lng": -118.52853961742417,
-    "image": "/Users/jacobarce/Documents/GitHub/Matador-Reservations/google_maps_in_flutter/lib/Assets/pekinghampalace_logo.png",
+    "image": "lib/Assets/pekinghampalace_logo.png",
     "email": "pekinghampalace@gmail.com",
     "password": "password",
     "layout": [
-      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
-      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
-      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
-      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
+      { "id": "table1", "x": 75, "y": 50, "width": 250, "height": 75, "available": true },
+      { "id": "table2", "x": 75, "y": 200, "width": 250, "height": 75, "available": true },
+      { "id": "table3", "x": 50, "y": 350, "width": 100, "height": 100, "available": true },
+      { "id": "table4", "x": 250, "y": 350, "width": 100, "height": 100, "available": true },
+      { "id": "table5", "x": 50, "y": 500, "width": 100, "height": 100, "available": true },
+      { "id": "table6", "x": 250, "y": 500, "width": 100, "height": 100, "available": true }
     ],
     "menu": [
       {
@@ -159,14 +158,14 @@
     "lng": -118.53403046268451,
     "email" : "giordanachos@gmail.com",
     "password" : "password",
-    "image": "/Users/jacobarce/Documents/GitHub/Matador-Reservations/google_maps_in_flutter/lib/Assets/giordanachos.png",
+    "image": "lib/Assets/giordanachos.png",
     "layout": [
-      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
-      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
-      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
-      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
+      { "id": "table1", "x": 40, "y": 100, "width": 120, "height": 75, "available": true },
+      { "id": "table2", "x": 240, "y": 100, "width": 120, "height": 75, "available": true },
+      { "id": "table3", "x": 40, "y": 250, "width": 120, "height": 75, "available": true },
+      { "id": "table4", "x": 240, "y": 250, "width": 120, "height": 75, "available": true },
+      { "id": "table5", "x": 50, "y": 400, "width": 100, "height": 100, "available": true },
+      { "id": "table6", "x": 250, "y": 400, "width": 100, "height": 100, "available": true }
     ],
     "menu": [
       {
@@ -228,12 +227,12 @@
     "email": "the818eatery@gmail.com",
     "password": "password",
     "layout": [
-      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
-      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
-      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
-      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
+      { "id": "table1", "x": 30, "y": 80, "width": 75, "height": 200, "available": true },
+      { "id": "table2", "x": 165, "y": 80, "width": 75, "height": 200, "available": true },
+      { "id": "table3", "x": 300, "y": 80, "width": 75, "height": 200, "available": true },
+      { "id": "table4", "x": 50, "y": 330, "width": 100, "height": 100, "available": true },
+      { "id": "table5", "x": 250, "y": 330, "width": 100, "height": 100, "available": true },
+      { "id": "table6", "x": 150, "y": 480, "width": 100, "height": 100, "available": true }
     ],
     "menu": [
       {
@@ -295,12 +294,12 @@
     "email": "northridgebites@gmail.com",
     "password": "password",
     "layout": [
-      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
-      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
-      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
-      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
+      { "id": "table1", "x": 50, "y": 100, "width": 100, "height": 100, "available": true },
+      { "id": "table2", "x": 250, "y": 100, "width": 100, "height": 100, "available": true },
+      { "id": "table3", "x": 50, "y": 250, "width": 100, "height": 100, "available": true },
+      { "id": "table4", "x": 250, "y": 250, "width": 100, "height": 100, "available": true },
+      { "id": "table5", "x": 50, "y": 400, "width": 100, "height": 100, "available": true },
+      { "id": "table6", "x": 250, "y": 400, "width": 100, "height": 100, "available": true }
     ],
     "menu": [
       {
@@ -362,12 +361,12 @@
     "email" : "freddyfazbearspizza@gmail.com",
     "password" : "password",
     "layout": [
-      { "id": "table1", "x": 50, "y": 50, "width": 100, "height": 100, "available": true },
-      { "id": "table2", "x": 250, "y": 50, "width": 100, "height": 100, "available": false },
-      { "id": "table3", "x": 50, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table4", "x": 250, "y": 200, "width": 100, "height": 100, "available": true },
-      { "id": "table5", "x": 50, "y": 350, "width": 100, "height": 100, "available": false },
-      { "id": "table6", "x": 250, "y": 350, "width": 100, "height": 100, "available": true }
+      { "id": "table1", "x": 30, "y": 50, "width": 75, "height": 275, "available": true },
+      { "id": "table2", "x": 165, "y": 50, "width": 75, "height": 275, "available": true },
+      { "id": "table3", "x": 300, "y": 50, "width": 75, "height": 275, "available": true },
+      { "id": "table4", "x": 30, "y": 375, "width": 75, "height": 275, "available": true },
+      { "id": "table5", "x": 165, "y": 375, "width": 75, "height": 275, "available": true },
+      { "id": "table6", "x": 300, "y": 375, "width": 75, "height": 275, "available": true }
     ],
     "menu": [
       {

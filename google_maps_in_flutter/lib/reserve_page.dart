@@ -26,17 +26,30 @@ class _ReservePageState extends State<ReservePage> {
     // Initialize the selection state for each table
     // This creates a map where each table's ID is a key, and the value is a boolean indicating whether the table is selected
     tableSelectionState = {
-      for (var table in widget.restaurant['layout']) table['id']: false,
+      for (var table in widget.restaurant['layout'])
+        table['id'].toString(): false,
     };
+
     _updateTableAvailability();
   }
 
+  // Disposes both the name and email text entries when no longer in use
   @override
   void dispose() {
     nameController.dispose();
+    emailController.dispose();
     super.dispose();
   }
 
+  // Function which checks the database to see if there is already
+  // a reservation for any tables in the restaurant.
+  // It will mark tables with a reservation as unavailable, otherwise
+  // the table is available
+  //
+  // FirebaseFirestore checks the current instance in the database
+  // at a certain collection(restaurant list) ==> document(restaurant)
+  // ==> Field(Date) ==> Map(Time) and takes a snapshot of all the
+  // tables currently have a reservation.
   Future<void> _updateTableAvailability() async {
     final saveReservationData = SaveReservationData();
     final reservationData = await saveReservationData.loadData();
@@ -68,7 +81,7 @@ class _ReservePageState extends State<ReservePage> {
             for (var table in layout) {
               final tableId = table['id'].toString();
               if (timeEntry.containsKey(tableId)) {
-                table['available'] = false; // Mark as unavailable if reserved
+                table['available'] = false;
               }
             }
           }
@@ -92,12 +105,11 @@ class _ReservePageState extends State<ReservePage> {
       ),
       body: Stack(
         children: [
-          CustomPaint(
-            size: Size(double.infinity, 800),
-            painter: RestaurantLayoutPainter(),
-          ),
+          // Calls Function to build the tables of the restaurant
+          // and place them on the screen to reserve.
           ..._buildTables(widget.restaurant['layout']),
 
+          // Column to place name and email text boxes
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -112,10 +124,14 @@ class _ReservePageState extends State<ReservePage> {
                   decoration: const InputDecoration(
                     hintText: 'Name',
                     border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
                   ),
                 ),
               ),
 
+              // If the user is not signed it, the email textbox
+              // is placed below the name text box
               if (user == null)
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -127,6 +143,8 @@ class _ReservePageState extends State<ReservePage> {
                     decoration: const InputDecoration(
                       hintText: 'Email',
                       border: OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.white,
                     ),
                   ),
                 ),
@@ -154,6 +172,67 @@ class _ReservePageState extends State<ReservePage> {
                                 ),
                                 content: const Text(
                                   "Please enter your name.",
+                                  style: TextStyle(fontSize: 18.0),
+                                ),
+                                actions: [
+                                  Center(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            WidgetStateProperty.all<Color>(
+                                              Colors.pink,
+                                            ),
+                                        foregroundColor:
+                                            WidgetStateProperty.all<Color>(
+                                              Colors.white,
+                                            ),
+                                        minimumSize:
+                                            WidgetStateProperty.all<Size>(
+                                              const Size(100.0, 50.0),
+                                            ),
+                                        shape: WidgetStateProperty.all<
+                                          RoundedRectangleBorder
+                                        >(
+                                          RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              20.0,
+                                            ),
+                                            side: const BorderSide(
+                                              color: Colors.pink,
+                                              width: 2.0,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        "Ok",
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                          return;
+                        } else if (emailController.text.isEmpty &&
+                            user?.email == null) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text(
+                                  "Error",
+                                  style: TextStyle(fontSize: 20.0),
+                                ),
+                                content: const Text(
+                                  "Please enter your Email.",
                                   style: TextStyle(fontSize: 18.0),
                                 ),
                                 actions: [
@@ -262,6 +341,22 @@ class _ReservePageState extends State<ReservePage> {
                           );
 
                           print('test!!!!!! 1.5');
+
+                          final userref = FirebaseAuth.instance.currentUser;
+                          final userEmail = userref?.email ?? email;
+
+                          final docRef = FirebaseFirestore.instance
+                              .collection('userinfo')
+                              .doc(userEmail);
+                          final docSnapshot = await docRef.get();
+
+                          if (docSnapshot.exists) {
+                            await docRef.update({
+                              'reservations': FieldValue.increment(1),
+                            });
+                          } else {
+                            docRef.set({'reservations': 1});
+                          }
 
                           await FirebaseFirestore.instance
                               .collection('reservations')
@@ -385,12 +480,15 @@ class _ReservePageState extends State<ReservePage> {
     );
   }
 
+  // Function dedicated to building and placing tables based on the restaurant's table data
   List<Widget> _buildTables(List<dynamic> layout) {
     return layout.map((table) {
       final id = table['id'].toString();
       final isAvailable = table['available'] ?? true;
       final isSelected = tableSelectionState[id] == true;
 
+      // Places table at listed X and Y coordinate
+      // Displays whether it's available or not
       return Positioned(
         left: table['x'].toDouble(),
         top: table['y'].toDouble(),
@@ -403,6 +501,8 @@ class _ReservePageState extends State<ReservePage> {
               });
             }
           },
+
+          // Builds table shape
           child: Column(
             children: [
               Container(
@@ -422,7 +522,7 @@ class _ReservePageState extends State<ReservePage> {
                 child: Center(
                   child: Text(
                     id,
-                    style: const TextStyle(color: Colors.black, fontSize: 12.0),
+                    style: const TextStyle(color: Colors.black, fontSize: 14.0),
                   ),
                 ),
               ),

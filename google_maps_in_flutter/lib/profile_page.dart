@@ -26,13 +26,17 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<bool> isRestaurantEmail(String email) async {
-    final String jsonString = await rootBundle.loadString('lib/Assets/markers.json');
+    final String jsonString = await rootBundle.loadString(
+      'lib/Assets/markers.json',
+    );
     final List<dynamic> markers = json.decode(jsonString);
     return markers.any((marker) => marker['email'] == email);
   }
 
   Future<Map<String, dynamic>?> getRestaurantEmail(String email) async {
-    final String jsonString = await rootBundle.loadString('lib/Assets/markers.json');
+    final String jsonString = await rootBundle.loadString(
+      'lib/Assets/markers.json',
+    );
     final List<dynamic> markers = json.decode(jsonString);
     return markers.cast<Map<String, dynamic>>().firstWhere(
       (marker) => marker['email'] == email,
@@ -52,7 +56,11 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  Future<void> handleLogin(String email, String password, BuildContext context) async {
+  Future<void> handleLogin(
+    String email,
+    String password,
+    BuildContext context,
+  ) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email.trim(),
@@ -76,16 +84,19 @@ class _ProfilePageState extends State<ProfilePage> {
           // Handle missing restaurant data
           showDialog(
             context: context,
-            builder: (context) => AlertDialog(
-              title: const Text('Error'),
-              content: const Text('No restaurant data found for this email.'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('OK'),
+            builder:
+                (context) => AlertDialog(
+                  title: const Text('Error'),
+                  content: const Text(
+                    'No restaurant data found for this email.',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('OK'),
+                    ),
+                  ],
                 ),
-              ],
-            ),
           );
         }
       } else {
@@ -97,18 +108,26 @@ class _ProfilePageState extends State<ProfilePage> {
     } catch (e) {
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Login Failed'),
-          content: Text(e.toString()),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
-          ],
-        ),
+        builder:
+            (context) => AlertDialog(
+              title: const Text('Login Failed'),
+              content: Text(e.toString()),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
       );
     }
   }
 
-  Future<void> handleSignUp(String email, String password, BuildContext context) async {
+  Future<void> handleSignUp(
+    String email,
+    String password,
+    BuildContext context,
+  ) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email.trim(),
@@ -126,13 +145,17 @@ class _ProfilePageState extends State<ProfilePage> {
     } catch (e) {
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Sign Up Failed'),
-          content: Text(e.toString()),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
-          ],
-        ),
+        builder:
+            (context) => AlertDialog(
+              title: const Text('Sign Up Failed'),
+              content: Text(e.toString()),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
       );
     }
   }
@@ -140,10 +163,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Profile'), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(

@@ -15,7 +15,7 @@ class Addreservation extends StatefulWidget{
 
   const Addreservation({super.key, required this.restaurantId});
 
-  @override 
+  @override
   State<Addreservation> createState() => AddreservationState();
 
   /// @nodoc
@@ -31,7 +31,7 @@ class Addreservation extends StatefulWidget{
   bool operator ==(Object other) => identical(this, other);
 }
 
-class AddreservationState extends State<Addreservation>{
+class AddreservationState extends State<Addreservation> {
   final key = GlobalKey<FormState>();
 
   final name = TextEditingController();
@@ -46,6 +46,7 @@ class AddreservationState extends State<Addreservation>{
   /// Once they click "Add Reservation" the reservation gets added to the Firestore
   /// and is displayed in the [Resturantreservations] page
   @override
+  Widget build(BuildContext context) {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Add Reservation")),

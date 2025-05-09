@@ -29,7 +29,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
-    _loadRestaurants();
+    loadRestaurants();
     _searchController.addListener(() {
       setState(() {
         _filteredRestaurants =
@@ -51,7 +51,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   // Loads the restaurant data from the json file
-  Future<void> _loadRestaurants() async {
+  Future<void> loadRestaurants() async {
     final String data = await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> jsonResult = json.decode(data);
     setState(() {
@@ -91,13 +91,14 @@ class _SearchPageState extends State<SearchPage> {
               },
             ),
           ),
-
-          // A small card that shows the reservation data
-          Positioned(
-            top: 90.0,
-            left: 90.0,
-            right: 90.0,
-            child: ShowReserveData(),
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.2,
+                vertical: MediaQuery.of(context).size.height * 0.07,
+              ),
+              child: ShowReserveData(),
+            ),
           ),
           Column(children: [SearchBar(searchController: _searchController)]),
         ],

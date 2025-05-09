@@ -14,67 +14,35 @@ class ProfilePageLoggedIn extends StatefulWidget {
 
 class _ProfilePageLoggedInState extends State<ProfilePageLoggedIn> {
   final user = FirebaseAuth.instance.currentUser;
-  Future<List<Map<String, dynamic>>> _userReservations = Future.value([]);
-
-  // For restaurant info to load properly in reservations
-  Map<String, Map<String, String>> restaurantInfoMap = {};
-
-  Future<Map<String, Map<String, String>>> loadRestaurantInfo() async {
-    final String jsonString = await rootBundle.loadString('lib/Assets/markers.json');
-    final List<dynamic> jsonData = json.decode(jsonString);
-
-    return {
-      for (var restaurant in jsonData)
-        restaurant['id']: {
-          'title': restaurant['title'],
-          'address': restaurant['address'],
-        }
-    };
-  }
+  late Future<int> _reservationsCount;
 
   @override
   void initState() {
     super.initState();
-    _loadInitialData();
+    // Fetch the total number of reservations made by the user
+    _reservationsCount = _fetchReservationsCount();
   }
 
-  void _loadInitialData() async {
-    restaurantInfoMap = await loadRestaurantInfo();
-    _userReservations = _fetchUserReservations();
-    setState(() {});
-  }
+  // Fetches the total number of reservations made by the user from Firestore
+  Future<int> _fetchReservationsCount() async {
+    final docRef = FirebaseFirestore.instance
+        .collection('userinfo')
+        .doc(user?.email);
+    final docSnapshot = await docRef.get();
 
-  Future<List<Map<String, dynamic>>> _fetchUserReservations() async {
-    final uid = user?.uid ?? '';
-    final firestore = FirebaseFirestore.instance;
-    final reservationsCollection = firestore.collection('reservations');
-    final List<Map<String, dynamic>> userReservations = [];
-
-    final restaurants = await reservationsCollection.get();
-
-    for (final doc in restaurants.docs) {
-      final restaurantId = doc.id;
-      final data = doc.data();
-
-      data.forEach((resID, value) {
-        if (value is Map<String, dynamic> && value['userId'] == uid) {
-          userReservations.add({
-            ...value,
-            'id': resID,
-            'restaurantId': restaurantId,
-          });
-        }
-      });
+    if (!docSnapshot.exists) {
+      await docRef.set({'reservations': 0});
+      return 0;
     }
 
-    return userReservations;
+    return docSnapshot.data()?['reservations'] ?? 0;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Welcome'),
+        title: const Text('Profile Page'),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -92,94 +60,61 @@ class _ProfilePageLoggedInState extends State<ProfilePageLoggedIn> {
         child: Column(
           children: [
             Text(
-              'Logged in as:\n${user?.email ?? 'Unknown'}',
+              'You are logged in as:',
               style: const TextStyle(fontSize: 18),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
-            const Text(
-              'Current Reservations',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Text(
+              '${user?.email}',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 12),
-            Expanded(
-              child: FutureBuilder<List<Map<String, dynamic>>>(
-                future: _userReservations,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(
-                      child: Text('No reservations yet.',
-                          style: TextStyle(fontSize: 16)),
-                    );
-                  }
-
-                  final reservations = snapshot.data!;
-                  return ListView.builder(
-                    itemCount: reservations.length,
-                    itemBuilder: (context, index) {
-                      final reservation = reservations[index];
-                      final restaurantId = reservation['restaurantId'];
-                      final tableId = reservation['tableId'] ?? 'N/A';
-                      final date = reservation['date'] ?? '';
-                      final time = reservation['time'] ?? '';
-
-                      final info = restaurantInfoMap[restaurantId] ??
-                          {'title': 'Unknown', 'address': 'Unknown'};
-
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        child: ListTile(
-                          title: Text(
-                            info['title']!,
-                            style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(info['address'] ?? ''),
-                              Text('Table: $tableId'),
-                              Text('Date: $date at $time'),
-                            ],
-                          ),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () async {
-                              await FirebaseFirestore.instance
-                                  .collection('reservations')
-                                  .doc(reservation['restaurantId'])
-                                  .update({
-                                reservation['id']: FieldValue.delete(),
-                              });
-                              setState(() {
-                                _userReservations =
-                                    _fetchUserReservations(); // Refresh
-                              });
-                            },
-                          ),
-                        ),
-                      );
-                    },
+            const Divider(),
+            const Spacer(),
+            // Display the total number of reservations made
+            FutureBuilder<int>(
+              future: _reservationsCount,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                }
+                if (snapshot.hasError) {
+                  return const Text(
+                    'Error fetching reservation count.',
+                    style: TextStyle(fontSize: 16),
                   );
-                },
-              ),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => MatadorResApp()),
-                  (Route<dynamic> route) => false,
+                }
+                final count = snapshot.data ?? 0;
+                return Text(
+                  'You have made $count reservations using Matador Reservations',
+                  style: const TextStyle(fontSize: 18),
+                  textAlign: TextAlign.center,
                 );
               },
-              child: const Text('Logout'),
             ),
+            const SizedBox(height: 30),
+            Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => MatadorResApp()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+                child: const Text('Logout'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Colors.white,
+                  ),
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                    Colors.pink,
+                  ),
+                ),
+              ),
+            ),
+            const Spacer(),
           ],
         ),
       ),
