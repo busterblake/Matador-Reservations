@@ -446,26 +446,37 @@ class _MatadorResApp extends State<MatadorResApp> {
           _pageController.jumpToPage(index);
         },
       ),
-      body: PageView(
-        controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(),
+      body: Stack(
         children: [
-          //pages go in order 0-3 for the bottom bar
-          //right now only the maps page works
-          GoogleMap(
-            myLocationEnabled: true,
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(target: _center, zoom: 16.0),
-            markers: _markers,
-            myLocationButtonEnabled: true,
-            //zoomControlsEnabled: true,
+          PageView(
+            controller: _pageController,
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              //pages go in order 0-3 for the bottom bar
+              //right now only the maps page works
+              GoogleMap(
+                myLocationEnabled: true,
+                onMapCreated: _onMapCreated,
+                initialCameraPosition: CameraPosition(target: _center, zoom: 16.0),
+                markers: _markers,
+                myLocationButtonEnabled: true,
+                //zoomControlsEnabled: true,
+              ),
+          
+              // this is where you would add the other pages for the bottom bar
+              //right now it just makes the page say what you clicked on only the maps page works
+              const SearchPage(), // Index 1
+              const BookingPage(), // Index 2
+              const ProfilePage(), // Index 3
+            ],
           ),
-
-          // this is where you would add the other pages for the bottom bar
-          //right now it just makes the page say what you clicked on only the maps page works
-          const SearchPage(), // Index 1
-          const BookingPage(), // Index 2
-          const ProfilePage(), // Index 3
+          if (currentIndex == 0)
+            SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.2, vertical: MediaQuery.of(context).size.height * 0.02),
+                child: ShowReserveData(),
+              )
+            )
         ],
       ),
     );
@@ -498,7 +509,7 @@ class SaveReservationData {
   Future<Map<String, String>> loadData() async {
     final prefs = await SharedPreferences.getInstance();
     return {
-      'time': prefs.getString('time') ?? '12:00 PM',
+      'time': prefs.getString('time') ?? '12:f0 PM',
       'date': prefs.getString('date') ?? '2025-5-15',
       'partySize': prefs.getString('partysize') ?? '2',
     };
