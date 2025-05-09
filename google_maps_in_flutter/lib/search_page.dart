@@ -32,13 +32,15 @@ class _SearchPageState extends State<SearchPage> {
     loadRestaurants();
     _searchController.addListener(() {
       setState(() {
-        _filteredRestaurants = _restaurants.map((restaurant) {
-          final isVisible = restaurant['title'] != null &&
-              restaurant['title']
-                  .toLowerCase()
-                  .contains(_searchController.text.toLowerCase());
-          return {...restaurant, 'isVisible': isVisible};
-        }).toList();
+        _filteredRestaurants =
+            _restaurants.map((restaurant) {
+              final isVisible =
+                  restaurant['title'] != null &&
+                  restaurant['title'].toLowerCase().contains(
+                    _searchController.text.toLowerCase(),
+                  );
+              return {...restaurant, 'isVisible': isVisible};
+            }).toList();
 
         _filteredRestaurants.sort((a, b) {
           if (a['isVisible'] == b['isVisible']) return 0;
@@ -53,11 +55,12 @@ class _SearchPageState extends State<SearchPage> {
     final String data = await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> jsonResult = json.decode(data);
     setState(() {
-      _restaurants = jsonResult
-          .cast<Map<String, dynamic>>()
-          .where((restaurant) => restaurant['title'] != null)
-          .map((restaurant) => {...restaurant, 'isVisible': true})
-          .toList();
+      _restaurants =
+          jsonResult
+              .cast<Map<String, dynamic>>()
+              .where((restaurant) => restaurant['title'] != null)
+              .map((restaurant) => {...restaurant, 'isVisible': true})
+              .toList();
       _filteredRestaurants = _restaurants;
     });
   }
@@ -315,7 +318,7 @@ class RestaurantCards extends StatelessWidget {
 // It's just a search bar
 class SearchBar extends StatelessWidget {
   const SearchBar({super.key, required TextEditingController searchController})
-      : _searchController = searchController;
+    : _searchController = searchController;
 
   final TextEditingController _searchController;
 
