@@ -28,7 +28,9 @@ class ResturantReservationState extends State<Resturantreservations> {
   }
 
   Future<Map<String, dynamic>?> getRestaurantById(String id) async {
-    final String jsonString = await rootBundle.loadString('lib/Assets/markers.json');
+    final String jsonString = await rootBundle.loadString(
+      'lib/Assets/markers.json',
+    );
     final List<dynamic> jsonData = json.decode(jsonString);
 
     return jsonData.cast<Map<String, dynamic>>().firstWhere(
@@ -111,9 +113,9 @@ class ResturantReservationState extends State<Resturantreservations> {
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
         children: [
-          Center(child: tableUI()),     // Index 0: Bookings
-          const SearchPage(),           // Index 1: Search
-          const ProfilePage(),          // Index 2: Profile
+          Center(child: tableUI()), // Index 0: Bookings
+          const SearchPage(), // Index 1: Search
+          const ProfilePage(), // Index 2: Profile
         ],
       ),
     );
@@ -153,10 +155,30 @@ class ResturantReservationState extends State<Resturantreservations> {
     return data.map((e) {
       return DataRow(
         cells: [
-          DataCell(SizedBox(width: 55, child: FittedBox(child: Text(e.date.toString())))),
-          DataCell(SizedBox(width: 40, child: FittedBox(child: Text(e.time.toString())))),
-          DataCell(SizedBox(width: 30, child: FittedBox(child: Text(e.size.toString())))),
-          DataCell(SizedBox(width: 30, child: FittedBox(child: Text(e.table.toString())))),
+          DataCell(
+            SizedBox(
+              width: 55,
+              child: FittedBox(child: Text(e.date.toString())),
+            ),
+          ),
+          DataCell(
+            SizedBox(
+              width: 40,
+              child: FittedBox(child: Text(e.time.toString())),
+            ),
+          ),
+          DataCell(
+            SizedBox(
+              width: 30,
+              child: FittedBox(child: Text(e.size.toString())),
+            ),
+          ),
+          DataCell(
+            SizedBox(
+              width: 30,
+              child: FittedBox(child: Text(e.table.toString())),
+            ),
+          ),
           DataCell(SizedBox(width: 60, child: FittedBox(child: Text(e.name)))),
         ],
       );
