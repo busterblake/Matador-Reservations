@@ -212,7 +212,8 @@ class _ReservePageState extends State<ReservePage> {
 
                           // Forces user to enter email to properly save reservation
                           // Doesn't notify if they're already signed in because email isnt empty
-                          if (name.isEmpty || email.isEmpty) {
+                          if (name.isEmpty) {
+
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('Please enter your name and email address.'),

@@ -473,7 +473,7 @@ class _MatadorResApp extends State<MatadorResApp> {
           if (currentIndex == 0)
             SafeArea(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.2, vertical: MediaQuery.of(context).size.height * 0.07),
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.2, vertical: MediaQuery.of(context).size.height * 0.02),
                 child: ShowReserveData(),
               )
             )
@@ -509,7 +509,7 @@ class SaveReservationData {
   Future<Map<String, String>> loadData() async {
     final prefs = await SharedPreferences.getInstance();
     return {
-      'time': prefs.getString('time') ?? '12:00 PM',
+      'time': prefs.getString('time') ?? '12:f0 PM',
       'date': prefs.getString('date') ?? '2025-5-15',
       'partySize': prefs.getString('partysize') ?? '2',
     };

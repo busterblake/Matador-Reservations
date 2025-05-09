@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating/flutter_rating.dart';
 import 'reserve_page.dart';
 
+// Menu page displays an image, information, and the menu for the
+// restaurant. The user is able to go to reserve a table at the
+// restaurant using the 'book table' button
 class MenuPage extends StatelessWidget {
   final Map<String, dynamic> restaurant;
 
@@ -17,10 +20,12 @@ Widget build(BuildContext context) {
       backgroundColor: Colors.transparent,
       foregroundColor: Colors.white,
     ),
+    // Entire page is scrollable
     body: SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Display restaurant image
           Image.asset(
             restaurant['image'],
             fit: BoxFit.cover,
