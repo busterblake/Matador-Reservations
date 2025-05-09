@@ -78,7 +78,7 @@
     "seating": "Indoor",
     "lat": 34.243181956884065,
     "lng": -118.52853961742417,
-    "image": "/Users/jacobarce/Documents/GitHub/Matador-Reservations/google_maps_in_flutter/lib/Assets/pekinghampalace_logo.png",
+    "image": "lib/Assets/pekinghampalace_logo.png",
     "email": "pekinghampalace@gmail.com",
     "password": "password",
     "layout": [
@@ -158,7 +158,7 @@
     "lng": -118.53403046268451,
     "email" : "giordanachos@gmail.com",
     "password" : "password",
-    "image": "/Users/jacobarce/Documents/GitHub/Matador-Reservations/google_maps_in_flutter/lib/Assets/giordanachos.png",
+    "image": "lib/Assets/giordanachos.png",
     "layout": [
       { "id": "table1", "x": 40, "y": 100, "width": 120, "height": 75, "available": true },
       { "id": "table2", "x": 240, "y": 100, "width": 120, "height": 75, "available": true },

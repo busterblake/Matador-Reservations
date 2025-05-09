@@ -26,8 +26,10 @@ class _ReservePageState extends State<ReservePage> {
     // Initialize the selection state for each table
     // This creates a map where each table's ID is a key, and the value is a boolean indicating whether the table is selected
     tableSelectionState = {
-      for (var table in widget.restaurant['layout']) table['id']: false,
+      for (var table in widget.restaurant['layout'])
+        table['id'].toString(): false,
     };
+
     _updateTableAvailability();
   }
 
@@ -79,7 +81,7 @@ class _ReservePageState extends State<ReservePage> {
             for (var table in layout) {
               final tableId = table['id'].toString();
               if (timeEntry.containsKey(tableId)) {
-                table['available'] = false; // Mark as unavailable if reserved
+                table['available'] = false;
               }
             }
           }
@@ -484,7 +486,7 @@ class _ReservePageState extends State<ReservePage> {
   // Function dedicated to building and placing tables based on the restaurant's table data
   List<Widget> _buildTables(List<dynamic> layout) {
     return layout.map((table) {
-      final id = 'Table ${table['id']?.replaceAll(RegExp(r'[^0-9]'), '')}';
+      final id = table['id'].toString();
       final isAvailable = table['available'] ?? true;
       final isSelected = tableSelectionState[id] == true;
 
