@@ -196,21 +196,20 @@ Widget build(BuildContext context) {
                 child: const Text('Search'),
               ),
               ElevatedButton(
-                onPressed: () async {
-                  final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => Addreservation(
-                        restaurantId: widget.restaurant['id'],
-                      ),
-                    ),
-                  );
-                  if (result == true) {
-                    _loadReservationsForRestaurant(); // Refresh list
-                  }
-                },
-                child: const Text('Add a Reservation'),
-              ),
+  onPressed: () async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => Addreservation(restaurant: widget.restaurant),
+      ),
+    );
+    if (result == true) {
+      _loadReservationsForRestaurant(); // Refresh list
+    }
+  },
+  child: const Text('Add a Reservation'),
+),
+
             ],
           ),
           const SizedBox(height: 10),

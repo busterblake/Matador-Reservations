@@ -1,8 +1,5 @@
 /// The Add reservation class allows the restaurant to manually add a Reservation to their Reservation list
 import 'package:flutter/material.dart';
-import 'ResturantReservations.dart';
-import 'ReservationData.dart';
-//firebase 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Allows restaurant to Manualy add a reservation to their [reservations] list
@@ -10,10 +7,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 /// This Class will:
 ///  1. Ask for enrty in all feilds
 ///  2. at the click of a button the reservation is added to the List 
-class Addreservation extends StatefulWidget{
-  final String restaurantId; // needed to pass reservation
-
-  const Addreservation({super.key, required this.restaurantId});
+class Addreservation extends StatefulWidget {
+  final Map<String, dynamic> restaurant;
+  const Addreservation({super.key, required this.restaurant});
 
   @override
   State<Addreservation> createState() => AddreservationState();
@@ -22,6 +18,7 @@ class Addreservation extends StatefulWidget{
   @override
   dynamic noSuchMethod(Invocation invocation) =>
       super.noSuchMethod(invocation);
+
   /// @nodoc
   @override
   int get hashCode => super.hashCode;
@@ -42,11 +39,10 @@ class AddreservationState extends State<Addreservation> {
 
   /// allows Resturaunt to Add a reservation to their [reservations]
   /// 
-  /// Resturanunt must add a name time, table number, and party size
-  /// Once they click "Add Reservation" the reservation gets added to the Firestore
+  /// Resturanunt must add a name, time, table number, and party size
+  /// Once they click "Add Reservation" the reservation gets added to Firestore
   /// and is displayed in the [Resturantreservations] page
   @override
-  Widget build(BuildContext context) {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Add Reservation")),
@@ -57,27 +53,27 @@ class AddreservationState extends State<Addreservation> {
           child: ListView(
             children: [
               TextFormField(
-                controller: name, 
+                controller: name,
                 decoration: InputDecoration(labelText: 'Name'),
                 validator: (val) => val!.isEmpty ? "Enter a name: " : null,
               ),
               TextFormField(
-                controller: time, 
-                decoration: InputDecoration(labelText: 'Time (HH:mm) 24hr format'),
+                controller: time,
+                decoration: InputDecoration(labelText: 'Time (24hr)'),
                 validator: (val) => val!.isEmpty ? "Enter a Time: " : null,
               ),
               TextFormField(
-                controller: table, 
+                controller: table,
                 decoration: InputDecoration(labelText: 'Table #'),
                 validator: (val) => val!.isEmpty ? "Enter a Table #: " : null,
               ),
               TextFormField(
-                controller: addDate, 
-                decoration: InputDecoration(labelText: 'Date (yyyy-MM-dd)'),
+                controller: addDate,
+                decoration: InputDecoration(labelText: 'Date (YYYY-MM-DD)'),
                 validator: (val) => val!.isEmpty ? "Enter a Date: " : null,
               ),
               TextFormField(
-                controller: size, 
+                controller: size,
                 decoration: InputDecoration(labelText: 'Party size'),
                 validator: (val) => val!.isEmpty ? "Enter a Party Size: " : null,
               ),
@@ -93,33 +89,37 @@ class AddreservationState extends State<Addreservation> {
     );
   }
 
-  /// Send the new reservation to Firestore under 'reservations'
+  /// Send the new reservation to Firestore under the restaurant's document
   void submitReservation() async {
     if (key.currentState!.validate()) {
-      try {
-        // Combine date and time into one DateTime object
-        final DateTime dateTime = DateTime.parse("${addDate.text} ${time.text}");
+      final String restaurantId = widget.restaurant['id'];
+      final reservationId = FirebaseFirestore.instance
+          .collection('reservations')
+          .doc(restaurantId)
+          .collection('data')
+          .doc()
+          .id;
 
-        // Add to Firestore
-        await FirebaseFirestore.instance.collection('reservations').add({
-          'restaurantId': widget.restaurantId,
-          'tableId': int.parse(table.text),
-          'userId': 'manual', // You could use admin ID if desired
-          'name': name.text,
-          'partySize': int.parse(size.text),
-          'date': Timestamp.fromDate(dateTime),
-          'duration': 30, // default duration
-        });
+      final reservation = {
+        'name': name.text,
+        'time': time.text,
+        'date': addDate.text,
+        'partySize': size.text,
+        'tableId': "Table ${table.text}",
+        'restaurantId': restaurantId,
+        'userId': "manual",
+        'email': "manual@entry.com", // dummy email
+      };
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Reservation added!')),
-        );
-        Navigator.pop(context, true);
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
-      }
+      await FirebaseFirestore.instance
+          .collection('reservations')
+          .doc(restaurantId)
+          .set({reservationId: reservation}, SetOptions(merge: true));
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Reservation added!')),
+      );
+      Navigator.pop(context, true);
     }
   }
 
@@ -127,6 +127,7 @@ class AddreservationState extends State<Addreservation> {
   @override
   dynamic noSuchMethod(Invocation invocation) =>
       super.noSuchMethod(invocation);
+
   /// @nodoc
   @override
   int get hashCode => super.hashCode;

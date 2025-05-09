@@ -32,15 +32,13 @@ class _SearchPageState extends State<SearchPage> {
     loadRestaurants();
     _searchController.addListener(() {
       setState(() {
-        _filteredRestaurants =
-            _restaurants.map((restaurant) {
-              final isVisible =
-                  restaurant['title'] != null &&
-                  restaurant['title'].toLowerCase().contains(
-                    _searchController.text.toLowerCase(),
-                  );
-              return {...restaurant, 'isVisible': isVisible};
-            }).toList();
+        _filteredRestaurants = _restaurants.map((restaurant) {
+          final isVisible = restaurant['title'] != null &&
+              restaurant['title']
+                  .toLowerCase()
+                  .contains(_searchController.text.toLowerCase());
+          return {...restaurant, 'isVisible': isVisible};
+        }).toList();
 
         _filteredRestaurants.sort((a, b) {
           if (a['isVisible'] == b['isVisible']) return 0;
@@ -55,12 +53,11 @@ class _SearchPageState extends State<SearchPage> {
     final String data = await rootBundle.loadString('lib/Assets/markers.json');
     final List<dynamic> jsonResult = json.decode(data);
     setState(() {
-      _restaurants =
-          jsonResult
-              .cast<Map<String, dynamic>>()
-              .where((restaurant) => restaurant['title'] != null)
-              .map((restaurant) => {...restaurant, 'isVisible': true})
-              .toList();
+      _restaurants = jsonResult
+          .cast<Map<String, dynamic>>()
+          .where((restaurant) => restaurant['title'] != null)
+          .map((restaurant) => {...restaurant, 'isVisible': true})
+          .toList();
       _filteredRestaurants = _restaurants;
     });
   }
@@ -75,11 +72,10 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:
-      // For some reason stacks work bottom to top,
-      // so the search bar, although at the bottom
-      // of the stack, is on top of the restaurant cards
-      Stack(
+      body: Stack(
+        // For some reason stacks work bottom to top,
+        // so the search bar, although at the bottom
+        // of the stack, is on top of the restaurant cards
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 80.0),
@@ -97,7 +93,7 @@ class _SearchPageState extends State<SearchPage> {
                 horizontal: MediaQuery.of(context).size.width * 0.2,
                 vertical: MediaQuery.of(context).size.height * 0.07,
               ),
-              child: ShowReserveData(),
+              child: const ShowReserveData(),
             ),
           ),
           Column(children: [SearchBar(searchController: _searchController)]),
@@ -120,6 +116,7 @@ class ShowReserveData extends StatefulWidget {
 // the card when the data changes
 class _ShowReserveDataState extends State<ShowReserveData> {
   late Future<Map<String, String>> _reservationData;
+  late VoidCallback _reservationListener;
 
   @override
   void initState() {
@@ -127,17 +124,18 @@ class _ShowReserveDataState extends State<ShowReserveData> {
     _loadReservationData();
 
     // Listen to changes in reservation data
-    SaveReservationData.reservationChanged.addListener(() {
+    _reservationListener = () {
+      if (!mounted) return;
       _loadReservationData();
-    });
+    };
+
+    SaveReservationData.reservationChanged.addListener(_reservationListener);
   }
 
   @override
   void dispose() {
     // Remove the listener when the widget is disposed
-    SaveReservationData.reservationChanged.removeListener(() {
-      _loadReservationData();
-    });
+    SaveReservationData.reservationChanged.removeListener(_reservationListener);
     super.dispose();
   }
 
@@ -317,7 +315,7 @@ class RestaurantCards extends StatelessWidget {
 // It's just a search bar
 class SearchBar extends StatelessWidget {
   const SearchBar({super.key, required TextEditingController searchController})
-    : _searchController = searchController;
+      : _searchController = searchController;
 
   final TextEditingController _searchController;
 
@@ -336,11 +334,10 @@ class SearchBar extends StatelessWidget {
         decoration: InputDecoration(
           hintText: 'Find Restaurants',
           suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
             onPressed: () => _searchController.clear(),
           ),
-
-          prefixIcon: Icon(Icons.search),
+          prefixIcon: const Icon(Icons.search),
           filled: true,
           fillColor: Colors.white,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),

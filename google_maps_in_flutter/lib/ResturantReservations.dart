@@ -4,6 +4,8 @@ import 'ReservationData.dart';
 import 'addReservation.dart';
 import 'search_page.dart';
 import 'profile_page.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 
 class Resturantreservations extends StatefulWidget {
   const Resturantreservations({super.key});
@@ -17,7 +19,7 @@ class ResturantReservationState extends State<Resturantreservations> {
   List<Reservation> data = List.from(reservations);
   final PageController _pageController = PageController(initialPage: 0);
 
-  final String restaurantId = "matador1"; // hardcoded or retrieve from login context
+  final String restaurantId = "matador1"; // Replace with login logic if needed
 
   @override
   void dispose() {
@@ -25,30 +27,48 @@ class ResturantReservationState extends State<Resturantreservations> {
     super.dispose();
   }
 
+  Future<Map<String, dynamic>?> getRestaurantById(String id) async {
+    final String jsonString = await rootBundle.loadString('lib/Assets/markers.json');
+    final List<dynamic> jsonData = json.decode(jsonString);
+
+    return jsonData.cast<Map<String, dynamic>>().firstWhere(
+      (restaurant) => restaurant['id'] == id,
+      orElse: () => {},
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Restaurant Reservations")),
+      appBar: AppBar(title: const Text("Restaurant Reservations")),
 
-      // Add button to manually create reservation
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.pink,
         onPressed: () async {
+          final restaurant = await getRestaurantById(restaurantId);
+
+          if (restaurant == null || restaurant.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Restaurant not found.')),
+            );
+            return;
+          }
+
           final result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => Addreservation(restaurantId: restaurantId),
+              builder: (context) => Addreservation(restaurant: restaurant),
             ),
           );
 
           if (result == true) {
-            // TODO: Refresh from Firebase here in future
+            // Refresh local data (replace with Firebase in future)
             setState(() {
-              data = List.from(reservations); // currently just reloads local
+              data = List.from(reservations);
             });
           }
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

@@ -120,33 +120,67 @@ class _BookingPageState extends State<BookingPage> {
                         final time = reservation['time'] ?? '';
 
                         return Card(
-                          margin: const EdgeInsets.symmetric(vertical: 8),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 12.0,
-                              horizontal: 16.0,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  info['title']!,
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 5),
-                                Text(info['address'] ?? ''),
-                                Text('Party Name: $partyName'),
-                                Text('Date: $date'),
-                                Text('Time: $time'),
-                                Text('Party Size: $partySize'),
-                                Text('Table: $tableId'),
-                              ],
-                            ),
-                          ),
-                        );
+  margin: const EdgeInsets.symmetric(vertical: 8),
+  child: Padding(
+    padding: const EdgeInsets.symmetric(
+      vertical: 12.0,
+      horizontal: 16.0,
+    ),
+    child: Stack(
+      children: [
+        // Reservation details
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              info['title']!,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 5),
+            Text(info['address'] ?? ''),
+            Text('Party Name: $partyName'),
+            Text('Date: $date'),
+            Text('Time: $time'),
+            Text('Party Size: $partySize'),
+            Text('Table: $tableId'),
+          ],
+        ),
+
+        // Trash can icon in top right
+        Positioned(
+          right: 0,
+          top: 0,
+          child: IconButton(
+            icon: const Icon(
+              Icons.delete_forever_rounded,
+              color: Colors.red,
+            ),
+            onPressed: () async {
+              await FirebaseFirestore.instance
+                  .collection('reservations')
+                  .doc(restaurantId)
+                  .update({
+                reservation['id']: FieldValue.delete(),
+              });
+
+              setState(() {
+                _userReservations = _fetchUserReservations();
+              });
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Reservation deleted.')),
+              );
+            },
+          ),
+        ),
+      ],
+    ),
+  ),
+);
+
                       },
                     );
                   },
