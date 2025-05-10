@@ -1,0 +1,9 @@
+dartdoc:
+  header:
+    - "dartdoc_header.html"
+  nodoc:
+  - "lib/pages/home_page.dart"
+  - "lib/pages/login_register.dart"
+  - "lib/widget_tree.dart"
+  - "lib/firebase_options.dart"
+  - "lib/time_formatter.dart"
