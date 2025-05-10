@@ -120,28 +120,27 @@ class ShowReserveData extends StatefulWidget {
 // the card when the data changes
 class _ShowReserveDataState extends State<ShowReserveData> {
   late Future<Map<String, String>> _reservationData;
+  late VoidCallback _reservationListener;
 
   @override
   void initState() {
     super.initState();
     _loadReservationData();
 
-    // Listen to changes in reservation data
-    SaveReservationData.reservationChanged.addListener(() {
+    _reservationListener = () {
+      if (!mounted) return;
       _loadReservationData();
-    });
+    };
+
+    SaveReservationData.reservationChanged.addListener(_reservationListener);
   }
 
   @override
   void dispose() {
-    // Remove the listener when the widget is disposed
-    SaveReservationData.reservationChanged.removeListener(() {
-      _loadReservationData();
-    });
+    SaveReservationData.reservationChanged.removeListener(_reservationListener);
     super.dispose();
   }
 
-  // Load the reservation data from the main file
   void _loadReservationData() {
     setState(() {
       _reservationData = SaveReservationData().loadData();
